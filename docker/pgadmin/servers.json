@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "latest-build-db",
+      "Group": "Servers",
+      "Host": "latest-build-db-1",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "latest-build",
+      "SSLMode": "prefer"
+    }
+  }
+}

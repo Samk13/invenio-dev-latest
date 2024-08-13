@@ -1,0 +1,73 @@
+# list of pages:
+- url: /terms-en
+  title: KTH Terms and conditions of use
+  description: KTH Terms and conditions English
+  template: terms_en.html
+- url: /terms-sv
+  title: KTH Användarvillkor
+  description: KTH Terms and conditions Swedish
+  template: terms_sv.html
+- url: /how-to-en
+  title: Guides
+  description: How to main page
+  template: how_to_en.html
+- url: /how-to-sv
+  title: Guider
+  description: How to main page
+  template: how_to_sv.html
+- url: /upload-record-en
+  title: Upload a record
+  description: How to upload a record
+  template: upload_record_en.html
+- url: /upload-record-sv
+  title: Ladda upp en post
+  description: Hur man ladda upp en post
+  template: upload_record_sv.html
+- url: /community-manager-responsibilities-en
+  title: Community Manager Responsibilities
+  description: Responsibilities of a Community Manager
+  template: community_manager_responsibilities_en.html
+- url: /community-manager-responsibilities-sv
+  title: Community Manager Ansvarsområden
+  description: Ansvarigheter för en gemenskapsadministratör
+  template: community_manager_responsibilities_sv.html
+- url: /rest-api-reference-en
+  title: REST API Reference
+  description: REST API reference
+  template: rest_api_reference_en.html
+- url: /rest-api-reference-sv
+  title: REST API Referens
+  description: Referens för REST API
+  template: rest_api_reference_sv.html
+- url: /github-integration-en
+  title: Github integration
+  description: Github integration
+  template: github_integration_en.html
+- url: /github-integration-sv
+  title: Github integration
+  description: Github integration
+  template: github_integration_sv.html
+- url: /create-community-en
+  title: Create a community
+  description: Create a community
+  template: create_community_en.html
+- url: /create-community-sv
+  title: Skapar en Community
+  description: Create a community
+  template: create_community_sv.html
+- url: /restrict-record-access-en
+  title: Restrict access to a record
+  description: Restrict access to a record
+  template: restrict_record_access_en.html
+- url: /restrict-record-access-sv
+  title: Begränsa åtkomsten till en post
+  description: Restrict access to a record
+  template: restrict_record_access_sv.html
+- url: /share-record-access-en
+  title: Share record access
+  description: Share record access
+  template: share_record_access_en.html
+- url: /share-record-access-sv
+  title: Dela en post
+  description: Share record access
+  template: share_record_access_sv.html
