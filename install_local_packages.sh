@@ -14,4 +14,5 @@ set -o nounset
 
 
 echo "Installing dev packages ..."
-invenio-cli packages install ~/INVENIO/issues/invenio-app-rdm/ ~/INVENIO/issues/invenio-users-resources/ ~/INVENIO/issues/invenio-communities/ ~/INVENIO/issues/invenio-rdm-records/ ~/INVENIO/issues/invenio-records-resources/ ~/INVENIO/issues/invenio-accounts/
+# invenio-cli packages install ~/INVENIO/issues/invenio-app-rdm/ ~/INVENIO/issues/invenio-users-resources/ ~/INVENIO/issues/invenio-communities/ ~/INVENIO/issues/invenio-rdm-records/ ~/INVENIO/issues/invenio-records-resources/ ~/INVENIO/issues/invenio-accounts/
+invenio-cli packages install ~/INVENIO/issues/invenio-app-rdm ~/INVENIO/issues/invenio-rdm-records/ ~/INVENIO/issues/invenio-users-resources/
