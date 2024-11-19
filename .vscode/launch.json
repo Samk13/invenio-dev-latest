@@ -1,0 +1,28 @@
+{
+        "configurations": [
+        {
+            "name": "Invenio Debugger",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "invenio_app.wsgi:application",
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "1",
+                "WERKZEUG_RUN_MAIN": "watchdog" // or "stat"
+            },
+            "args": [
+                "run",
+                "--host",
+                "0.0.0.0",
+                "--cert",
+                "${workspaceFolder}/docker/nginx/test.crt",
+                "--key",
+                "${workspaceFolder}/docker/nginx/test.key",
+            ],
+            "jinja": true,
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}
