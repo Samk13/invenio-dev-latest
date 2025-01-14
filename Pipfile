@@ -7,12 +7,13 @@ verify_ssl = true
 check-manifest = ">=0.25"
 
 [packages]
-invenio-app-rdm = {extras = ["opensearch2"], version = "~=13.0.0b1.dev4"}
+invenio-app-rdm = {extras = ["opensearch2"], version = "~=13.0.0b1.dev0"}
 latest-build = {editable = true, path="./site"}
 
 uwsgi = ">=2.0"
 uwsgitop = ">=0.11"
 uwsgi-tools = ">=1.1.1"
+flask-menu = ">=0.5.0,<2.0.0"
 
 [requires]
 python_version = "3.9"
