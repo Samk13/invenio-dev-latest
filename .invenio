@@ -1,6 +1,9 @@
 [cli]
 flavour = RDM
 logfile = /logs/invenio-cli.log
+python_packages_manager = uv
+javascript_packages_manager = pnpm
+assets_builder = rspack
 
 [cookiecutter]
 project_name = latest-build
