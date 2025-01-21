@@ -671,3 +671,186 @@ Assets build
 Dependencies installed successfully.
 
 ```
+
+## Development
+
+When I try to install local packages I got this error:
+
+```log
+
+./install_local_packages.sh
+Installing dev packages ...
+warning: `VIRTUAL_ENV=/home/samk13/.pyenv/versions/3.12.8/envs/latest-build` does not match the project environment path `.venv` and will be ignored
+Installing python dependencies...
+Resolved 276 packages in 3.66s
+   Built invenio-app-rdm @ file:///home/samk13/INVENIO/issues/invenio-app-rdm
+Prepared 57 packages in 1.66s
+Uninstalled 56 packages in 333ms
+Installed 57 packages in 64ms
+ - alembic==1.14.1
+ + alembic==1.10.4
+ - celery==5.4.0
+ + celery==5.3.6
+ - flask==3.1.0
+ + flask==2.2.5
+ - flask-alembic==3.1.1
+ + flask-alembic==2.0.1
+ + flask-oauthlib==0.9.6
+ - flask-sqlalchemy==3.1.1
+ + flask-sqlalchemy==2.5.1
+ - invenio-access==4.0.0
+ + invenio-access==3.0.2
+ - invenio-accounts==6.0.0
+ + invenio-accounts==5.1.7
+ - invenio-administration==3.0.0
+ + invenio-administration==2.9.0
+ - invenio-app==2.0.0
+ + invenio-app==1.5.1
+ - invenio-app-rdm==13.0.0b2.dev0
+ + invenio-app-rdm==13.0.0b1.dev27 (from file:///home/samk13/INVENIO/issues/invenio-app-rdm)
+ - invenio-assets==4.0.0 (from git+https://github.com/slint/invenio-assets@008ea6178b9c03cf7b6483b5b9f3c45848aa4683)
+ + invenio-assets==3.1.0
+ - invenio-banners==4.0.0
+ + invenio-banners==3.2.0
+ - invenio-base==2.0.0
+ + invenio-base==1.4.0
+ - invenio-cache==2.0.0
+ + invenio-cache==1.3.1
+ - invenio-celery==2.0.0
+ + invenio-celery==1.3.2
+ - invenio-communities==18.0.0.dev1
+ + invenio-communities==17.8.1
+ - invenio-db==2.0.0
+ + invenio-db==1.3.1
+ - invenio-drafts-resources==6.0.0
+ + invenio-drafts-resources==5.1.0
+ - invenio-files-rest==3.0.0
+ + invenio-files-rest==2.2.4
+ - invenio-formatter==3.0.0
+ + invenio-formatter==2.0.4
+ - invenio-github==2.0.0
+ + invenio-github==1.5.2
+ - invenio-i18n==3.0.0
+ + invenio-i18n==2.2.0
+ - invenio-indexer==3.0.0
+ + invenio-indexer==2.4.0
+ - invenio-jobs==3.0.0.dev1
+ + invenio-jobs==1.1.1
+ - invenio-jsonschemas==2.0.0
+ + invenio-jsonschemas==1.1.5
+ - invenio-logging==4.0.2
+ + invenio-logging==2.1.4
+ - invenio-notifications==1.0.0
+ + invenio-notifications==0.6.1
+ - invenio-oaiserver==3.1.0
+ + invenio-oaiserver==2.3.0
+ - invenio-oauth2server==3.0.0
+ + invenio-oauth2server==2.4.1
+ - invenio-oauthclient==5.1.0
+ + invenio-oauthclient==4.1.3
+ - invenio-pages==5.0.0
+ + invenio-pages==4.1.2
+ - invenio-pidstore==2.0.0
+ + invenio-pidstore==1.3.4
+ - invenio-previewer==3.0.0
+ + invenio-previewer==2.2.2
+ - invenio-rdm-records==17.0.0.dev1
+ + invenio-rdm-records==16.7.0
+ - invenio-records==3.0.2
+ + invenio-records==2.4.1
+ - invenio-records-permissions==1.0.0
+ + invenio-records-permissions==0.22.0
+ - invenio-records-resources==7.0.0
+ + invenio-records-resources==6.5.0
+ - invenio-records-rest==3.0.0
+ + invenio-records-rest==2.4.1
+ - invenio-records-ui==2.0.0
+ + invenio-records-ui==1.2.2
+ - invenio-requests==6.0.0.dev1
+ + invenio-requests==5.5.0
+ - invenio-rest==2.0.0
+ + invenio-rest==1.5.0
+ - invenio-search-ui==4.0.0
+ + invenio-search-ui==3.0.1
+ - invenio-stats==5.0.0
+ + invenio-stats==4.3.0
+ - invenio-theme==4.0.1
+ + invenio-theme==3.6.1
+ - invenio-userprofiles==4.0.0
+ + invenio-userprofiles==3.0.2
+ - invenio-users-resources==7.0.0.dev1
+ + invenio-users-resources==6.1.3
+ - invenio-vocabularies==7.0.0.dev1
+ + invenio-vocabularies==6.11.0
+ - itsdangerous==2.2.0
+ + itsdangerous==2.0.1
+ - oauthlib==3.2.2
+ + oauthlib==2.1.0
+ - requests-oauthlib==2.0.0
+ + requests-oauthlib==1.1.0
+ - sqlalchemy==2.0.37
+ + sqlalchemy==1.4.54
+ - sqlalchemy-continuum==1.4.2
+ + sqlalchemy-continuum==1.4.1
+ - sqlalchemy-utils==0.41.2
+ + sqlalchemy-utils==0.38.3
+ - watchdog==6.0.0
+ + watchdog==2.2.1
+ - werkzeug==3.1.3
+ + werkzeug==2.2.3
+ - wtforms-alchemy==0.19.0
+ + wtforms-alchemy==0.18.0
+Packages ('/home/samk13/INVENIO/issues/invenio-app-rdm',) installed successfully.
+Rebuilding assets...
+Traceback (most recent call last):
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/bin/invenio-cli", line 10, in <module>
+    sys.exit(invenio_cli())
+             ^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/decorators.py", line 92, in new_func
+    return ctx.invoke(f, obj, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/invenio_cli/cli/packages.py", line 72, in install
+    AssetsCommands(cli_config).update_statics_and_assets(
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/invenio_cli/commands/local.py", line 130, in update_statics_and_assets
+    app = create_ui()
+          ^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/invenio_base/app.py", line 111, in _create_app
+    config_loader(app, **kwargs)
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/invenio_app/factory.py", line 61, in config_loader
+    invenio_config_loader(app, **kwargs_config)
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/invenio_config/utils.py", line 55, in _config_loader
+    InvenioConfigEntryPointModule(app=app)
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/invenio_config/entrypoint.py", line 35, in __init__
+    self.init_app(app)
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/invenio_config/entrypoint.py", line 46, in init_app
+    app.config.from_object(ep.load())
+                           ^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/pkg_resources/__init__.py", line 2773, in load
+    return self.resolve()
+           ^^^^^^^^^^^^^^
+  File "/home/samk13/INVENIO/issues/latest-build/latest-build/.venv/lib/python3.12/site-packages/pkg_resources/__init__.py", line 2779, in resolve
+    module = __import__(self.module_name, fromlist=['__name__'], level=0)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'invenio_app_rdm'
+```
