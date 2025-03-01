@@ -68,6 +68,7 @@ services:
       - "DISABLE_INSTALL_DEMO_CONFIG=true"
       - "DISABLE_SECURITY_PLUGIN=true"
       - "discovery.type=single-node"
+      - "_JAVA_OPTIONS=-XX:UseSVE=0"
     ulimits:
       memlock:
         soft: -1
