@@ -56,7 +56,7 @@ docs/_build/
 # PyBuilder
 target/
 
-test.db
+*.db
 
 # Environments
 .venv/
