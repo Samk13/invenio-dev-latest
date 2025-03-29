@@ -14,5 +14,28 @@ set -o nounset
 
 
 echo "Installing dev packages ..."
-# invenio-cli packages install ~/INVENIO/issues/invenio-app-rdm/ ~/INVENIO/issues/invenio-users-resources/ ~/INVENIO/issues/invenio-communities/ ~/INVENIO/issues/invenio-rdm-records/ ~/INVENIO/issues/invenio-records-resources/ ~/INVENIO/issues/invenio-accounts/ ~/INVENIO/issues/invenio-rdm-records/ ~/INVENIO/issues/invenio-users-resources/
-invenio-cli packages install ~/INVENIO/issues/invenio-app-rdm
+
+
+# Base directory for local packages
+BASE_DIR="/Users/$USER/Documents/CODE/INVENIO"
+
+# List of local packages to install
+PACKAGES=(
+  invenio-app-rdm
+#   invenio-users-resources
+#   invenio-communities
+#   invenio-rdm-records
+#   invenio-records-resources
+#   invenio-accounts
+)
+
+echo "Installing dev packages ..."
+
+# Build full path arguments
+PACKAGE_PATHS=()
+for package in "${PACKAGES[@]}"; do
+  PACKAGE_PATHS+=("$BASE_DIR/$package")
+done
+
+# Install packages
+invenio-cli packages install "${PACKAGE_PATHS[@]}"
