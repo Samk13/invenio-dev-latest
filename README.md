@@ -21,3 +21,8 @@ invenio-cli run
 
 To learn how to configure, customize, deploy and much more, visit
 the [InvenioRDM Documentation](https://inveniordm.docs.cern.ch/).
+
+
+# Enable UV, PNPM, RsPack
+
+see: https://github.com/inveniosoftware/invenio-cli/pull/385

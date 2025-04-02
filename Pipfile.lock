@@ -1487,11 +1487,11 @@
         },
         "kombu": {
             "hashes": [
-                "sha256:3b66add422e1655235c7c9244000600368ef6f2ba66278a5cf0ba2e7b2dc6425",
-                "sha256:a4c2250396cdfb947c5e5322f3094fd36c3f86a1cff655f5cffdf45f371dddb8"
+                "sha256:2dd27ec84fd843a4e0a7187424313f87514b344812cb98c25daddafbb6a7ff0e",
+                "sha256:40f3674ed19603b8a771b6c74de126dbf8879755a0337caac6602faa82d539cd"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==5.5.1"
+            "version": "==5.5.2"
         },
         "latest-build": {
             "editable": true,
@@ -3271,11 +3271,11 @@
         },
         "types-pyyaml": {
             "hashes": [
-                "sha256:5e2d86d8706697803f361ba0b8188eef2999e1c372cd4faee4ebb0844b8a4190",
-                "sha256:961871cfbdc1ad8ae3cb6ae3f13007262bcfc168adc513119755a6e4d5d7ed65"
+                "sha256:652348fa9e7a203d4b0d21066dfb00760d3cbd5a15ebb7cf8d33c88a49546681",
+                "sha256:d7c13c3e6d335b6af4b0122a01ff1d270aba84ab96d1a1a1063ecba3e13ec075"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==6.0.12.20250326"
+            "version": "==6.0.12.20250402"
         },
         "types-requests": {
             "hashes": [
@@ -3309,11 +3309,11 @@
         },
         "tzdata": {
             "hashes": [
-                "sha256:24894909e88cdb28bd1636c6887801df64cb485bd593f2fd83ef29075a81d694",
-                "sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639"
+                "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8",
+                "sha256:b60a638fcc0daffadf82fe0f57e53d06bdec2f36c4df66280ae79bce6bd6f2b9"
             ],
             "markers": "python_version >= '2'",
-            "version": "==2025.1"
+            "version": "==2025.2"
         },
         "tzlocal": {
             "hashes": [
