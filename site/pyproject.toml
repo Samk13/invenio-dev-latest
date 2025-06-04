@@ -1,3 +1,24 @@
+[project]
+name = "latest-build"
+description = "no desc"
+requires-python = ">= 3.12"
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "latest_build/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["latest_build"]
+
 [build-system]
-requires = ["setuptools", "wheel", "babel>2.8"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[dependency-groups]
+dev = [
+    "invenio-app-rdm[opensearch2]~=13.0.0b3.dev16",
+    "pytest-black-ng>=0.4.1",
+    "pytest-invenio>=2.1.0",
+    "pytest-mock>=3",
+]

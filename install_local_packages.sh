@@ -27,13 +27,13 @@ PACKAGES=(
 #   invenio-communities
 #   invenio-rdm-records
 #   invenio-records-resources
-#   invenio-accounts
-invenio-requests
-invenio-communities
-invenio-rdm-records
-invenio-app-rdm
-invenio-search-ui
-invenio-administration
+  invenio-accounts
+# invenio-requests
+# invenio-communities
+# invenio-rdm-records
+# invenio-app-rdm
+# invenio-search-ui
+# invenio-administration
 )
 # old invenio-rdm-records==10.9.2
 # old invenio-communities==13.1.1
