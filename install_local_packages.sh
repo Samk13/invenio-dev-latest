@@ -22,18 +22,18 @@ BASE_DIR="$HOME/Documents/CODE/INVENIO"
 
 # List of local packages to install
 PACKAGES=(
-#   invenio-app-rdm
-#   invenio-users-resources
+  invenio-accounts
+  invenio-administration
+  invenio-app-rdm
+  invenio-banners
   invenio-communities
-#   invenio-rdm-records
-#   invenio-records-resources
-  # invenio-accounts
+  # invenio-users-resources
+  # invenio-rdm-records
+  # invenio-records-resources
 # invenio-requests
 # invenio-communities
 # invenio-rdm-records
-# invenio-app-rdm
 # invenio-search-ui
-# invenio-administration
 )
 # old invenio-rdm-records==10.9.2
 # old invenio-communities==13.1.1
