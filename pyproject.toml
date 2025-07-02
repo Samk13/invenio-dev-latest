@@ -4,7 +4,7 @@ description = "no desc"
 requires-python = ">= 3.12"
 version = "0.12.1"
 dependencies = [
-  "invenio-app-rdm[opensearch2]~=13.0.0b3.dev16",
+  "invenio-app-rdm[opensearch2,s3]~=13.0.0b3.dev16",
   "python-dotenv>=0.21.0",
   "uwsgi>=2.0",
   "uwsgitop>=0.11",

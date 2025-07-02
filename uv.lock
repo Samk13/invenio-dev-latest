@@ -211,6 +211,34 @@ wheels = [
 ]
 
 [[package]]
+name = "boto3"
+version = "1.39.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "botocore" },
+    { name = "jmespath" },
+    { name = "s3transfer" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3f/c5/fae785c42e5f81eb1e1a7c3e7ffb34b14df6a1ac7b08355da526ec733392/boto3-1.39.1.tar.gz", hash = "sha256:3f89d6f05ab7d3a6f6807b45e9456a1a0db53bb47b1758cf5e0a3479cdd6d734", size = 111785, upload-time = "2025-07-01T19:13:35.429Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/06/fb6679699c470a1b81027700f7dbd7ea02f3cbc647ca9d5eaa80c98db31a/boto3-1.39.1-py3-none-any.whl", hash = "sha256:beb945ec1ab4bb48d39640ce7d3054b7e4ab2020ef3259034c039195ae04b2f7", size = 139905, upload-time = "2025-07-01T19:13:33.31Z" },
+]
+
+[[package]]
+name = "botocore"
+version = "1.39.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jmespath" },
+    { name = "python-dateutil" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b3/b6/65cce081cca1c7271a05f6464b485c95b3e42701e2a9fc4a820aa468c8f2/botocore-1.39.1.tar.gz", hash = "sha256:ac829b46b30bd837392c9792cdf63b44d290a4691c028b5e66ab471ced1b8305", size = 14123201, upload-time = "2025-07-01T19:13:24.396Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/72/c9/aff05765e61c0874e66e28088c70cf65f1d568ad6b19afdccfe076addadb/botocore-1.39.1-py3-none-any.whl", hash = "sha256:912d518ac3096460e54d2cf80899943a521a586fd5c075568e807f3c35623318", size = 13783340, upload-time = "2025-07-01T19:13:18.344Z" },
+]
+
+[[package]]
 name = "build"
 version = "1.2.2.post1"
 source = { registry = "https://pypi.org/simple" }
@@ -1206,6 +1234,15 @@ wheels = [
 ]
 
 [[package]]
+name = "fsspec"
+version = "2025.5.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/f7/27f15d41f0ed38e8fcc488584b57e902b331da7f7c6dcda53721b15838fc/fsspec-2025.5.1.tar.gz", hash = "sha256:2e55e47a540b91843b755e83ded97c6e897fa0942b11490113f09e9c443c2475", size = 303033, upload-time = "2025-05-24T12:03:23.792Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bb/61/78c7b3851add1481b048b5fdc29067397a1784e2910592bc81bb3f608635/fsspec-2025.5.1-py3-none-any.whl", hash = "sha256:24d3a2e663d5fc735ab256263c4075f374a174c3410c0b25e5bd1970bceaa462", size = 199052, upload-time = "2025-05-24T12:03:21.66Z" },
+]
+
+[[package]]
 name = "ftfy"
 version = "4.4.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1522,6 +1559,9 @@ wheels = [
 [package.optional-dependencies]
 opensearch2 = [
     { name = "invenio-search", extra = ["opensearch2"] },
+]
+s3 = [
+    { name = "invenio-s3" },
 ]
 
 [[package]]
@@ -2217,6 +2257,20 @@ wheels = [
 ]
 
 [[package]]
+name = "invenio-s3"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "boto3" },
+    { name = "invenio-files-rest" },
+    { name = "s3fs" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/59/71/7f3d641e1447f9b311e9a541bd98659de7c74ad8d98e1b908b6bdf068fa9/invenio_s3-2.1.0.tar.gz", hash = "sha256:67b1f73ced6f9afecfa02029ac122f707d3bdd0cbd85a3bfa69ea67701d38fef", size = 27644, upload-time = "2025-05-21T15:56:27.986Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/35/cf/fef89699860ce8848bd4c06e63ec09bae278aed14f999aba01c1771506ce/invenio_s3-2.1.0-py2.py3-none-any.whl", hash = "sha256:9d6b1484af1048fe2bc987c474c530e952ecf8349c1138f77b3fb26501e061cc", size = 14227, upload-time = "2025-05-21T15:56:24.186Z" },
+]
+
+[[package]]
 name = "invenio-search"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2472,6 +2526,15 @@ wheels = [
 ]
 
 [[package]]
+name = "jmespath"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/2a/e867e8531cf3e36b41201936b7fa7ba7b5702dbef42922193f05c8976cd6/jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe", size = 25843, upload-time = "2022-06-17T18:00:12.224Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980", size = 20256, upload-time = "2022-06-17T18:00:10.251Z" },
+]
+
+[[package]]
 name = "jsmin"
 version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2628,7 +2691,7 @@ name = "latest-build-instance"
 version = "0.12.1"
 source = { editable = "." }
 dependencies = [
-    { name = "invenio-app-rdm", extra = ["opensearch2"] },
+    { name = "invenio-app-rdm", extra = ["opensearch2", "s3"] },
     { name = "invenio-cli" },
     { name = "latest-build" },
     { name = "lxml-html-clean" },
@@ -2640,7 +2703,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "invenio-app-rdm", extras = ["opensearch2"], specifier = "~=13.0.0b3.dev16" },
+    { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=13.0.0b3.dev16" },
     { name = "invenio-cli" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },
@@ -3965,6 +4028,31 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/ab/e04bf58a8d375aeedb5268edcc835c6a660ebf79d4384d8e0889439448b0/rpds_py-0.25.1-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:58f77c60956501a4a627749a6dcb78dac522f249dd96b5c9f1c6af29bfacfb66", size = 558891, upload-time = "2025-05-21T12:44:37.358Z" },
     { url = "https://files.pythonhosted.org/packages/90/82/cb8c6028a6ef6cd2b7991e2e4ced01c854b6236ecf51e81b64b569c43d73/rpds_py-0.25.1-cp313-cp313t-win32.whl", hash = "sha256:2cb9e5b5e26fc02c8a4345048cd9998c2aca7c2712bd1b36da0c72ee969a3523", size = 218718, upload-time = "2025-05-21T12:44:38.969Z" },
     { url = "https://files.pythonhosted.org/packages/b6/97/5a4b59697111c89477d20ba8a44df9ca16b41e737fa569d5ae8bff99e650/rpds_py-0.25.1-cp313-cp313t-win_amd64.whl", hash = "sha256:401ca1c4a20cc0510d3435d89c069fe0a9ae2ee6495135ac46bdd49ec0495763", size = 232218, upload-time = "2025-05-21T12:44:40.512Z" },
+]
+
+[[package]]
+name = "s3fs"
+version = "0.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "botocore" },
+    { name = "fsspec" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d9/9a/504cb277632c4d325beabbd03bb43778f0decb9be22d9e0e6c62f44540c7/s3fs-0.4.2.tar.gz", hash = "sha256:2ca5de8dc18ad7ad350c0bd01aef0406aa5d0fff78a561f0f710f9d9858abdd0", size = 57527, upload-time = "2020-03-31T15:24:26.388Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b8/e4/b8fc59248399d2482b39340ec9be4bb2493846ac23641b43115a7e5cd675/s3fs-0.4.2-py3-none-any.whl", hash = "sha256:91c1dfb45e5217bd441a7a560946fe865ced6225ff7eb0fb459fe6e601a95ed3", size = 19791, upload-time = "2020-03-31T15:24:24.952Z" },
+]
+
+[[package]]
+name = "s3transfer"
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "botocore" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ed/5d/9dcc100abc6711e8247af5aa561fc07c4a046f72f659c3adea9a449e191a/s3transfer-0.13.0.tar.gz", hash = "sha256:f5e6db74eb7776a37208001113ea7aa97695368242b364d73e91c981ac522177", size = 150232, upload-time = "2025-05-22T19:24:50.245Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/18/17/22bf8155aa0ea2305eefa3a6402e040df7ebe512d1310165eda1e233c3f8/s3transfer-0.13.0-py3-none-any.whl", hash = "sha256:0148ef34d6dd964d0d8cf4311b2b21c474693e57c2e069ec708ce043d2b527be", size = 85152, upload-time = "2025-05-22T19:24:48.703Z" },
 ]
 
 [[package]]
