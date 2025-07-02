@@ -27,12 +27,11 @@ PACKAGES=(
   invenio-app-rdm
   invenio-banners
   invenio-communities
+  invenio-rdm-records
   # invenio-users-resources
-  # invenio-rdm-records
   # invenio-records-resources
 # invenio-requests
 # invenio-communities
-# invenio-rdm-records
 # invenio-search-ui
 )
 # old invenio-rdm-records==10.9.2
