@@ -48,5 +48,7 @@ PACKAGE_PATHS=()
 for package in "${PACKAGES[@]}"; do
   PACKAGE_PATHS+=("$BASE_DIR/$package")
 done
+
+echo "Package paths: ${PACKAGE_PATHS[@]}"
 # Install packages
 uv run invenio-cli packages install "${PACKAGE_PATHS[@]}"
