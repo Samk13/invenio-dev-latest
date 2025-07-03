@@ -22,19 +22,12 @@ BASE_DIR="$HOME/Documents/CODE/INVENIO"
 
 # List of local packages to install
 PACKAGES=(
+  invenio-accounts
+  invenio-administration
   invenio-app-rdm
+  invenio-communities
   invenio-rdm-records
-  invenio-drafts-resources
-  invenio-records-resources
-  # invenio-administration
-  # invenio-accounts
-  # invenio-banners
-  # invenio-communities
-  # invenio-users-resources
-  # invenio-rdm-records
-  # invenio-records-resources
 # invenio-requests
-# invenio-communities
 # invenio-search-ui
 )
 # old invenio-rdm-records==10.9.2
@@ -52,3 +45,16 @@ done
 echo "Package paths: ${PACKAGE_PATHS[@]}"
 # Install packages
 uv run invenio-cli packages install "${PACKAGE_PATHS[@]}"
+
+echo "Packages installed successfully. don't forget to set --no-sync if you want to run invenio-cli run"
+echo "uv run --no-sync invenio-cli run"
+
+# Build a list of "-e <path>" arguments for pip install
+PIP_EDITABLE_ARGS=()
+for path in "${PACKAGE_PATHS[@]}"; do
+  PIP_EDITABLE_ARGS+=("-e" "$path")
+done
+
+echo "run this if needed:"
+echo "uv pip install ${PIP_EDITABLE_ARGS[@]}"
+# uv pip install "${PIP_EDITABLE_ARGS[@]}"
