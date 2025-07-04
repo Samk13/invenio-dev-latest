@@ -25,17 +25,11 @@ PACKAGES=(
   invenio-accounts
   invenio-administration
   invenio-app-rdm
-  invenio-banners
   invenio-communities
   invenio-rdm-records
-  # invenio-users-resources
-  # invenio-records-resources
 # invenio-requests
-# invenio-communities
 # invenio-search-ui
 )
-# old invenio-rdm-records==10.9.2
-# old invenio-communities==13.1.1
 
 
 echo "Installing dev packages ..."
@@ -45,5 +39,20 @@ PACKAGE_PATHS=()
 for package in "${PACKAGES[@]}"; do
   PACKAGE_PATHS+=("$BASE_DIR/$package")
 done
+
+echo "Package paths: ${PACKAGE_PATHS[@]}"
 # Install packages
 uv run invenio-cli packages install "${PACKAGE_PATHS[@]}"
+
+# echo "Packages installed successfully. don't forget to set --no-sync if you want to run invenio-cli run"
+# echo "uv run --no-sync invenio-cli run"
+
+# Build a list of "-e <path>" arguments for pip install
+# PIP_EDITABLE_ARGS=()
+# for path in "${PACKAGE_PATHS[@]}"; do
+#   PIP_EDITABLE_ARGS+=("-e" "$path")
+# done
+
+# echo "run this if needed:"
+# echo "uv pip install ${PIP_EDITABLE_ARGS[@]}"
+# uv pip install "${PIP_EDITABLE_ARGS[@]}"
