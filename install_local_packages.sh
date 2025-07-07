@@ -27,8 +27,8 @@ PACKAGES=(
   invenio-app-rdm
   invenio-communities
   invenio-rdm-records
-# invenio-requests
-# invenio-search-ui
+  invenio-search-ui
+  invenio-requests
 )
 
 
