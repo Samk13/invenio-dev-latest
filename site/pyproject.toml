@@ -1,24 +1,20 @@
 [project]
 name = "latest-build"
+version = "1.0.0"
 description = "no desc"
 requires-python = ">= 3.12"
-dynamic = ["version"]
-
-[tool.hatch.version]
-path = "latest_build/__init__.py"
-
-[tool.hatch.build.targets.wheel]
-packages = ["latest_build"]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.isort]
+profile = "black"
 
-[dependency-groups]
-dev = [
-    "invenio-app-rdm[opensearch2]~=13.0.0b3.dev16",
-    "pytest-black-ng>=0.4.1",
-    "pytest-invenio>=2.1.0",
-    "pytest-mock>=3",
-]
+[tool.pydocstyle]
+add_ignore = ["D401", "D403"]
+
+[tool.pytest.ini_options]
+addopts = ["--isort", "--pydocstyle", "--doctest-glob=\"*.rst\"", "--doctest-modules", "--cov=zenodo_rdm", "--cov-report=term-missing", "--exclude-warning-annotations"]
+testpaths = "tests zenodo_rdm"
+live_server_scope = "module"

@@ -1,8 +1,9 @@
 [project]
 name = "latest-build-instance"
-description = "no desc"
-requires-python = ">= 3.12"
+description = "latest build for invenioRDM"
 version = "13.0.1"
+requires-python = ">= 3.12"
+
 dependencies = [
   "invenio-app-rdm[opensearch2,s3]~=13.0.0",
   "python-dotenv>=0.21.0",
@@ -11,30 +12,23 @@ dependencies = [
   "uwsgi-tools>=1.1.1",
   "lxml-html-clean>=0.1.1",
   "latest-build",
-  "invenio-cli"
+  "invenio-cli" # this is not needed but kept for reference
 ]
 
-
-[tool.setuptools]
-py-modules = []
-
-
-# [tool.uv.sources]
-# latest_build= { path = "site", editable = true }
-
-# [tool.uv.sources]
-# You need to lock site/ so the uv sync --lock command works in dockerfile.
-# latest_build = [{ path = "./site", editable = true }]
-
 [tool.uv.sources]
-latest_build = { workspace = true } # < --- This seems to have a bug
+latest_build = { workspace = true }
 
-[tool.uv.workspace] # < --- This seems to have a bug
-members = ["site"]
+[tool.uv.workspace]
+members = [
+  "site",
+]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[dependency-groups]
+dev = [
+    "pytest-invenio>=3.0.0,<4.0.0",
+]
 
-[tool.hatch.build.targets.wheel]
-packages = ["site"]
+[project.optional-dependencies]
+sentry = [
+    "sentry-sdk>=1.45,<2.0.0",
+]
