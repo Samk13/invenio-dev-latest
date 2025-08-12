@@ -106,3 +106,5 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+volumes:
+  s3-data:

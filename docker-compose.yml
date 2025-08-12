@@ -44,4 +44,4 @@ services:
       file: docker-services.yml
       service: s3
 volumes:
-  data:
+  s3-data:

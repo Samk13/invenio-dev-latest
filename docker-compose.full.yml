@@ -109,3 +109,4 @@ volumes:
   static_data:
   uploaded_data:
   archived_data:
+  s3-data:
