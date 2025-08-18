@@ -1,116 +1,79 @@
-#
-# Copyright (C) 2024 CERN.
-# Copyright (C) 2024 KTH Royal Institute of Technology.
-#
-# Invenio is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+ARG JS_PACKAGE_MANAGER=pnpm@10.8.1
+ARG NODE_IMAGE=node:22-alpine
+ARG PYTHON_BASE_IMAGE=ghcr.io/astral-sh/uv:0.6-python3.12-alpine
 
-# Image info:
-# - Base image: python:3.12-alpine3.20
-# - Build time: ~5 minutes
-# - Image size: ~1.25GB
-# - Node.js: LTS (Not pinned)
-# - Python: 3.12
+ARG WORKING_DIR=/opt/invenio
+ARG INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
 
-# -------------------------------------------------
-# Builder Stage
-# -------------------------------------------------
-ARG LINUX_VERSION=3.20
-ARG PYTHON_VERSION=3.12
-ARG BUILDPLATFORM=linux/amd64
+# --- NODE.JS STAGE ---
+FROM ${NODE_IMAGE} AS node
+ARG JS_PACKAGE_MANAGER
+ENV JS_PACKAGE_MANAGER=${JS_PACKAGE_MANAGER}
+RUN corepack enable && corepack prepare ${JS_PACKAGE_MANAGER} --activate
 
-FROM --platform=$BUILDPLATFORM python:${PYTHON_VERSION}-alpine${LINUX_VERSION} AS builder
+# --- BASE SETUP STAGE ---
+FROM ${PYTHON_BASE_IMAGE} AS python_base
+ARG INVENIO_INSTANCE_PATH
+ENV INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH} \
+LANG=en_US.UTF-8 \
+LANGUAGE=en_US:en \
+LC_ALL=en_US.UTF-8 \
+# Compile Python files to .pyc bytecode files
+UV_COMPILE_BYTECODE=1 \
+# Copy Python files from cache mount, resolving symlink issues
+UV_LINK_MODE=copy
+ENV PATH="${INVENIO_INSTANCE_PATH}/.venv/bin:${PATH}"
+RUN apk update && \
+    apk add --no-cache \
+    bash cairo \
+    imagemagick util-linux
 
-ENV WORKING_DIR=/opt/invenio
-ENV INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8
-
+# --- BUILD APP STAGE ---
+FROM python_base AS builder
 WORKDIR ${INVENIO_INSTANCE_PATH}
-
-    # Copy the site directory
-COPY site ${INVENIO_INSTANCE_PATH}/site/
-
-# Install build dependencies
 RUN apk add --no-cache \
-    nodejs \
-    npm \
-    cairo \
-    gcc \
-    musl-dev \
-    linux-headers && \
-    pip install --break-system-packages --no-cache-dir pipenv
+        gcc \
+        musl-dev \
+        linux-headers
 
-RUN mkdir -p "${INVENIO_INSTANCE_PATH}"
-# Copy Pipfile and Pipfile.lock first to leverage Docker cache
-COPY Pipfile Pipfile.lock ./
+# Copy Node.js runtime libraries and binaries
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/share /usr/local/share
 
-# Install Python dependencies
-RUN pipenv install --deploy --system --extra-pip-args="--break-system-packages --no-cache-dir" && \
-    pipenv --clear
+# Count on .dockerignore to exclude files
+COPY . .
 
-# Copy application files
-COPY site ${INVENIO_INSTANCE_PATH}/site/
-COPY docker/uwsgi/ ${INVENIO_INSTANCE_PATH}/
-COPY invenio.cfg ${INVENIO_INSTANCE_PATH}/
-COPY app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
-COPY assets/ /tmp/assets/
-COPY static/ /tmp/static/
-COPY templates/ /tmp/templates/
-COPY translations/ /tmp/translations/
+# Sync Python dependencies
+RUN uv sync --locked && \
+    uv cache clean
 
-# Build frontend assets
-RUN invenio collect --verbose && \
-    mkdir -p assets templates translations && \
-    cp -r /tmp/assets/ ${INVENIO_INSTANCE_PATH}/ && \
-    invenio webpack buildall && \
-    cp -r /tmp/static/ ${INVENIO_INSTANCE_PATH}/ && \
-    cp -r /tmp/templates/ ${INVENIO_INSTANCE_PATH}/ && \
-    cp -r /tmp/translations/ ${INVENIO_INSTANCE_PATH}/
+# --- FRONTEND BUILD ---
+ENV INVENIO_WEBPACKEXT_NPM_PKG_CLS=pynpm:PNPMPackage
+RUN uv run invenio collect --verbose && \
+    mkdir -p assets templates translations site data archive && \
+    uv run invenio webpack buildall && \
+    rm -rf assets/node_modules && \
+    # Experimental command!
+    # https://pnpm.io/cli/cache-delete
+    pnpm cache delete && \
+    rm -rf "$(pnpm store path)" && \
+    # Uwsgi config expected to be on instance level
+    cp -a docker/uwsgi/. .
 
-# Clean up build dependencies and caches
-RUN rm -rf ${INVENIO_INSTANCE_PATH}/assets/node_modules && \
-    npm cache clean --force && \
-    apk del gcc musl-dev linux-headers && \
-    rm -rf /var/cache/apk/* /root/.cache/pip
+# --- RUNTIME STAGE ---
+FROM python_base AS runtime
 
-# -------------------------------------------------
-# Final Stage
-# -------------------------------------------------
-FROM --platform=$BUILDPLATFORM python:${PYTHON_VERSION}-alpine${LINUX_VERSION}
-
-ENV WORKING_DIR=/opt/invenio
-ENV INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8
-
-WORKDIR ${INVENIO_INSTANCE_PATH}
-
-# Create a non-root user and group
 RUN addgroup -S invenio && \
-    adduser -S -G invenio -h ${WORKING_DIR} invenio
+    adduser -S -G invenio invenio
 
-# Install runtime dependencies
-RUN apk add --no-cache \
-    imagemagick \
-    font-dejavu \
-    cairo \
-    bash
+COPY --from=builder --chown=invenio:invenio \
+    "${INVENIO_INSTANCE_PATH}" \
+    "${INVENIO_INSTANCE_PATH}"
 
-# Copy necessary files from the builder stage
-COPY . ${INVENIO_INSTANCE_PATH}/
-COPY --from=builder /usr/local/bin/ /usr/local/bin/
-COPY --from=builder /usr/local/lib/python${PYTHON_VERSION%.*}/site-packages/ /usr/local/lib/python${PYTHON_VERSION%.*}/site-packages/
-COPY --from=builder ${INVENIO_INSTANCE_PATH}/ ${INVENIO_INSTANCE_PATH}/
-
-# Set file permissions
-RUN mkdir -p ${INVENIO_INSTANCE_PATH}/data ${INVENIO_INSTANCE_PATH}/archive && \
-    chown -R invenio:invenio ${INVENIO_INSTANCE_PATH}
-
-# Switch to the non-root user
 USER invenio
+WORKDIR ${INVENIO_INSTANCE_PATH}
 
-# Set entrypoint
 ENTRYPOINT ["bash", "-c"]
