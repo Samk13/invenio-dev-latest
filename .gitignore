@@ -73,3 +73,12 @@ data/.minio.sys
 
 # Celery
 celerybeat-schedule
+
+# s3
+
+s3-data/
+
+
+# env
+
+.env
