@@ -19,6 +19,8 @@ services:
       - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://latest-build:latest-build@db/latest-build"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
+      - "INVENIO_SITE_UI_URL=https://127.0.0.1"
+      - "INVENIO_SITE_API_URL=https://127.0.0.1/api"
   frontend:
     build: ./docker/nginx/
     image: latest-build-frontend
@@ -99,7 +101,7 @@ services:
       MINIO_ROOT_USER: CHANGE_ME
       MINIO_ROOT_PASSWORD: CHANGE_ME
     volumes:
-      - ./data:/data
+      - ./s3-data:/data
     command: server /data --console-address :9001
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
