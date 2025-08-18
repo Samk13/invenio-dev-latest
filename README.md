@@ -33,3 +33,11 @@ If you have local packages that you want to install, you can run the following c
 
 To learn how to configure, customize, deploy and much more, visit
 the [InvenioRDM Documentation](https://inveniordm.docs.cern.ch/).
+
+
+## Dockerized setup
+
+```bash
+docker compose -f docker-compose.full.yml up -d
+./wipe_recreate.sh
+```
