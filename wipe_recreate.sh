@@ -44,7 +44,7 @@ invenio index queue init purge
 echo "Create DB ..."
 invenio db create
 echo "Set default file location ..."
-invenio files location create --default 'default-location' $(invenio shell --no-term-title -c "print(app.instance_path)")'/data'
+invenio files location create 'default-location' 's3://default' --default
 
 invenio roles create admin
 invenio access allow superuser-access role admin
