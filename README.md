@@ -39,5 +39,7 @@ the [InvenioRDM Documentation](https://inveniordm.docs.cern.ch/).
 
 ```bash
 docker compose -f docker-compose.full.yml up -d
-./wipe_recreate.sh
+# If you encounter an error stating that the pod name already exists, simply rerun the command.
+docker compose -f docker-compose.full.yml up -d
+./scripts/ignite_app.sh
 ```
