@@ -13,8 +13,17 @@ uv pip install invenio-cli
 uv run invenio-cli install
 uv run invenio-cli services setup -f -N
 # You might need to setup default bucket for file storage
-# go to http://localhost:9001/login
+# go to http://s3:9001/login
 CHANGE_ME for user and password
+
+For s3 setup you need to create an alias for s3 to `127.0.0.1`
+   on MacOS run:
+
+```sh
+printf '\n127.0.0.1\ts3\n' | sudo tee -a /etc/hosts
+sudo dscacheutil -flushcache
+sudo killall -HUP mDNSResponder
+```
 
 uv run invenio-cli run
 ```

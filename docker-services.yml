@@ -21,6 +21,9 @@ services:
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
       - "INVENIO_SITE_UI_URL=https://127.0.0.1"
       - "INVENIO_SITE_API_URL=https://127.0.0.1/api"
+      - "INVENIO_S3_ENDPOINT_URL=http://s3:9000" # add s3 alias to your etc/hosts
+      - "INVENIO_S3_ACCESS_KEY_ID=CHANGE_ME"
+      - "INVENIO_S3_SECRET_ACCESS_KEY=CHANGE_ME"
   frontend:
     build: ./docker/nginx/
     image: latest-build-frontend
@@ -101,12 +104,12 @@ services:
       MINIO_ROOT_USER: CHANGE_ME
       MINIO_ROOT_PASSWORD: CHANGE_ME
     volumes:
-      - ./s3-data:/data
+      - ./data:/data
     command: server /data --console-address :9001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://s3:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
-volumes:
-  s3-data:
+# volumes:
+#   data:

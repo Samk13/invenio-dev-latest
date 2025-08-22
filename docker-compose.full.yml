@@ -39,10 +39,6 @@ services:
     extends:
       file: docker-services.yml
       service: opensearch-dashboards
-  pgadmin:
-    extends:
-      file: docker-services.yml
-      service: pgadmin
   s3:
     extends:
       file: docker-services.yml
@@ -60,19 +56,20 @@ services:
     ports:
       - "80:80"
       - "443:443"
+
   # UI Application
   web-ui:
     extends:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_ui.ini"]
-    image: latest-build:latest
     ports:
       - "5000"
     volumes:
       - static_data:/opt/invenio/var/instance/static
-      - uploaded_data:/opt/invenio/var/instance/data
-      - archived_data:/opt/invenio/var/instance/archive
+    depends_on:
+      s3:
+        condition: service_healthy
 
   # API Rest Application
   web-api:
@@ -80,12 +77,8 @@ services:
       file: docker-services.yml
       service: app
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
-    image: latest-build:latest
     ports:
       - "5000"
-    volumes:
-      - uploaded_data:/opt/invenio/var/instance/data
-      - archived_data:/opt/invenio/var/instance/archive
 
   # Worker
   worker:
@@ -93,9 +86,6 @@ services:
       file: docker-services.yml
       service: app
     command: ["celery -A invenio_app.celery worker --beat --loglevel=INFO"]
-    image: latest-build:latest
-    volumes:
-      - uploaded_data:/opt/invenio/var/instance/data
     depends_on:
       search:
         condition: service_started
@@ -107,6 +97,4 @@ services:
         condition: service_started
 volumes:
   static_data:
-  uploaded_data:
-  archived_data:
-  s3-data:
+  data:
