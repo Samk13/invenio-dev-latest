@@ -1,79 +1,81 @@
-ARG JS_PACKAGE_MANAGER=pnpm@10.8.1
-ARG NODE_IMAGE=node:22-alpine
-ARG PYTHON_BASE_IMAGE=ghcr.io/astral-sh/uv:0.6-python3.12-alpine
+# Dockerfile that builds a fully functional image of your app.
+#
+# This image installs all Python dependencies for your application. It's based
+# on Almalinux (https://github.com/inveniosoftware/docker-invenio)
+# and includes Pip, Pipenv, Node.js, NPM and some few standard libraries
+# Invenio usually needs.
 
-ARG WORKING_DIR=/opt/invenio
-ARG INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
+FROM registry.cern.ch/inveniosoftware/almalinux:1
 
-# --- NODE.JS STAGE ---
-FROM ${NODE_IMAGE} AS node
-ARG JS_PACKAGE_MANAGER
-ENV JS_PACKAGE_MANAGER=${JS_PACKAGE_MANAGER}
-RUN corepack enable && corepack prepare ${JS_PACKAGE_MANAGER} --activate
 
-# --- BASE SETUP STAGE ---
-FROM ${PYTHON_BASE_IMAGE} AS python_base
-ARG INVENIO_INSTANCE_PATH
-ENV INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH} \
-LANG=en_US.UTF-8 \
-LANGUAGE=en_US:en \
-LC_ALL=en_US.UTF-8 \
-# Compile Python files to .pyc bytecode files
-UV_COMPILE_BYTECODE=1 \
-# Copy Python files from cache mount, resolving symlink issues
-UV_LINK_MODE=copy
-ENV PATH="${INVENIO_INSTANCE_PATH}/.venv/bin:${PATH}"
-RUN apk update && \
-    apk add --no-cache \
-    bash cairo \
-    imagemagick util-linux
+RUN dnf install -y epel-release
+RUN dnf update -y
 
-# --- BUILD APP STAGE ---
-FROM python_base AS builder
-WORKDIR ${INVENIO_INSTANCE_PATH}
-RUN apk add --no-cache \
-        gcc \
-        musl-dev \
-        linux-headers
+# Install Python 3.12
+RUN dnf install -y python3.12 python3.12-pip python3.12-devel
 
-# Copy Node.js runtime libraries and binaries
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/bin /usr/local/bin
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/share /usr/local/share
+# Python and uv configuration
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_CACHE_DIR=/opt/.cache/uv \
+    UV_COMPILE_BYTECODE=1 \
+    UV_FROZEN=1 \
+    UV_LINK_MODE=copy \
+    UV_NO_MANAGED_PYTHON=1 \
+    UV_NO_MANAGED_PYTHON=1 \
+    UV_NO_MANAGED_PYTHON=1 \
+    UV_NO_MANAGED_PYTHON=1 \
+    UV_NO_MANAGED_PYTHON=1 \
+    UV_SYSTEM_PYTHON=1 \
+    # Tell uv to use system Python
+    UV_PROJECT_ENVIRONMENT=/usr/ \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_REQUIRE_HASHES=1 \
+    UV_VERIFY_HASHES=1
 
-# Count on .dockerignore to exclude files
-COPY . .
+# Get latest version of uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Sync Python dependencies
-RUN uv sync --locked && \
-    uv cache clean
+# Install Python dependencies using uv
+ARG BUILD_EXTRAS="--extra sentry"
+RUN --mount=type=cache,target=/opt/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    UV_PROJECT_ENVIRONMENT=/opt/uv-env uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS
 
-# --- FRONTEND BUILD ---
-ENV INVENIO_WEBPACKEXT_NPM_PKG_CLS=pynpm:PNPMPackage
-RUN uv run invenio collect --verbose && \
-    mkdir -p assets templates translations site data archive && \
-    uv run invenio webpack buildall && \
-    rm -rf assets/node_modules && \
-    # Experimental command!
-    # https://pnpm.io/cli/cache-delete
-    pnpm cache delete && \
-    rm -rf "$(pnpm store path)" && \
-    # Uwsgi config expected to be on instance level
-    cp -a docker/uwsgi/. .
+# Add the virtual environment to PATH
+ENV PATH="/opt/uv-env/bin:$PATH"
 
-# --- RUNTIME STAGE ---
-FROM python_base AS runtime
+COPY site ./site
 
-RUN addgroup -S invenio && \
-    adduser -S -G invenio invenio
+COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
+COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
+COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
+COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
+COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
+COPY ./ .
 
-COPY --from=builder --chown=invenio:invenio \
-    "${INVENIO_INSTANCE_PATH}" \
-    "${INVENIO_INSTANCE_PATH}"
+# Make sure workspace packages are installed (zenodo-rdm, zenodo-legacy)
+RUN --mount=type=cache,target=/opt/.cache/uv \
+    UV_PROJECT_ENVIRONMENT=/opt/uv-env uv sync --frozen --no-dev $BUILD_EXTRAS
 
-USER invenio
-WORKDIR ${INVENIO_INSTANCE_PATH}
+# We're caching on a mount, so for any commands that run after this we
+# don't want to use the cache (for image filesystem permission reasons)
+ENV UV_NO_CACHE=1
 
-ENTRYPOINT ["bash", "-c"]
+# application build args to be exposed as environment variables
+ARG IMAGE_BUILD_TIMESTAMP
+ARG SENTRY_RELEASE
+
+# Expose random sha to uniquely identify this build
+ENV INVENIO_IMAGE_BUILD_TIMESTAMP="'${IMAGE_BUILD_TIMESTAMP}'"
+ENV SENTRY_RELEASE=${SENTRY_RELEASE}
+
+RUN echo "Image build timestamp $INVENIO_IMAGE_BUILD_TIMESTAMP"
+
+RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
+    cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
+    invenio collect --verbose  && \
+    invenio webpack buildall
+
+ENTRYPOINT [ "bash", "-lc"]
