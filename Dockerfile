@@ -15,7 +15,6 @@ ENV LANG=en_US.UTF-8 \
     PYTHONUSERBASE=/opt/env \
     PATH=/opt/env/bin:$PATH \
     PYTHONPATH=/opt/env/lib/python3.12:$PATH \
-    # Python and uv configuration
     PYTHONDONTWRITEBYTECODE=1 \
     UV_CACHE_DIR=/opt/.cache/uv \
     UV_COMPILE_BYTECODE=1 \
@@ -29,7 +28,7 @@ ENV LANG=en_US.UTF-8 \
     # xmlsec compatibility
     CFLAGS="-Wno-error=incompatible-pointer-types"
 
-# Install system dependencies
+# System deps for building (node only in builder)
 RUN apk update && \
     apk add --update --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
     python3>3.12 \
@@ -54,14 +53,14 @@ RUN apk update && \
     pnpm \
     openssl
 
-# Create virtual environment and working directory
+# Virtualenv and dirs
 RUN uv venv ${VIRTUAL_ENV} && \
     mkdir -p ${INVENIO_INSTANCE_PATH} && \
     mkdir -p /opt/.cache/uv
 
 WORKDIR ${WORKING_DIR}/src
 
-# Install Python dependencies using uv
+# Install Python deps (non-editable, no workspace yet)
 ARG BUILD_EXTRAS="--extra sentry"
 RUN --mount=type=cache,target=/opt/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -69,7 +68,7 @@ RUN --mount=type=cache,target=/opt/.cache/uv \
     UV_PROJECT_ENVIRONMENT=${VIRTUAL_ENV} \
     uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS
 
-# Copy application files
+# Copy application sources
 COPY site ./site
 COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
@@ -78,21 +77,32 @@ COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
 COPY . .
 
-# Install workspace packages
+# Install workspace packages into the venv (this installs ./site)
 RUN --mount=type=cache,target=/opt/.cache/uv \
     UV_PROJECT_ENVIRONMENT=${VIRTUAL_ENV} \
     uv sync --frozen --no-dev $BUILD_EXTRAS
 
-# Build static assets
+# Build static assets and PRUNE heavy build artifacts
 RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
     cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
     invenio collect --verbose && \
-    invenio webpack buildall
+    invenio webpack buildall && \
+    # prune frontend/node caches and stores from the instance
+    rm -rf ${INVENIO_INSTANCE_PATH}/assets/node_modules \
+           ${INVENIO_INSTANCE_PATH}/assets/.pnpm-store \
+           ${INVENIO_INSTANCE_PATH}/assets/.npm && \
+    # clean global caches (best-effort)
+    npm cache clean --force || true && \
+    pnpm store prune || true && \
+    pnpm cache delete || true && \
+    rm -rf /root/.npm /root/.cache/pnpm || true && \
+    # shrink python cache too
+    uv cache clean || true
 
 # FRONTEND STAGE - Minimal runtime image
 FROM alpine:${ALPINE_VERSION} AS frontend
 
-# Environment variables
+# Environment
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
@@ -103,52 +113,44 @@ ENV LANG=en_US.UTF-8 \
     PATH=/opt/env/bin:$PATH \
     UV_NO_CACHE=1
 
-# Application build args
+# Build args (kept)
 ARG IMAGE_BUILD_TIMESTAMP
 ARG SENTRY_RELEASE
 ENV INVENIO_IMAGE_BUILD_TIMESTAMP="${IMAGE_BUILD_TIMESTAMP}" \
     SENTRY_RELEASE="${SENTRY_RELEASE}"
 
-# Install runtime dependencies
+# Runtime deps ONLY (no -dev headers here)
 RUN apk update && \
     apk add --update --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
     python3>3.12 \
-    libxslt-dev \
+    libxslt \
     xmlsec \
     cairo \
     uwsgi-python3 \
     fontconfig \
     ttf-dejavu \
-    bash \
-    uv
+    bash
 
-# Setup virtual environment and directories
-RUN uv venv ${VIRTUAL_ENV} && \
-    mkdir -p ${INVENIO_INSTANCE_PATH} ${VIRTUAL_ENV} ${WORKING_DIR}/src/saml/idp/cert && \
-    adduser -D -H invenio && \
-    rm -f ${VIRTUAL_ENV}/bin/python && \
-    ln -s /usr/bin/python3 ${VIRTUAL_ENV}/bin/python
+# Create runtime user up front so we can use COPY --chown
+RUN adduser -D -H invenio
 
-# Copy built application from builder stage
-COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-COPY --from=builder ${INVENIO_INSTANCE_PATH} ${INVENIO_INSTANCE_PATH}
+# Copy venv and instance from builder with ownership set at copy-time
+COPY --from=builder --chown=invenio:invenio ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+COPY --from=builder --chown=invenio:invenio ${INVENIO_INSTANCE_PATH} ${INVENIO_INSTANCE_PATH}
 
 WORKDIR ${WORKING_DIR}/src
 
-COPY site ./site
+# KEEP your existing small copies — but set ownership at copy-time
+COPY --chown=invenio:invenio site ./site
+COPY --chown=invenio:invenio ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
+COPY --chown=invenio:invenio ./invenio.cfg ${INVENIO_INSTANCE_PATH}
+COPY --chown=invenio:invenio ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
+COPY --chown=invenio:invenio ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
+COPY --chown=invenio:invenio ./translations ${INVENIO_INSTANCE_PATH}/translations
+COPY --chown=invenio:invenio . .
 
-COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
-COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
-COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
-COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
-COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
-COPY ./ .
-
-# Install site package
-RUN UV_PROJECT_ENVIRONMENT=${VIRTUAL_ENV} uv pip install -e ./site && \
-    chown -R invenio:invenio ${WORKING_DIR} && \
-    echo "Image build timestamp ${INVENIO_IMAGE_BUILD_TIMESTAMP}"
+# Do NOT create another venv or reinstall; the builder venv is complete.
+# Do NOT chown recursively; COPY --chown already handled it.
 
 USER invenio
-
 ENTRYPOINT [ "bash", "-c" ]
