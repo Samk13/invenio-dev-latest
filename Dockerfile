@@ -1,56 +1,84 @@
-# ===== Version knobs (easy to bump) =====
+# ===== Version knobs =====
 ARG ALPINE_VERSION=3.22.1
 ARG PYTHON_SERIES=3.12
 ARG NODE_IMAGE=node:22-alpine
 ARG JS_PACKAGE_MANAGER=pnpm@10.8.1
+ARG BUILD_EXTRAS="--extra sentry"
 
 # ===== Common paths =====
 ARG WORKING_DIR=/opt/invenio
 ARG VIRTUAL_ENV=/opt/env
 ARG INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
 
-# ================================
-# 1) NODE + PNPM STAGE (builder-only)
-# ================================
+# ===============
+# 1) NODE + PNPM 
+# ===============
 FROM ${NODE_IMAGE} AS node_tools
 ARG JS_PACKAGE_MANAGER
 ENV JS_PACKAGE_MANAGER=${JS_PACKAGE_MANAGER}
 RUN corepack enable && corepack prepare "${JS_PACKAGE_MANAGER}" --activate
 
-# =========================================
-# 2) PYTHON BUILDER (full toolchain + Node)
-# =========================================
-FROM alpine:${ALPINE_VERSION} AS builder
-# Re-declare only what this stage needs
-ARG PYTHON_SERIES
+# ===============
+# 2) COMMON BASE 
+# ===============
+FROM alpine:${ALPINE_VERSION} AS app-base
 ARG WORKING_DIR
 ARG VIRTUAL_ENV
 ARG INVENIO_INSTANCE_PATH
 
-# Define env in safe order (no undefined refs)
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
-ENV VIRTUAL_ENV=${VIRTUAL_ENV}
-ENV UV_PROJECT_ENVIRONMENT=${VIRTUAL_ENV}
-ENV WORKING_DIR=${WORKING_DIR}
-ENV INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH}
-ENV PATH=${VIRTUAL_ENV}/bin:/usr/local/bin:$PATH
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV UV_CACHE_DIR=/opt/.cache/uv
-ENV UV_COMPILE_BYTECODE=1
-ENV UV_FROZEN=1
-ENV UV_LINK_MODE=copy
-ENV UV_NO_MANAGED_PYTHON=1
-ENV UV_SYSTEM_PYTHON=1
-ENV UV_PYTHON_DOWNLOADS=never
-ENV UV_REQUIRE_HASHES=1
-ENV UV_VERIFY_HASHES=1
-ENV CFLAGS="-Wno-error=incompatible-pointer-types"
+ENV UV_FROZEN=1 \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8 \
+    UV_LINK_MODE=copy \
+    PYTHONUNBUFFERED=1 \
+    UV_SYSTEM_PYTHON=1 \
+    UV_REQUIRE_HASHES=1 \
+    UV_VERIFY_HASHES=1 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_NO_MANAGED_PYTHON=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_PYTHON_DOWNLOADS=never \
+    VIRTUAL_ENV=${VIRTUAL_ENV} \
+    WORKING_DIR=${WORKING_DIR} \
+    UV_CACHE_DIR=/opt/.cache/uv \
+    UV_PROJECT_ENVIRONMENT=${VIRTUAL_ENV} \
+    PATH=${VIRTUAL_ENV}/bin:/usr/local/bin:$PATH \
+    INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH}
 
-# System & build deps (builder only)
-RUN apk update && apk add --no-cache \
+WORKDIR ${WORKING_DIR}/src
+
+# ===================
+# 3) SOURCE SNAPSHOT 
+# ===================
+FROM app-base AS app-sources
+
+COPY site ./site
+COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}/
+COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}/
+COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
+COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
+COPY ./translations/ ${INVENIO_INSTANCE_PATH}/translations/
+# Application tree (site, assets, code)
+COPY . .
+
+# ========
+# 4) LOCKS
+# ========
+FROM app-base AS locks
+WORKDIR /
+COPY uv.lock /uv.lock
+COPY pyproject.toml /pyproject.toml
+
+# =========================================
+# 5) PYTHON BUILDER (toolchain + Node)
+# =========================================
+FROM app-base AS builder
+ARG PYTHON_SERIES
+ARG BUILD_EXTRAS
+
+# System & build deps
+RUN apk add --no-cache \
     "python3~=${PYTHON_SERIES}" "python3-dev~=${PYTHON_SERIES}" \
     git bash uv openssl \
     cairo \
@@ -58,101 +86,76 @@ RUN apk update && apk add --no-cache \
     libxml2-dev libxslt-dev xmlsec-dev xmlsec \
     file binutils
 
-# Bring Node + Corepack/pnpm into builder
-COPY --from=node_tools /usr/local/bin /usr/local/bin
-COPY --from=node_tools /usr/local/lib /usr/local/lib
-COPY --from=node_tools /usr/local/include /usr/local/include
-COPY --from=node_tools /usr/local/share /usr/local/share
+# Bring Node + Corepack/pnpm (preserve layout/symlinks)
+COPY --from=node_tools /usr/local/ /usr/local/
 
 # Python venv + dirs
 RUN uv venv "${VIRTUAL_ENV}" && mkdir -p "${INVENIO_INSTANCE_PATH}" /opt/.cache/uv
-WORKDIR ${WORKING_DIR}/src
 
-# Python deps (locked, no dev)
-ARG BUILD_EXTRAS="--extra sentry"
+# Warm deps using just lock/toml (better caching)
+COPY --from=locks /uv.lock /pyproject.toml ./ 
 RUN --mount=type=cache,target=/opt/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS
+    uv sync --no-dev --no-install-workspace --no-editable ${BUILD_EXTRAS}
 
-# Copy instance to build
-COPY site ./site
-COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
-COPY ./invenio.cfg ${INVENIO_INSTANCE_PATH}
-COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
-COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
-COPY ./translations ${INVENIO_INSTANCE_PATH}/translations
-COPY . .
+# Bring full sources + instance (single source of truth)
+COPY --from=app-sources ${WORKING_DIR}/src ${WORKING_DIR}/src
+COPY --from=app-sources ${INVENIO_INSTANCE_PATH} ${INVENIO_INSTANCE_PATH}
 
-# Install workspace (incl. ./site)
+# Finalize deps incl. workspace (site)
 RUN --mount=type=cache,target=/opt/.cache/uv \
-    uv sync --frozen --no-dev $BUILD_EXTRAS
+    uv sync --frozen --no-dev ${BUILD_EXTRAS}
 
-# Frontend build (pnpm via Corepack) + prune
-ENV INVENIO_WEBPACKEXT_NPM_PKG_CLS=pynpm:PNPMPackage
-ENV PNPM_HOME=/root/.local/share/pnpm
+# ---------- Frontend build (pnpm via Corepack) ----------
+ENV INVENIO_WEBPACKEXT_NPM_PKG_CLS=pynpm:PNPMPackage \
+    PNPM_HOME=/root/.local/share/pnpm
 ENV PATH=${PNPM_HOME}:/usr/local/bin:${PATH}
-RUN cp -r ./static/. ${INVENIO_INSTANCE_PATH}/static/ && \
-    cp -r ./assets/. ${INVENIO_INSTANCE_PATH}/assets/ && \
-    uv run invenio collect --verbose && \
-    uv run invenio webpack buildall && \
-    rm -rf ${INVENIO_INSTANCE_PATH}/assets/node_modules \
-           ${INVENIO_INSTANCE_PATH}/assets/.pnpm-store \
-           ${INVENIO_INSTANCE_PATH}/assets/.npm \
-           /root/.npm "${PNPM_HOME}" "$(pnpm store path || echo /root/.pnpm-store)" || true && \
-    pnpm cache delete || true && \
-    find "${VIRTUAL_ENV}" -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null || true && \
-    uv cache clean || true
 
-# =================================
-# 3) RUNTIME (lean, no build deps)
-# =================================
-FROM alpine:${ALPINE_VERSION} AS frontend
-# Re-declare what this stage needs
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    set -eux; \
+    mkdir -p "${INVENIO_INSTANCE_PATH}/static" "${INVENIO_INSTANCE_PATH}/assets"; \
+    cp -r ./static/. "${INVENIO_INSTANCE_PATH}/static/"; \
+    cp -r ./assets/. "${INVENIO_INSTANCE_PATH}/assets/"; \
+    uv run invenio collect --verbose; \
+    uv run invenio webpack buildall; \
+    rm -rf \
+      "${INVENIO_INSTANCE_PATH}/assets/node_modules" \
+      "${INVENIO_INSTANCE_PATH}/assets/.pnpm-store" \
+      "${INVENIO_INSTANCE_PATH}/assets/.npm" \
+      /root/.npm \
+      "${PNPM_HOME}" \
+      "$(pnpm store path || echo /root/.pnpm-store)"; \
+    # experimental https://pnpm.io/cli/cache-delete
+    pnpm cache delete; \
+    find "${VIRTUAL_ENV}" -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null; \
+    # https://docs.astral.sh/uv/reference/cli/#uv-cache-clean
+    uv cache clean
+
+# ===========
+# 6) RUNTIME 
+# ===========
+FROM app-base AS frontend
 ARG PYTHON_SERIES
-ARG WORKING_DIR
-ARG VIRTUAL_ENV
-ARG INVENIO_INSTANCE_PATH
 ARG IMAGE_BUILD_TIMESTAMP
 ARG SENTRY_RELEASE
 
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
-ENV VIRTUAL_ENV=${VIRTUAL_ENV}
-ENV UV_PROJECT_ENVIRONMENT=${VIRTUAL_ENV}
-ENV WORKING_DIR=${WORKING_DIR}
-ENV INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH}
-ENV PATH=${VIRTUAL_ENV}/bin:$PATH
-ENV UV_NO_CACHE=1
-ENV INVENIO_IMAGE_BUILD_TIMESTAMP="${IMAGE_BUILD_TIMESTAMP}"
-ENV SENTRY_RELEASE="${SENTRY_RELEASE}"
+ENV UV_NO_CACHE=1 \
+    INVENIO_IMAGE_BUILD_TIMESTAMP="${IMAGE_BUILD_TIMESTAMP}" \
+    SENTRY_RELEASE="${SENTRY_RELEASE}"
 
-# Runtime deps
-RUN apk update && apk add --no-cache \
+# Runtime deps only
+RUN apk add --no-cache \
     "python3~=${PYTHON_SERIES}" \
     libxslt xmlsec cairo \
     uwsgi-python3 \
     fontconfig ttf-dejavu \
     bash
 
-# Create user; use COPY --chown instead of chown layer
+# Non-root runtime user
 RUN adduser -D -H invenio
 
-# Bring venv + built instance
+# Bring venv + built app tree (includes instance with uwsgi*.ini and built assets)
 COPY --from=builder --chown=invenio:invenio ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-COPY --from=builder --chown=invenio:invenio ${INVENIO_INSTANCE_PATH} ${INVENIO_INSTANCE_PATH}
-
-WORKDIR ${WORKING_DIR}/src
-
-# ===== Copy instance files =====
-COPY --chown=invenio:invenio site ./site
-COPY --chown=invenio:invenio ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
-COPY --chown=invenio:invenio ./invenio.cfg ${INVENIO_INSTANCE_PATH}
-COPY --chown=invenio:invenio ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
-COPY --chown=invenio:invenio ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
-COPY --chown=invenio:invenio ./translations ${INVENIO_INSTANCE_PATH}/translations
-COPY --chown=invenio:invenio . .
+COPY --from=builder --chown=invenio:invenio ${WORKING_DIR} ${WORKING_DIR}
 
 USER invenio
 ENTRYPOINT ["bash", "-c"]
