@@ -14,6 +14,11 @@ RUN dnf update -y
 # Install Python 3.12
 RUN dnf install -y python3.12 python3.12-pip python3.12-devel
 
+# Install Node.js 22 using NodeSource repository
+RUN dnf remove -y nodejs npm || true
+RUN curl -fsSL https://rpm.nodesource.com/setup_22.x | bash - && \
+    dnf install -y nodejs
+
 # Python and uv configuration
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -22,13 +27,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_FROZEN=1 \
     UV_LINK_MODE=copy \
     UV_NO_MANAGED_PYTHON=1 \
-    UV_NO_MANAGED_PYTHON=1 \
-    UV_NO_MANAGED_PYTHON=1 \
-    UV_NO_MANAGED_PYTHON=1 \
-    UV_NO_MANAGED_PYTHON=1 \
     UV_SYSTEM_PYTHON=1 \
-    # Tell uv to use system Python
-    UV_PROJECT_ENVIRONMENT=/usr/ \
+    # use /opt/uv-env
+    UV_PROJECT_ENVIRONMENT=/opt/uv-env \
     UV_PYTHON_DOWNLOADS=never \
     UV_REQUIRE_HASHES=1 \
     UV_VERIFY_HASHES=1
@@ -41,7 +42,7 @@ ARG BUILD_EXTRAS="--extra sentry"
 RUN --mount=type=cache,target=/opt/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    UV_PROJECT_ENVIRONMENT=/opt/uv-env uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS
+    uv sync --no-dev --no-install-workspace --no-editable $BUILD_EXTRAS
 
 # Add the virtual environment to PATH
 ENV PATH="/opt/uv-env/bin:$PATH"
