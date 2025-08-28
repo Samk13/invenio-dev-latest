@@ -1,54 +1,145 @@
-# Dev latest-build 
+# InvenioRDM Development Environment
 
-Welcome to your InvenioRDM instance.
+Welcome to your InvenioRDM development instance. This repository contains a complete development setup for the latest InvenioRDM build.
 
-## Getting started
+## Table of Contents
 
-Run the following commands in order to start your new InvenioRDM instance:
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Setup Options](#setup-options)
+  - [Native Development Setup](#native-development-setup)
+  - [Dockerized Setup](#dockerized-setup)
+- [Configuration](#configuration)
+- [Local Package Development](#local-package-development)
+- [Documentation](#documentation)
+- [Troubleshooting](#troubleshooting)
 
-```console
-uv venv
-source .venv/bin/activate
-uv pip install invenio-cli
-uv run invenio-cli install
-uv run invenio-cli services setup -f -N
-# You might need to setup default bucket for file storage
-# go to http://s3:9001/login
-CHANGE_ME for user and password
+## Prerequisites
 
-For s3 setup you need to create an alias for s3 to `127.0.0.1`
-   on MacOS run:
+Before starting, ensure you have the following installed:
 
-```sh
-printf '\n127.0.0.1\ts3\n' | sudo tee -a /etc/hosts
-sudo dscacheutil -flushcache
-sudo killall -HUP mDNSResponder
+- Python 3.12+
+- uv 0.8.x+
+- Node.js 22+
+- pnpm 10.15.x+
+- Docker & Docker Compose (for containerized setup)
+- Git
+
+## Quick Start
+
+The fastest way to get started is using the dockerized setup:
+
+```bash
+# Start all services
+docker compose -f docker-compose.full.yml down && \
+docker compose -f docker-compose.full.yml up -d --build
+# > **Note:** If you encounter an error about existing pod names, simply rerun the commands.
+docker compose -f docker-compose.full.yml up -d
+# Initialize the application
+./scripts/ignite_app.sh
 ```
 
-uv run invenio-cli run
+## Setup Options
+
+### Native Development Setup
+
+For local development with more control over the environment:
+
+1. **Create and activate virtual environment:**
+   ```console
+   uv venv
+   source .venv/bin/activate
+   ```
+
+2. **Install dependencies:**
+   ```console
+   uv pip install invenio-cli
+   uv run invenio-cli install
+   ```
+
+3. **Setup services:**
+   ```console
+   uv run invenio-cli services setup -f -N
+   ```
+
+4. **Configure S3 storage (macOS):**
+   ```bash
+   printf '\n127.0.0.1\ts3\n' | sudo tee -a /etc/hosts
+   sudo dscacheutil -flushcache
+   sudo killall -HUP mDNSResponder
+   ```
+
+### Dockerized Setup
+
+For a complete containerized environment:
+
+```bash
+# Start all services (database, search, cache, etc.)
+docker compose -f docker-compose.full.yml up -d
+
+# Initialize the application
+./scripts/ignite_app.sh
 ```
 
-# Install local packages
+## Configuration
 
-If you have local packages that you want to install, you can run the following command:
+### S3 Storage Setup
+
+After starting the services, you may need to configure the default S3 bucket:
+
+1. Navigate to http://s3:9001/login
+2. Use the default credentials: `CHANGE_ME` (both username and password)
+3. Create necessary buckets as required
+
+### Environment Variables
+
+Key configuration files:
+- `invenio.cfg` - Main application configuration
+- `docker-compose.yml` - Service orchestration
+- `pyproject.toml` - Python dependencies
+
+## Local Package Development
+
+If you're developing local InvenioRDM packages, you can install them using:
 
 ```console
-# make sure to adjust the path for locally installed packages in the script
-
+# Adjust paths in the script as needed
 ./install_local_packages.sh
 ```
 
+> **Important:** Make sure to adjust the package paths in the script before running.
+
 ## Documentation
 
-To learn how to configure, customize, deploy and much more, visit
-the [InvenioRDM Documentation](https://inveniordm.docs.cern.ch/).
+For comprehensive guides on configuration, customization, and deployment:
 
+- 📚 [InvenioRDM Documentation](https://inveniordm.docs.cern.ch/)
+- 🔧 [Configuration Guide](https://inveniordm.docs.cern.ch/install/)
 
-## Dockerized setup
+## Troubleshooting
+
+### Common Issues
+
+1. **Port conflicts:** Ensure ports 80, 443, 5432, 9200, 6379, and 9001 are available
+2. **Permission issues:** Make sure Docker has appropriate permissions
+3. **Memory issues:** Ensure Docker has at least 4GB RAM allocated
+
+### Useful Commands
 
 ```bash
-docker compose -f docker-compose.full.yml up -d
-# If you encounter an error stating that the pod name already exists, simply rerun the command.
-docker compose -f docker-compose.full.yml up -d
-./scripts/ignite_app.sh
+# View logs
+docker compose -f docker-compose.full.yml logs
+
+# Stop all services
+docker compose -f docker-compose.full.yml down
+
+# Restart services
+docker compose -f docker-compose.full.yml restart
+
+# Clean up (removes volumes)
+docker compose -f docker-compose.full.yml down -v
 ```
+
+---
+
+For more help, please refer to the [InvenioRDM Community Forum](https://github.com/inveniosoftware/invenio-app-rdm/discussions) or check the [troubleshooting guide](https://inveniordm.docs.cern.ch/install/troubleshooting/).
