@@ -46,7 +46,7 @@ ENV UV_FROZEN=1 \
     PATH=${VIRTUAL_ENV}/bin:/usr/local/bin:$PATH \
     INVENIO_INSTANCE_PATH=${INVENIO_INSTANCE_PATH}
 
-WORKDIR ${WORKING_DIR}/src
+WORKDIR ${WORKING_DIR}
 
 # ===================
 # 3) SOURCE SNAPSHOT 
@@ -59,19 +59,11 @@ COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}/
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./templates/ ${INVENIO_INSTANCE_PATH}/templates/
 COPY ./translations/ ${INVENIO_INSTANCE_PATH}/translations/
-# Application tree (site, assets, code)
+# Counting on dockerignore to exclude unnecessary files
 COPY . .
 
-# ========
-# 4) LOCKS
-# ========
-FROM app-base AS locks
-WORKDIR /
-COPY uv.lock /uv.lock
-COPY pyproject.toml /pyproject.toml
-
 # =========================================
-# 5) PYTHON BUILDER (toolchain + Node)
+# 4) PYTHON BUILDER (toolchain + Node)
 # =========================================
 FROM app-base AS builder
 ARG PYTHON_SERIES
@@ -92,16 +84,11 @@ COPY --from=node_tools /usr/local/ /usr/local/
 # Python venv + dirs
 RUN uv venv "${VIRTUAL_ENV}" && mkdir -p "${INVENIO_INSTANCE_PATH}" /opt/.cache/uv
 
-# Warm deps using just lock/toml (better caching)
-COPY --from=locks /uv.lock /pyproject.toml ./ 
-RUN --mount=type=cache,target=/opt/.cache/uv \
-    uv sync --no-dev --no-install-workspace --no-editable ${BUILD_EXTRAS}
-
-# Bring full sources + instance (single source of truth)
-COPY --from=app-sources ${WORKING_DIR}/src ${WORKING_DIR}/src
+# Bring full sources + instance first
+COPY --from=app-sources ${WORKING_DIR} ${WORKING_DIR}
 COPY --from=app-sources ${INVENIO_INSTANCE_PATH} ${INVENIO_INSTANCE_PATH}
 
-# Finalize deps incl. workspace (site)
+# Install all dependencies including workspace in one go
 RUN --mount=type=cache,target=/opt/.cache/uv \
     uv sync --frozen --no-dev ${BUILD_EXTRAS}
 
@@ -117,23 +104,16 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     cp -r ./assets/. "${INVENIO_INSTANCE_PATH}/assets/"; \
     uv run invenio collect --verbose; \
     uv run invenio webpack buildall; \
+    uv cache clean; \
     rm -rf \
       "${INVENIO_INSTANCE_PATH}/assets/node_modules" \
       "${INVENIO_INSTANCE_PATH}/assets/.pnpm-store" \
-      "${INVENIO_INSTANCE_PATH}/assets/.npm" \
-      /root/.npm \
-      "${PNPM_HOME}" \
-      "$(pnpm store path || echo /root/.pnpm-store)"; \
-    # experimental https://pnpm.io/cli/cache-delete
-    pnpm cache delete; \
-    find "${VIRTUAL_ENV}" -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null; \
-    # https://docs.astral.sh/uv/reference/cli/#uv-cache-clean
-    uv cache clean
+      "${INVENIO_INSTANCE_PATH}/assets/.npm"
 
 # ===========
 # 6) RUNTIME 
 # ===========
-FROM app-base AS frontend
+FROM app-base AS runtime
 ARG PYTHON_SERIES
 ARG IMAGE_BUILD_TIMESTAMP
 ARG SENTRY_RELEASE
