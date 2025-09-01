@@ -1,4 +1,6 @@
 {
+    // in case you get cairo error:
+    // uv pip install cairocffi cairosvg
         "configurations": [
         {
             "name": "Invenio Debugger",
