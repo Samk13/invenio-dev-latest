@@ -35,6 +35,7 @@ import {
 } from "@js/invenio_rdm_records";
 import { Container, Divider, Card, Grid, Form } from "semantic-ui-react";
 import { getLocale, getCurrentLocaleMessage } from "../utils/index.js";
+import { severityChecksConfig } from "@js/invenio_app_rdm/deposit/config.js";
 
 const REQ_COMM_MSG = {
   en: "Community is required in order to submit your record.",
@@ -117,8 +118,10 @@ export const RecommendedInformationOverride = ({
           "metadata.version",
           "metadata.publisher",
         ]}
+        severityChecks={severityChecksConfig}
         active
         label={i18next.t("Recommended information")}
+        id="recommended-information-section"
       >
         <CreatibutorsField
           addButtonLabel={i18next.t("Add contributor")}
