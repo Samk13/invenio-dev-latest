@@ -42,6 +42,19 @@ PACKAGE_PATHS=()
 for package in "${PACKAGES[@]}"; do
   PACKAGE_PATHS+=("$BASE_DIR/$package")
 done
+# add local packages to lock file
+# when running uv run it will relock, to avoid adding flags, just add the local packages as editable
+echo "Package paths: ${PACKAGE_PATHS[*]}"
+
+# --- Inject local editables into the *lock* (without keeping changes) ---
+# This writes [tool.uv.sources] entries and locks them in uv.lock.
+# After the run, we restore the original files.
+for p in "${PACKAGE_PATHS[@]}"; do
+  uv add --editable "$p" --no-sync
+done
+
+# Recompute lock using those sources
+uv lock
 
 echo "Package paths: ${PACKAGE_PATHS[@]}"
 # Install packages
