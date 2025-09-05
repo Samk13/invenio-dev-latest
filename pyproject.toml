@@ -32,3 +32,6 @@ dev = [
 sentry = [
     "sentry-sdk>=1.45,<2.0.0",
 ]
+tests = [
+    "pytest-invenio>=3.0.0,<4.0.0",
+]

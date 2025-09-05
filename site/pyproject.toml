@@ -4,6 +4,15 @@ version = "1.0.0"
 description = "no desc"
 requires-python = ">= 3.12"
 
+[project.entry-points."invenio_base.blueprints"]
+latest_build_views = "latest_build.views:create_blueprint"
+
+[project.entry-points."invenio_assets.webpack"]
+latest_build_theme = "latest_build.webpack:theme"
+
+[project.entry-points."invenio_celery.tasks"]
+latest_build_tasks = "latest_build.tasks"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
