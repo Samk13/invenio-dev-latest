@@ -1,21 +1,29 @@
-# scripts/open_api_gen.py
 import importlib
 import re
-import yaml
-from typing import Any, Dict, Iterable, List, Mapping, Optional
+import sys
+from dataclasses import dataclass
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
+import yaml
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from invenio_app.factory import create_api
 from marshmallow import Schema as MMSchema
 
-# ------------------------- shared small utilities ----------------------------
+try:
+    # Optional: improves path registration from view functions when available
+    from apispec_webframeworks.flask import FlaskPlugin  # type: ignore
+except Exception:  # pragma: no cover - plugin is optional
+    FlaskPlugin = None  # type: ignore
 
-VALID_TYPES = {"array", "boolean", "integer", "number", "object", "string"}
+
+# ------------------------- small utilities -----------------------------------
+
 
 def to_oas(path: str) -> str:
     """Flask <param> or <type:param> → OpenAPI {param}."""
     return re.sub(r"<(?:[^:<>]+:)?([^<>]+)>", r"{\1}", path)
+
 
 def yaml_safe(obj: Any) -> Any:
     """Make complex objects YAML-safe with minimal overhead."""
@@ -30,224 +38,22 @@ def yaml_safe(obj: Any) -> Any:
     except Exception:
         return repr(obj)
 
-def fix_types(obj: Any) -> None:
-    """Normalize invalid JSON Schema 'type' values to 'string'."""
-    if isinstance(obj, dict):
-        t = obj.get("type")
-        if isinstance(t, str) and t not in VALID_TYPES:
-            obj["type"] = "string"
-        for v in obj.values():
-            fix_types(v)
-    elif isinstance(obj, list):
-        for v in obj:
-            fix_types(v)
 
-def merge_objects(objs: Iterable[Mapping[str, Any]]) -> Dict[str, Any]:
-    """Merge object schemas' properties/required minimally."""
-    out = {"type": "object", "properties": {}}
-    req: set[str] = set()
-    for o in objs:
-        if isinstance(o, dict) and o.get("type") == "object":
-            out["properties"].update(o.get("properties", {}))
-            req.update(o.get("required", []))
-    if req:
-        out["required"] = sorted(req)
-    return out
+# ------------------------- schema registry -----------------------------------
 
-def flatten_oneof(schema: Any) -> Any:
-    """Replace any oneOf with a merged best-effort concrete object."""
-    if isinstance(schema, dict):
-        one = schema.get("oneOf")
-        if isinstance(one, list):
-            merged = merge_objects(flatten_oneof(x) for x in one) or {"type": "object"}
-            schema.clear()
-            schema.update(merged)
-        for k, v in list(schema.items()):
-            schema[k] = flatten_oneof(v)
-        return schema
-    if isinstance(schema, list):
-        return [flatten_oneof(v) for v in schema]
-    return schema
-
-# ------------------------- schema conversion (SRP) ---------------------------
-
-class MarshmallowToOpenAPI:
-    """Converts Marshmallow schemas/fields → OpenAPI JSON Schema."""
-
-    LANG_MAP_NAMES = {
-        "title", "titles", "description", "descriptions",
-        "title_l10n", "subtitle_l10n", "alternative_titles",
-    }
-
-    @staticmethod
-    def _enum_from_field(field) -> Optional[List[Any]]:
-        # 1) metadata.enum
-        md = getattr(field, "metadata", {}) or {}
-        if isinstance(md.get("enum"), (list, tuple)) and md["enum"]:
-            return list(md["enum"])
-        # 2) marshmallow.validate.OneOf
-        try:
-            from marshmallow import validate as V  # lazy import
-            v = getattr(field, "validate", None)
-            vals = v if isinstance(v, (list, tuple)) else ([v] if v else [])
-            for item in vals:
-                if isinstance(item, V.OneOf) and getattr(item, "choices", None):
-                    return list(item.choices)
-        except Exception:
-            pass
-        # 3) EnumField (marshmallow_enum or marshmallow_utils.fields)
-        for modname, attr in (("marshmallow_enum", "EnumField"),
-                              ("marshmallow_utils.fields", "EnumField")):
-            try:
-                mod = importlib.import_module(modname)
-                EnumField = getattr(mod, attr, None)
-                if EnumField and isinstance(field, EnumField):
-                    enum_cls = getattr(field, "enum", None)
-                    if enum_cls:
-                        first = next(iter(enum_cls))
-                        use_val = hasattr(first, "value")
-                        return [(e.value if use_val else e.name) for e in enum_cls]
-            except Exception:
-                continue
-        # 4) fallback: attribute "enum" on field
-        try:
-            enum_cls = getattr(field, "enum", None)
-            if enum_cls:
-                first = next(iter(enum_cls))
-                use_val = hasattr(first, "value")
-                return [(e.value if use_val else e.name) for e in enum_cls]
-        except Exception:
-            pass
-        return None
-
-    @staticmethod
-    def _constraints_from_validators(field, out: Dict[str, Any]) -> None:
-        try:
-            from marshmallow import validate as V
-            v = getattr(field, "validate", None)
-            vals = v if isinstance(v, (list, tuple)) else ([v] if v else [])
-            for item in vals:
-                if isinstance(item, V.Range):
-                    if item.min is not None: out["minimum"] = item.min
-                    if item.max is not None: out["maximum"] = item.max
-                elif isinstance(item, V.Length):
-                    if item.min is not None: out["minLength"] = item.min
-                    if item.max is not None: out["maxLength"] = item.max
-                elif isinstance(item, V.Regexp):
-                    pat = getattr(item, "regex", None)
-                    if getattr(pat, "pattern", None): out["pattern"] = pat.pattern
-        except Exception:
-            pass
-
-    @classmethod
-    def field(cls, f) -> Dict[str, Any]:
-        from marshmallow import fields as F
-        nullable = getattr(f, "allow_none", False)
-
-        def base(_type: str, fmt: Optional[str] = None) -> Dict[str, Any]:
-            d: Dict[str, Any] = {"type": _type}
-            if fmt: d["format"] = fmt
-            if nullable: d["nullable"] = True
-            enum_vals = cls._enum_from_field(f)
-            if enum_vals: d["enum"] = enum_vals
-            cls._constraints_from_validators(f, d)
-            md = getattr(f, "metadata", {}) or {}
-            desc = md.get("description")
-            if isinstance(desc, str): d["description"] = desc
-            return d
-
-        try:
-            if isinstance(f, (F.String, F.Email, F.URL, F.UUID)):
-                return base("string", "uuid" if isinstance(f, F.UUID) else ("uri" if isinstance(f, F.URL) else None))
-            if isinstance(f, F.Integer): return base("integer")
-            if isinstance(f, (F.Float, F.Decimal)): return base("number")
-            if isinstance(f, F.Boolean): return base("boolean")
-            if isinstance(f, F.DateTime): return base("string", "date-time")
-            if isinstance(f, F.Date): return base("string", "date")
-            if isinstance(f, F.Time): return base("string", "time")
-            if isinstance(f, (F.Method, F.Function, F.Raw)): return base("string")
-
-            if isinstance(f, F.List):
-                inner = getattr(f, "inner", None) or getattr(f, "container", None)
-                d = {"type": "array", "items": cls.field(inner) if inner else {"type": "string"}}
-                if nullable: d["nullable"] = True
-                cls._constraints_from_validators(f, d)
-                return d
-
-            if isinstance(f, F.Dict):
-                values = getattr(f, "values", None)
-                d = {"type": "object", "additionalProperties": cls.field(values) if values else {"type": "string"}}
-                if nullable: d["nullable"] = True
-                return d
-
-            if isinstance(f, F.Nested):
-                many = getattr(f, "many", False)
-                js = cls.schema(getattr(f, "schema", None) or getattr(f, "nested", None))
-                d = {"type": "array", "items": js} if many else {
-                    "type": "object", "properties": js.get("properties", {})
-                }
-                if not many and "required" in js: d["required"] = js["required"]
-                if nullable: d["nullable"] = True
-                return d
-
-            return base("string")
-        except Exception:
-            return {"type": "string"}
-
-    @classmethod
-    def _maybe_lang_map_enhance(cls, field_name: str, schema: Dict[str, Any]) -> None:
-        """Make language maps readable in Swagger UI."""
-        if schema.get("type") != "object":
-            return
-        ap = schema.get("additionalProperties")
-        if not (isinstance(ap, dict) and ap.get("type") == "string"):
-            return
-        if field_name in cls.LANG_MAP_NAMES or field_name.endswith("_l10n"):
-            schema.setdefault("description", "Language map (ISO language codes as keys).")
-            schema.setdefault("example", {"en": "Example text"})
-
-    @classmethod
-    def schema(cls, s: Any) -> Dict[str, Any]:
-        """Marshmallow Schema → JSON Schema, keeping constraints/enums."""
-        # OneOfSchema: keep structure; caller may flatten later.
-        try:
-            from marshmallow_oneofschema import OneOfSchema  # optional
-            if isinstance(s, type) and issubclass(s, OneOfSchema):
-                ts = getattr(s, "type_schemas", {}) or {}
-                return {"oneOf": [cls.schema(v) or {"type": "object"} for v in ts.values()],
-                        "discriminator": {"propertyName": getattr(s, "type_field", "type")}}
-        except Exception:
-            pass
-
-        try:
-            inst = s() if isinstance(s, type) else s
-            if not isinstance(inst, MMSchema):
-                return {"type": "object"}
-
-            fields = getattr(inst, "fields", None) or getattr(inst.__class__, "_declared_fields", {}) or {}
-            props: Dict[str, Any] = {}
-            req: List[str] = []
-            for name, fld in fields.items():
-                prop = cls.field(fld)
-                cls._maybe_lang_map_enhance(name, prop)
-                props[name] = prop
-                if getattr(fld, "required", False) and not getattr(fld, "allow_none", False):
-                    req.append(name)
-            out: Dict[str, Any] = {"type": "object", "properties": props}
-            if req:
-                out["required"] = sorted(set(req))
-            return out
-        except Exception:
-            return {"type": "object"}
-
-# ------------------------- schema registry (O) --------------------------------
 
 class SchemaRegistry:
-    """Scans known modules for Schema classes and exposes JSON Schema dicts."""
+    """Collect Marshmallow Schemas from installed Invenio modules.
+
+    Stores Schema classes and exposes simple name lookups and fuzzy matching.
+    """
 
     DEFAULT_MODULES = [
+        # RDM and common services
         "invenio_rdm_records.services.schemas.metadata",
+        "invenio_rdm_records.services.schemas",
         "invenio_communities.communities.schema",
+        "invenio_communities.services.schemas",
         "invenio_users_resources.services.schemas",
         "invenio_requests.services.schemas",
         "invenio_vocabularies.services.schema",
@@ -258,12 +64,12 @@ class SchemaRegistry:
         "invenio_jobs.schemas",
         "invenio_oaiserver.services.schemas",
         "invenio_notifications.services.schemas",
-        "invenio_communities.services.schemas",
     ]
 
     def __init__(self, modules: Optional[List[str]] = None) -> None:
-        self._schemas: Dict[str, Dict[str, Any]] = {}
-        for modname in (modules or self.DEFAULT_MODULES):
+        self._classes: Dict[str, type[MMSchema]] = {}
+        self._index: Dict[str, str] = {}
+        for modname in modules or self.DEFAULT_MODULES:
             self._load_module(modname)
 
     def _load_module(self, modname: str) -> None:
@@ -273,216 +79,259 @@ class SchemaRegistry:
             return
         for name, obj in vars(mod).items():
             if isinstance(obj, type) and issubclass(obj, MMSchema):
-                self._schemas[name] = MarshmallowToOpenAPI.schema(obj)
+                self._classes[name] = obj
+                self._index[name.lower()] = name
+                # Index without trailing "Schema"
+                if name.lower().endswith("schema"):
+                    base = name.lower()[:-6]
+                    self._index[base] = name
 
-    def get(self, *names: str, default: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        for n in names:
-            if n in self._schemas:
-                return self._schemas[n]
-        return default or {"type": "object"}
+    def names(self) -> List[str]:
+        return sorted(self._classes.keys())
 
-    @property
-    def components(self) -> Dict[str, Dict[str, Any]]:
-        return dict(self._schemas)
+    def get_class(self, name: str) -> Optional[type[MMSchema]]:
+        return self._classes.get(name)
 
-# ------------------------- endpoint typing (I) --------------------------------
+    def find_by_hint(self, hint: str) -> Optional[str]:
+        """Find a schema name by best-effort hint (path segment, etc.)."""
+        key = hint.strip().lower()
+        # naive singularization
+        if key.endswith("ies"):  # communities -> community
+            key = key[:-3] + "y"
+        elif key.endswith("s"):
+            key = key[:-1]
+        # direct lookup
+        if key in self._index:
+            return self._index[key]
+        # fuzzy contains
+        for n in self.names():
+            ln = n.lower()
+            if key and (key in ln or ln in key):
+                return n
+        return None
 
-class EndpointTyping:
-    """Decides which schema to use for a given path (request/response)."""
 
-    AUTH_BODIES: Dict[str, Dict[str, Any]] = {
-        "change-password": {"type": "object", "properties": {
-            "password": {"type": "string"}, "new_password": {"type": "string"}}, "required": ["password", "new_password"]},
-        "forgot-password": {"type": "object", "properties": {
-            "email": {"type": "string", "format": "email"}}, "required": ["email"]},
-        "reset-password": {"type": "object", "properties": {
-            "token": {"type": "string"}, "password": {"type": "string"}}, "required": ["token", "password"]},
-        "send-confirmation-email": {"type": "object", "properties": {
-            "email": {"type": "string", "format": "email"}}, "required": ["email"]},
-        "confirm-email": {"type": "object", "properties": {
-            "token": {"type": "string"}}, "required": ["token"]},
-    }
-    AUTH_RESP = {"type": "object", "properties": {"status": {"type": "string"}, "message": {"type": "string"}}}
-    PAGES = {"type": "object", "properties": {
-        "id": {"type": "string"}, "slug": {"type": "string"}, "title": {"type": "string"},
-        "content": {"type": "string"}, "published": {"type": "boolean"},
-        "updated": {"type": "string", "format": "date-time"}}}
-    OAIPMH_FORMAT = {"type": "object", "properties": {
-        "metadataPrefix": {"type": "string"},
-        "schema": {"type": "string", "format": "uri"},
-        "metadataNamespace": {"type": "string", "format": "uri"},
-    }}
+# ------------------------- endpoint analysis ---------------------------------
 
-    @staticmethod
-    def tag_for(path: str) -> str:
-        parts = path.strip("/").split("/")
-        seg = parts[0] if parts else "Misc"
-        if seg == "records": return "Drafts" if "draft" in parts else "Records"
-        return {
-            "communities": "Communities", "users": "Users", "requests": "Requests",
-            "files": "Files", "record_files": "Files", "draft_files": "Files",
-            "jobs": "Jobs", "iiif": "IIIF", "vocabularies": "Vocabularies",
-            "oaipmh": "OAI-PMH", "oaiserver": "OAI-PMH",
-            "affiliations": "Vocabularies", "awards": "Vocabularies", "funders": "Vocabularies",
-            "names": "Vocabularies", "subjects": "Vocabularies", "banners": "Banners",
-            "hooks": "Hooks", "collections": "Collections", "pages": "Pages",
-            "auth": "Auth", "sessions": "Sessions", "change-password": "Security",
-            "forgot-password": "Security", "reset-password": "Security",
-            "send-confirmation-email": "Security", "confirm-email": "Security",
-        }.get(seg, seg.capitalize())
+
+@dataclass(frozen=True)
+class EndpointInfo:
+    rule: Any
+    path: str
+    methods: List[str]
+    view: Any
+
+
+class EndpointAnalyzer:
+    """Analyze Flask app url map and guess schemas per endpoint.
+
+    Uses a conservative heuristic: first path segment is used as a hint to
+    select a schema component. This reduces hard-coded mappings and leverages
+    the registry for discovery.
+    """
 
     def __init__(self, registry: SchemaRegistry) -> None:
         self._reg = registry
 
-    def schema_for(self, path: str) -> Dict[str, Any]:
-        p = path.strip("/")
-
-        # vocabularies & controlled lists
-        if p.startswith("vocabularies"):
-            return self._reg.get("VocabularySchema", "BaseVocabularySchema")
-        if p.startswith(("affiliations", "awards", "funders", "names", "subjects")):
-            return self._reg.get("VocabularySchema")
-
-        # core resources
-        if p.startswith("records"):
-            return self._reg.get("MetadataSchema")
-        if p.startswith("communities"):
-            return self._reg.get("CommunitySchema", "CommunityParentSchema", "Community")
-        if p.startswith("users"):
-            return self._reg.get("UserSchema", "User")
-        if p.startswith("requests"):
-            return self._reg.get("RequestSchema", "Request")
-        if "files" in p:
-            return self._reg.get("FileSchema")
-        if p.startswith("jobs") or "/jobs" in p:
-            return self._reg.get("RunSchema", "JobSchema", "JobArgumentsSchema")
-
-        # pages & OAI-PMH
-        if p.startswith("pages"):
-            return self.PAGES
-        if p.startswith("oaipmh/formats"):
-            return {"type": "array", "items": self.OAIPMH_FORMAT}
-
-        # auth & sessions
-        for key, body in self.AUTH_BODIES.items():
-            if p.startswith(key):
-                return body
-        if p == "sessions":
-            return {"type": "array", "items": {"type": "object", "properties": {
-                "sid_s": {"type": "string"}, "ip": {"type": "string"},
-                "user_agent": {"type": "string"},
-                "created": {"type": "string", "format": "date-time"},
-            }}}
-        if p.startswith("sessions/"):
-            return {"type": "object", "properties": {"status": {"type": "string"}}}
-        if p.startswith("collections") and p.endswith("/records"):
-            return {"type": "array", "items": self._reg.get("MetadataSchema")}
-
-        return {"type": "object"}
-
-# ------------------------- component enrichment (D) ---------------------------
-
-class ComponentEnricher:
-    """Fix known sparse spots to avoid {} in UI, without hardcoding everything."""
-
-    PATCHES = {
-        ("RunSchema", "args"): {"type": "array", "items": {"type": "string"}},
-        ("RunSchema", "custom_args"): {"type": "object", "additionalProperties": {"type": "string"}},
-        ("JobLogEntrySchema", "sort"): {"type": "array", "items": {"type": "string"}},
-        ("JobLogEntrySchema", "context"): {
-            "type": "object", "properties": {"job_id": {"type": "string"}, "run_id": {"type": "string"}}
-        },
-    }
-
     @staticmethod
-    def _user_fallback() -> Dict[str, Any]:
-        return {
-            "type": "object",
-            "properties": {"id": {"type": "string"}, "email": {"type": "string", "format": "email"}}
-        }
+    def tag_for(path: str) -> str:
+        parts = [p for p in path.split("/") if p]
+        if not parts:
+            return "Misc"
+        if parts[0] == "records":
+            return "Drafts" if any("draft" in p for p in parts) else "Records"
+        return parts[0].replace("_", " ").title()
 
-    def apply(self, components: Dict[str, Dict[str, Any]]) -> None:
-        # enrich started_by using available User schema
-        user_schema = components.get("UserSchema") or components.get("User") or self._user_fallback()
-        if "RunSchema" in components:
-            props = components["RunSchema"].setdefault("properties", {})
-            if not props.get("started_by"):
-                props["started_by"] = user_schema
+    def schema_name_for(self, path: str) -> Optional[str]:
+        parts = [p for p in path.split("/") if p]
+        if not parts:
+            return None
+        hint = parts[0]
+        # prioritize well-known hints to common schema names when present
+        preferred: List[Tuple[str, List[str]]] = [
+            ("records", ["MetadataSchema", "Record", "RDMRecord"]),
+            ("communities", ["CommunitySchema", "CommunityParentSchema", "Community"]),
+            ("users", ["UserSchema", "User"]),
+        ]
+        for seg, candidates in preferred:
+            if hint == seg:
+                for c in candidates:
+                    if c in self._reg.names():
+                        return c
+        # fallback to fuzzy
+        found = self._reg.find_by_hint(hint)
+        return found
 
-        # generic patches
-        for (schema_name, field), patch in self.PATCHES.items():
-            if schema_name in components:
-                props = components[schema_name].setdefault("properties", {})
-                if not props.get(field):
-                    props[field] = patch
+    def endpoints(self, app) -> Iterable[EndpointInfo]:
+        for rule in app.url_map.iter_rules():
+            if rule.rule.startswith(("/static", "/_debug_toolbar")):
+                continue
+            methods = sorted(list(rule.methods - {"HEAD", "OPTIONS"}))
+            if not methods:
+                continue
+            view = app.view_functions.get(rule.endpoint)
+            yield EndpointInfo(
+                rule=rule, path=to_oas(rule.rule), methods=methods, view=view
+            )
 
-# ------------------------- spec builder (S) -----------------------------------
+
+# ------------------------- spec builder --------------------------------------
+
 
 class SpecBuilder:
-    def __init__(self, registry: SchemaRegistry, typing: EndpointTyping) -> None:
+    def __init__(self, registry: SchemaRegistry, analyzer: EndpointAnalyzer) -> None:
         self.registry = registry
-        self.typing = typing
-        self.plugin = MarshmallowPlugin()
+        self.analyzer = analyzer
+        self.ma_plugin = MarshmallowPlugin()
+        self.flask_plugin = FlaskPlugin() if FlaskPlugin else None
+
+    def _create_spec(self, app) -> APISpec:
+        plugins = [self.ma_plugin]
+        if self.flask_plugin is not None:
+            plugins.insert(0, self.flask_plugin)
+        return APISpec(
+            title="InvenioRDM API",
+            version=str(app.config.get("APP_VERSION", "0.0.1")),
+            openapi_version="3.0.3",
+            plugins=plugins,
+        )
+
+    def _register_components(self, spec: APISpec) -> None:
+        # Register all discovered marshmallow schemas as components
+        for name in self.registry.names():
+            cls = self.registry.get_class(name)
+            if not cls:
+                continue
+            try:
+                # Let MarshmallowPlugin generate component definitions
+                spec.components.schema(name, schema=cls, lazy=True)
+            except Exception:
+                # Be resilient to broken schemas; continue
+                continue
+
+    def _build_paths(self, app) -> Dict[str, Any]:
+        paths: Dict[str, Any] = {}
+        for ep in self.analyzer.endpoints(app):
+            operations: Dict[str, Any] = {}
+            tag = self.analyzer.tag_for(ep.path)
+            schema_name = self.analyzer.schema_name_for(ep.path)
+
+            # NOTE: We intentionally skip FlaskPlugin path registration; we
+            # build a minimal but valid operation map ourselves.
+
+            # Build minimal operation definitions
+            for m in ep.methods:
+                op: Dict[str, Any] = {"tags": [tag], "responses": {}}
+                # path parameters
+                params = [
+                    {
+                        "name": a,
+                        "in": "path",
+                        "required": True,
+                        "schema": {"type": "string"},
+                    }
+                    for a in ep.rule.arguments
+                ]
+                if params:
+                    op["parameters"] = params
+
+                # heuristics
+                is_get = m.upper() == "GET"
+                is_write = m.upper() in {"POST", "PUT", "PATCH"}
+
+                # Prefer component refs by name using explicit $ref
+                if schema_name:
+                    ref_obj: Any = {"$ref": f"#/components/schemas/{schema_name}"}
+                    resp_schema: Any = ref_obj
+                    # Simple heuristic for collection endpoints
+                    tail = ep.path.rstrip("/").split("/")[-1]
+                    if is_get and "{" not in tail:
+                        resp_schema = {"type": "array", "items": ref_obj}
+                else:
+                    resp_schema = {"type": "object"}
+
+                if is_write:
+                    op["requestBody"] = {
+                        "content": {"application/json": {"schema": resp_schema}}
+                    }
+
+                op["responses"]["200"] = {
+                    "description": "Successful response",
+                    "content": {"application/json": {"schema": resp_schema}},
+                }
+
+                operations[m.lower()] = op
+
+            # Attach path-level params (deduplicated across operations)
+            paths.setdefault(ep.path, {}).update(operations)
+        return paths
+
+    @staticmethod
+    def _sanitize_schema_types(spec_dict: Dict[str, Any]) -> None:
+        """Remove or fix invalid JSON Schema 'type' values in components.
+
+        Some Marshmallow fields carry a custom 'type' metadata (e.g. 'communitytypes',
+        'dynamic') which apispec can leak into the OpenAPI output. These are not
+        valid JSON Schema types and cause validation errors. We remove those when
+        a $ref/allOf is present, or coerce to 'object' as a safe fallback.
+        """
+        allowed = {"array", "boolean", "integer", "number", "object", "string"}
+
+        def fix(node: Any) -> None:
+            if isinstance(node, dict):
+                # If this node declares an invalid 'type', fix or drop it
+                if "type" in node:
+                    t = node.get("type")
+                    if isinstance(t, str) and t not in allowed:
+                        if (
+                            "$ref" in node
+                            or "allOf" in node
+                            or "anyOf" in node
+                            or "oneOf" in node
+                        ):
+                            node.pop("type", None)
+                        else:
+                            node["type"] = "object"
+                # Recurse
+                for v in node.values():
+                    fix(v)
+            elif isinstance(node, list):
+                for v in node:
+                    fix(v)
+
+        comps = spec_dict.get("components", {}).get("schemas", {})
+        fix(comps)
 
     def build(self) -> Dict[str, Any]:
         app = create_api()
-        spec = APISpec(
-            title="InvenioRDM API",
-            version=app.config.get("APP_VERSION", "0.0.1"),
-            openapi_version="3.0.3",
-            plugins=[self.plugin],
-        )
-
         with app.app_context():
-            for rule in app.url_map.iter_rules():
-                if rule.rule.startswith(("/static", "/_debug_toolbar")):
-                    continue
-                methods = rule.methods - {"HEAD", "OPTIONS"}
-                if not methods:
-                    continue
+            spec = self._create_spec(app)
+            self._register_components(spec)
+            # Build the spec dict and then inject our paths
+            spec_dict = yaml_safe(spec.to_dict())
+            spec_dict["paths"] = self._build_paths(app)
+            # Post-process to remove invalid 'type' values produced by 3rd-party schemas
+            self._sanitize_schema_types(spec_dict)
+            return spec_dict
 
-                path = to_oas(rule.rule)
-                tag = self.typing.tag_for(path)
-                schema = self.typing.schema_for(path) or {"type": "object"}
-                ops: Dict[str, Any] = {}
 
-                for m in methods:
-                    op: Dict[str, Any] = {
-                        "tags": [tag],
-                        "parameters": [
-                            {"name": a, "in": "path", "required": True, "schema": {"type": "string"}}
-                            for a in rule.arguments
-                        ],
-                        "responses": {"200": {"description": "Successful response",
-                                              "content": {"application/json": {"schema": schema}}}},
-                    }
-                    if m in {"POST", "PUT", "PATCH"}:
-                        # Auth endpoints get a unified (simple) response body
-                        resp_schema = (EndpointTyping.AUTH_RESP
-                                       if tag in {"Auth", "Security"} else schema)
-                        op["requestBody"] = {"content": {"application/json": {"schema": schema}}}
-                        op["responses"]["200"]["content"]["application/json"]["schema"] = resp_schema
-                    ops[m.lower()] = op
+# ------------------------- main ----------------------------------------------
 
-                spec.path(path=path, operations=ops)
 
-        spec_dict = spec.to_dict()
-        spec_dict.setdefault("components", {}).setdefault("schemas", {}).update(self.registry.components)
-        ComponentEnricher().apply(spec_dict["components"]["schemas"])
-        flatten_oneof(spec_dict)          # remove oneOf noise
-        fix_types(spec_dict)              # guard against invalid "type"
-        return yaml_safe(spec_dict)       # ensure YAML-safe
+def main(argv: Optional[List[str]] = None) -> None:
+    out = "openapi_generated.yaml"
+    if argv is None:
+        argv = sys.argv[1:]
+    if len(argv) >= 1 and argv[0]:
+        out = argv[0]
 
-# ------------------------- main ------------------------------------------------
-
-def main() -> None:
     registry = SchemaRegistry()
-    typing = EndpointTyping(registry)
-    spec = SpecBuilder(registry, typing).build()
-    with open("openapi_generated.yaml", "w", encoding="utf-8") as f:
-        yaml.safe_dump(spec, f, sort_keys=False, allow_unicode=True)
-    print("✅ OpenAPI spec generated: concise, categorized, enums/constraints kept, "
-          "auth/pages/oaipmh filled, jobs fields enriched, oneOf flattened.")
+    analyzer = EndpointAnalyzer(registry)
+    spec_dict = SpecBuilder(registry, analyzer).build()
+    with open(out, "w", encoding="utf-8") as f:
+        yaml.safe_dump(spec_dict, f, sort_keys=False, allow_unicode=True)
+    print(f"✅ OpenAPI spec generated → {out}")
+
 
 if __name__ == "__main__":
     main()
