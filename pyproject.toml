@@ -14,6 +14,7 @@ dependencies = [
   "latest-build", # this is not needed but kept for reference
   "invenio-cli",
   "apispec[marshmallow,yaml]>=6.8.3",
+  "apispec-webframeworks>=1.2.0",
 ]
 
 [tool.uv.sources]
