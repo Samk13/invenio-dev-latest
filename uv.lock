@@ -159,6 +159,9 @@ wheels = [
 marshmallow = [
     { name = "marshmallow" },
 ]
+yaml = [
+    { name = "pyyaml" },
+]
 
 [[package]]
 name = "appdirs"
@@ -2845,7 +2848,7 @@ name = "latest-build-instance"
 version = "13.0.1"
 source = { virtual = "." }
 dependencies = [
-    { name = "apispec", extra = ["marshmallow"] },
+    { name = "apispec", extra = ["marshmallow", "yaml"] },
     { name = "invenio-app-rdm", extra = ["opensearch2", "s3"] },
     { name = "invenio-cli" },
     { name = "latest-build" },
@@ -2872,7 +2875,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "apispec", extras = ["marshmallow"], specifier = ">=6.8.3" },
+    { name = "apispec", extras = ["marshmallow", "yaml"], specifier = ">=6.8.3" },
     { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=13.0.0" },
     { name = "invenio-cli" },
     { name = "latest-build", editable = "site" },

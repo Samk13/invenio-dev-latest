@@ -13,7 +13,7 @@ dependencies = [
   "lxml-html-clean>=0.1.1",
   "latest-build", # this is not needed but kept for reference
   "invenio-cli",
-  "apispec[marshmallow]>=6.8.3",
+  "apispec[marshmallow,yaml]>=6.8.3",
 ]
 
 [tool.uv.sources]
