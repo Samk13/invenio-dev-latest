@@ -82,7 +82,15 @@ RUN apk add --no-cache \
 COPY --from=node_tools /usr/local/ /usr/local/
 
 # Python venv + dirs
-RUN uv venv "${VIRTUAL_ENV}" && mkdir -p "${INVENIO_INSTANCE_PATH}" /opt/.cache/uv
+
+# Ensure runtime pods keep pip inside the copied virtualenv
+# (swap back to the single-line venv command once runtime installs are off the table)
+# RUN uv venv "${VIRTUAL_ENV}" && mkdir -p "${INVENIO_INSTANCE_PATH}" /opt/.cache/uv
+RUN set -eux; \
+    uv venv "${VIRTUAL_ENV}"; \
+    "${VIRTUAL_ENV}/bin/python" -m ensurepip --upgrade; \
+    "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip; \
+    mkdir -p "${INVENIO_INSTANCE_PATH}" /opt/.cache/uv
 
 # Bring full sources + instance first
 COPY --from=app-sources ${WORKING_DIR} ${WORKING_DIR}
@@ -109,6 +117,12 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
       "${INVENIO_INSTANCE_PATH}/assets/node_modules" \
       "${INVENIO_INSTANCE_PATH}/assets/.pnpm-store" \
       "${INVENIO_INSTANCE_PATH}/assets/.npm"
+
+# Ensure runtime pods keep pip inside the copied virtualenv
+# (remove this run command once runtime installs are no longer desired)
+RUN set -eux; \
+    "${VIRTUAL_ENV}/bin/python" -m ensurepip --upgrade; \
+    "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip
 
 # ===========
 # 6) RUNTIME 
