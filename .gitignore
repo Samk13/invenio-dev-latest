@@ -75,10 +75,10 @@ data/.minio.sys
 celerybeat-schedule
 
 # s3
-
 s3-data/
 
-
 # env
-
 .env
+
+# ruff cache
+.ruff_cache/
