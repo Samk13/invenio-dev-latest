@@ -82,3 +82,5 @@ s3-data/
 
 # ruff cache
 .ruff_cache/
+# S3
+data/
