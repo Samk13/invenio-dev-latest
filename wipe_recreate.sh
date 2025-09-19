@@ -44,8 +44,9 @@ invenio index queue init purge
 echo "Create DB ..."
 invenio db create
 echo "Set default file location ..."
-invenio files location create 'default-location' 's3://default' --default
-
+OUR_S3_BUCKET_NAME=${OUR_S3_BUCKET_NAME:-"default"}
+S3_LOCATION="s3://${OUR_S3_BUCKET_NAME}"
+invenio files location create --default 'default-location' "$S3_LOCATION"
 invenio roles create admin
 invenio access allow superuser-access role admin
 echo "Initate indecies ..."
