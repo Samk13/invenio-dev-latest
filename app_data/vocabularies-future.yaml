@@ -1,0 +1,40 @@
+names:
+  readers:
+    - type: yaml
+      args:
+        origin: "./app_data/vocabularies/kth_names.yaml"
+  writers:
+    - type: names-service
+      args:
+        update: true
+funders:
+  readers:
+    - type: yaml
+      args:
+        origin: "./app_data/vocabularies/kth_funders.yaml"
+  writers:
+    - type: funders-service
+      args:
+        update: true
+
+awards:
+  readers:
+    - type: yaml
+      args:
+        origin: "./app_data/vocabularies/kth_awards.yaml"
+  writers:
+    - type: awards-service
+      args:
+        update: true
+# this to update installed controlled vocabularies e.g.: CESSDA, NASA, MeSH
+# in the terminal you run:
+# uv run invenio vocabularies update -v subjects \
+#         --filepath "app_data/vocabularies-future.yaml"\
+#         --origin "$VIRTUAL_ENV/lib/python3.12/site-packages/invenio_subjects_test/vocabularies/vocab_test.yaml"
+subjects:
+  readers:
+    - type: yaml
+  writers:
+    - type: subjects-service
+      args:
+        update: true
