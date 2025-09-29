@@ -31,18 +31,18 @@ def clear_orphaned_files(force_delete_check=lambda file_instance: True, limit=50
         }
 
     :param force_delete_check: A function to be called on each orphan file instance
-                               to check if its deletion should be forced (bypass the
-                               check of its ``writable`` flag).
-                               For example, this function can be used to force-delete
-                               files only if they are located on the local file system.
-                               Signature: The function should accept a
-                               :class:`invenio_files_rest.models.FileInstance` object
-                               and return a boolean value.
-                               Default: Never force-delete any orphan files
-                               (``lambda file_instance: False``).
+    to check if its deletion should be forced (bypass the
+    check of its ``writable`` flag).
+    For example, this function can be used to force-delete
+    files only if they are located on the local file system.
+    Signature: The function should accept a
+    :class:`invenio_files_rest.models.FileInstance` object
+    and return a boolean value.
+    Default: Never force-delete any orphan files
+    (``lambda file_instance: False``).
     :param limit: Limit for the number of orphan files considered for deletion in each
-                  task execution (and thus the number of generated celery tasks).
-                  A value of zero (0) or lower disables the limit.
+        task execution (and thus the number of generated celery tasks).
+        A value of zero (0) or lower disables the limit.
     """
     # with the tilde (~) operator, we get all file instances that *don't*
     # have any associated object versions
