@@ -30,14 +30,21 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Detect default branch (main or master)
-branch=$(git remote show "$remote" 2>/dev/null | grep 'HEAD branch' | awk '{print $NF}' || echo "master")
-
 # Fetch latest tags quietly
 git fetch "$remote" --tags >/dev/null
 
-# Find the latest tag and bump version based on type
-latest_tag=$(git describe --tags --abbrev=0 "$remote/$branch" 2>/dev/null || echo "")
+# Determine which ref to inspect for the latest tag
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$current_branch" != "HEAD" ]] && git show-ref --verify --quiet "refs/remotes/${remote}/${current_branch}"; then
+  base_ref="${remote}/${current_branch}"
+elif [[ "$current_branch" != "HEAD" ]]; then
+  base_ref="$current_branch"
+else
+  base_ref="HEAD"
+fi
+
+# Find the latest tag reachable from the selected ref
+latest_tag=$(git describe --tags --abbrev=0 "$base_ref" 2>/dev/null || echo "")
 
 if [[ -z "$latest_tag" ]]; then
   # No tags found, use v0.0.0 as base and show all commits
