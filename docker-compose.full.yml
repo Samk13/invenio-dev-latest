@@ -95,6 +95,13 @@ services:
         condition: service_started
       mq:
         condition: service_started
+  flower:
+    extends:
+      file: docker-services.yml
+      service: flower
+    depends_on:
+      mq:
+        condition: service_started
 volumes:
   static_data:
   data:

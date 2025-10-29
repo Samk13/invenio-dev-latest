@@ -39,5 +39,9 @@ services:
     extends:
       file: docker-services.yml
       service: s3
+  flower:
+    extends:
+      file: docker-services.yml
+      service: flower
 volumes:
   data:

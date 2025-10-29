@@ -110,5 +110,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+  flower:
+    image: mher/flower:2.0.1
+    restart: "unless-stopped"
+    ports:
+      - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5555:5555"
+    command: celery --broker=amqp://guest:guest@mq:5672/ flower
 volumes:
   data:
