@@ -1,0 +1,581 @@
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_audit_logs/services/schema.py pkg_mod/invenio_audit_logs/services/schema.py
+--- pkg_orig/invenio_audit_logs/services/schema.py	2025-10-31 22:29:32
++++ pkg_mod/invenio_audit_logs/services/schema.py	2025-10-31 22:29:32
+@@ -69,6 +69,67 @@
+             "description": "Record revision id.",
+         },
+     )
++    token_id = fields.Str(
++        required=False,
++        metadata={
++            "description": "Identifier of the OAuth token.",
++        },
++    )
++    token_type = fields.Str(
++        required=False,
++        metadata={
++            "description": "Type of the OAuth token.",
++        },
++    )
++    token_name = fields.Str(
++        required=False,
++        metadata={
++            "description": "Display name of the OAuth token.",
++        },
++    )
++    token_scopes = fields.List(
++        fields.Str(),
++        required=False,
++        metadata={
++            "description": "Granted scopes for the OAuth token.",
++        },
++    )
++    token_is_personal = fields.Bool(
++        required=False,
++        metadata={
++            "description": "Whether the token is a personal access token.",
++        },
++    )
++    token_is_internal = fields.Bool(
++        required=False,
++        metadata={
++            "description": "Whether the token is marked as internal.",
++        },
++    )
++    token_client_id = fields.Str(
++        required=False,
++        metadata={
++            "description": "Client identifier associated with the token.",
++        },
++    )
++    token_client_name = fields.Str(
++        required=False,
++        metadata={
++            "description": "Client name associated with the token.",
++        },
++    )
++    token_client_is_internal = fields.Bool(
++        required=False,
++        metadata={
++            "description": "Whether the associated client is internal.",
++        },
++    )
++    token_grant_type = fields.Str(
++        required=False,
++        metadata={
++            "description": "Grant type used to issue the token.",
++        },
++    )
+ 
+ 
+ class UserSchema(Schema):
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/auditlog/actions.py pkg_mod/invenio_oauth2server/auditlog/actions.py
+--- pkg_orig/invenio_oauth2server/auditlog/actions.py	1970-01-01 01:00:00
++++ pkg_mod/invenio_oauth2server/auditlog/actions.py	2025-10-31 22:29:32
+@@ -0,0 +1,44 @@
++# -*- coding: utf-8 -*-
++#
++# This file is part of Invenio.
++#
++# Invenio is free software; you can redistribute it and/or modify it
++# under the terms of the MIT License; see LICENSE file for more details.
++
++"""Audit log action definitions for OAuth2 events."""
++
++from invenio_audit_logs.services import AuditLogAction
++
++from .context import RequestContext, TokenContext, UserContext
++
++
++class TokenAuditLogBase(AuditLogAction):
++    """Base class for OAuth2 audit log actions."""
++
++    context = [
++        UserContext(),
++        RequestContext(),
++        TokenContext(),
++    ]
++    resource_type = "token"
++
++
++class TokenCreateAuditLog(TokenAuditLogBase):
++    """Audit log entry for personal/API token creation."""
++
++    id = "token.create"
++    message_template = "User {user_id} created the token {resource_id}."
++
++
++class TokenAccessAuditLog(TokenAuditLogBase):
++    """Audit log entry for API access using a token."""
++
++    id = "token.access"
++    message_template = "User {user_id} accessed the API with the token {resource_id}."
++
++
++class TokenDeleteAuditLog(TokenAuditLogBase):
++    """Audit log entry for token revocation/deletion."""
++
++    id = "token.delete"
++    message_template = "User {user_id} revoked the token {resource_id}."
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/auditlog/context.py pkg_mod/invenio_oauth2server/auditlog/context.py
+--- pkg_orig/invenio_oauth2server/auditlog/context.py	1970-01-01 01:00:00
++++ pkg_mod/invenio_oauth2server/auditlog/context.py	2025-10-31 22:29:32
+@@ -0,0 +1,106 @@
++# -*- coding: utf-8 -*-
++#
++# This file is part of Invenio.
++#
++# Invenio is free software; you can redistribute it and/or modify it
++# under the terms of the MIT License; see LICENSE file for more details.
++
++"""Audit log context resolvers for OAuth2 events."""
++
++from flask import current_app, has_request_context, request as flask_request
++from invenio_records.dictutils import dict_lookup, dict_set
++from invenio_users_resources.entity_resolvers import UserResolver
++
++
++class UserContext:
++    """Resolve the user referenced by the audit log entry."""
++
++    def __init__(self, key="user"):
++        """Initialize the context."""
++        self.key = key
++        self.resolver = UserResolver()
++
++    def __call__(self, data, lookup_key="user_id", **kwargs):
++        """Add serialized user information to the payload."""
++        user_id = dict_lookup(data, lookup_key)
++        if not user_id:
++            return
++        entity_proxy = self.resolver.get_entity_proxy({self.key: user_id})
++        entity_data = entity_proxy.resolve()
++        dict_set(data, self.key, entity_data)
++
++
++class RequestContext:
++    """Capture request-scoped metadata."""
++
++    def __call__(self, data, request=None, **kwargs):
++        """Add request metadata if available."""
++        req = request
++        if not req and has_request_context():
++            req = flask_request
++
++        if not req:
++            return
++
++        metadata_config = current_app.config.get("AUDIT_LOGS_METADATA_FIELDS", {})
++
++        if metadata_config.get("ip_address"):
++            ip = (
++                req.headers.get("REMOTE_ADDR")
++                or req.headers.get("X-Forwarded-For")
++                or req.remote_addr
++            )
++            if ip:
++                dict_set(data, "metadata.ip_address", ip)
++
++        if metadata_config.get("session"):
++            session_cookie = req.cookies.get("SESSION") or req.cookies.get("session")
++            if session_cookie:
++                dict_set(data, "metadata.session", session_cookie)
++
++        if metadata_config.get("request_id"):
++            request_id = (
++                req.headers.get("X-Request-ID")
++                or req.environ.get("FLASK_REQUEST_ID")
++                or req.environ.get("HTTP_X_REQUEST_ID")
++            )
++            if request_id:
++                dict_set(data, "metadata.request_id", request_id)
++
++
++class TokenContext:
++    """Capture token-specific metadata."""
++
++    def __call__(self, data, token=None, client=None, grant_type=None, **kwargs):
++        """Add token metadata."""
++        tok = token
++        if tok is None:
++            return
++
++        dict_set(
++            data,
++            "metadata.token_id",
++            str(tok.id) if tok.id is not None else tok.client_id,
++        )
++        dict_set(data, "metadata.token_type", tok.token_type)
++        dict_set(data, "metadata.token_is_personal", tok.is_personal)
++        dict_set(data, "metadata.token_is_internal", tok.is_internal)
++
++        scopes = getattr(tok, "scopes", None)
++        if scopes:
++            dict_set(data, "metadata.token_scopes", list(scopes))
++
++        token_client = client or getattr(tok, "client", None)
++        if token_client:
++            dict_set(data, "metadata.token_client_id", token_client.client_id)
++            if getattr(token_client, "name", None):
++                dict_set(data, "metadata.token_name", token_client.name)
++                dict_set(data, "metadata.token_client_name", token_client.name)
++            dict_set(
++                data,
++                "metadata.token_client_is_internal",
++                token_client.is_internal,
++            )
++
++        if grant_type:
++            dict_set(data, "metadata.token_grant_type", grant_type)
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/auditlog/utils.py pkg_mod/invenio_oauth2server/auditlog/utils.py
+--- pkg_orig/invenio_oauth2server/auditlog/utils.py	1970-01-01 01:00:00
++++ pkg_mod/invenio_oauth2server/auditlog/utils.py	2025-10-31 22:29:32
+@@ -0,0 +1,109 @@
++# -*- coding: utf-8 -*-
++#
++# This file is part of Invenio.
++#
++# Invenio is free software; you can redistribute it and/or modify it
++# under the terms of the MIT License; see LICENSE file for more details.
++
++"""Helpers for emitting OAuth2 audit log events."""
++
++from __future__ import annotations
++
++from typing import Optional
++
++from flask import Flask, current_app, g
++from flask_principal import Identity
++from invenio_access.permissions import system_identity
++from invenio_db import db
++from invenio_records_resources.services.uow import UnitOfWork
++
++from invenio_audit_logs.services.uow import AuditLogOp
++
++from .actions import TokenAccessAuditLog, TokenCreateAuditLog, TokenDeleteAuditLog
++
++REGISTERED_ACTIONS = (
++    TokenCreateAuditLog,
++    TokenAccessAuditLog,
++    TokenDeleteAuditLog,
++)
++
++
++def register_audit_log_actions(app: Optional[Flask] = None):
++    """Register OAuth2 audit log actions in the audit logs registry."""
++    application = app or current_app
++    if not application:
++        return None
++
++    audit_ext = application.extensions.get("invenio-audit-logs")
++    if not audit_ext:
++        return None
++
++    registry = audit_ext.actions_registry
++    for action in REGISTERED_ACTIONS:
++        registry.setdefault(action.id, action)
++    return registry
++
++
++def _resolve_identity(identity=None, user=None, user_id=None):
++    """Resolve the identity used for the audit log entry."""
++    if identity is not None and getattr(identity, "id", None):
++        return identity
++
++    if user is not None:
++        candidate = getattr(user, "id", None)
++        if candidate is None and hasattr(user, "get_id"):
++            candidate = user.get_id()
++        if candidate is not None:
++            user_id = candidate
++
++    if user_id is None:
++        try:
++            context_identity = getattr(g, "identity", None)
++        except RuntimeError:
++            context_identity = None
++        if context_identity and getattr(context_identity, "id", None):
++            return context_identity
++        return None
++
++    user_id = str(user_id)
++    resolved_identity = Identity(user_id)
++    resolved_identity.id = user_id  # Explicitly ensure attribute is set.
++    return resolved_identity
++
++
++def _ensure_actions_registered():
++    """Register OAuth2 audit log actions if the registry exists."""
++    return register_audit_log_actions()
++
++
++def emit_token_audit_log(
++    action_cls, *, identity=None, user=None, user_id=None, resource_id=None, **kwargs
++):
++    """Emit an audit log event for OAuth2 token activity."""
++    if not current_app.config.get("AUDIT_LOGS_ENABLED"):
++        return
++
++    registry = _ensure_actions_registered()
++    if registry is None:
++        return
++
++    resolved_identity = _resolve_identity(identity=identity, user=user, user_id=user_id)
++    if resolved_identity is None or resource_id is None:
++        return
++
++    action = registry.get(action_cls.id)
++    if not action:
++        return
++
++    data = action.build(resolved_identity, str(resource_id), **kwargs)
++    if not data:
++        return
++
++    try:
++        with UnitOfWork(db.session) as uow:
++            uow.register(AuditLogOp(data, identity=system_identity))
++            uow.commit()
++    except Exception:
++        current_app.logger.exception(
++            "Failed to emit audit log for action '%s'.", action_cls.id
++        )
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/decorators.py pkg_mod/invenio_oauth2server/decorators.py
+--- pkg_orig/invenio_oauth2server/decorators.py	2025-10-31 22:29:32
++++ pkg_mod/invenio_oauth2server/decorators.py	2025-10-31 22:29:32
+@@ -11,9 +11,11 @@
+ 
+ from functools import wraps
+ 
+-from flask import abort, current_app, request
++from flask import abort, current_app, g, request
+ from flask_login import current_user
+ 
++from .auditlog.actions import TokenAccessAuditLog
++from .auditlog.utils import emit_token_audit_log
+ from .provider import oauth2
+ from .proxies import current_oauth2server
+ 
+@@ -44,7 +46,20 @@
+                 return f(*args, **kwargs)
+             else:
+                 # otherwise, try oauth2
+-                return f_oauth_required(*args, **kwargs)
++                response = f_oauth_required(*args, **kwargs)
++                access_context = getattr(request, "oauth", None)
++                token = getattr(access_context, "access_token", None)
++                if token is not None:
++                    emit_token_audit_log(
++                        TokenAccessAuditLog,
++                        identity=getattr(g, "identity", None),
++                        user_id=getattr(token, "user_id", None),
++                        resource_id=getattr(token, "id", None) or token.client_id,
++                        token=token,
++                        client=getattr(token, "client", None),
++                        request=request,
++                    )
++                return response
+ 
+         return decorated
+ 
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/ext.py pkg_mod/invenio_oauth2server/ext.py
+--- pkg_orig/invenio_oauth2server/ext.py	2025-10-31 22:29:32
++++ pkg_mod/invenio_oauth2server/ext.py	2025-10-31 22:29:32
+@@ -26,6 +26,7 @@
+ from werkzeug.utils import cached_property, import_string
+ 
+ from . import config
++from .auditlog.utils import register_audit_log_actions
+ from .models import OAuthUserProxy, Scope
+ from .provider import oauth2
+ 
+@@ -134,6 +135,17 @@
+         state = _OAuth2ServerState(app, entry_point_group=entry_point_group)
+ 
+         app.extensions["invenio-oauth2server"] = state
++
++        # Register audit log actions as soon as possible and ensure registration
++        # happens once the audit log extension is initialized.
++        state.audit_actions_registered = bool(register_audit_log_actions(app))
++
++        def ensure_audit_actions():
++            if not getattr(state, "audit_actions_registered", False):
++                if register_audit_log_actions(app):
++                    state.audit_actions_registered = True
++
++        app.before_request(ensure_audit_actions)
+         return state
+ 
+     def init_config(self, app):
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/models.py pkg_mod/invenio_oauth2server/models.py
+--- pkg_orig/invenio_oauth2server/models.py	2025-10-31 22:29:32
++++ pkg_mod/invenio_oauth2server/models.py	2025-10-31 22:29:32
+@@ -10,7 +10,7 @@
+ """OAuth2Server models."""
+ 
+ import six
+-from flask import current_app
++from flask import current_app, has_request_context, request
+ from flask_login import current_user
+ from invenio_accounts.models import User
+ from invenio_db import db
+@@ -22,6 +22,8 @@
+ from werkzeug.security import gen_salt
+ from wtforms import validators
+ 
++from .auditlog.actions import TokenCreateAuditLog
++from .auditlog.utils import emit_token_audit_log
+ from .errors import ScopeDoesNotExists
+ from .proxies import current_oauth2server
+ from .validators import validate_redirect_uri, validate_scopes
+@@ -131,7 +133,7 @@
+         info=dict(
+             label=_("Description"),
+             description=_(
+-                "Optional. Description of the application" " (displayed to users)."
++                "Optional. Description of the application (displayed to users)."
+             ),
+         ),
+     )
+@@ -429,5 +431,16 @@
+ 
+             db.session.add(c)
+             db.session.add(t)
++            db.session.flush()
++
++        flask_req = request if has_request_context() else None
++        emit_token_audit_log(
++            TokenCreateAuditLog,
++            user_id=user_id,
++            resource_id=t.id,
++            token=t,
++            client=c,
++            request=flask_req,
++        )
+ 
+         return t
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/provider.py pkg_mod/invenio_oauth2server/provider.py
+--- pkg_orig/invenio_oauth2server/provider.py	2025-10-31 22:29:32
++++ pkg_mod/invenio_oauth2server/provider.py	2025-10-31 22:29:32
+@@ -12,7 +12,7 @@
+ from datetime import datetime, timedelta
+ from importlib.metadata import version
+ 
+-from flask import current_app, g
++from flask import current_app, g, has_request_context, request as flask_request
+ from flask_login import current_user
+ from flask_oauthlib.provider import OAuth2Provider
+ from flask_principal import Identity, identity_changed
+@@ -20,6 +20,8 @@
+ from invenio_db import db
+ from werkzeug.local import LocalProxy
+ 
++from .auditlog.actions import TokenCreateAuditLog
++from .auditlog.utils import emit_token_audit_log
+ from .models import Client, Token
+ from .scopes import email_scope
+ 
+@@ -97,7 +99,8 @@
+     :returns: A :class:`invenio_oauth2server.models.Token` instance.
+     """
+     # Exclude the personal access tokens which doesn't expire.
+-    user = request.user if request.user else current_user
++    oauth_request = request
++    user = oauth_request.user if oauth_request.user else current_user
+ 
+     # Add user information in token endpoint response.
+     # Currently, this is the only way to have the access to the user of the
+@@ -112,7 +115,7 @@
+         )
+ 
+     tokens = Token.query.filter_by(
+-        client_id=request.client.client_id,
++        client_id=oauth_request.client.client_id,
+         user_id=user.id,
+         is_personal=False,
+     )
+@@ -132,11 +135,25 @@
+         token_type=token["token_type"],
+         _scopes=token["scope"],
+         expires=expires,
+-        client_id=request.client.client_id,
++        client_id=oauth_request.client.client_id,
+         user_id=user.id,
+         is_personal=False,
+     )
+     db.session.add(tok)
++    db.session.flush()
++
++    flask_req = flask_request if has_request_context() else None
++    emit_token_audit_log(
++        TokenCreateAuditLog,
++        identity=getattr(g, "identity", None),
++        user=user,
++        resource_id=tok.id,
++        token=tok,
++        client=oauth_request.client,
++        request=flask_req,
++        grant_type=getattr(oauth_request, "grant_type", None),
++    )
++
+     db.session.commit()
+     return tok
+ 
+diff -ruN --exclude=__pycache__ --exclude=translations --exclude=__init__.py pkg_orig/invenio_oauth2server/views/settings.py pkg_mod/invenio_oauth2server/views/settings.py
+--- pkg_orig/invenio_oauth2server/views/settings.py	2025-10-31 22:29:32
++++ pkg_mod/invenio_oauth2server/views/settings.py	2025-10-31 22:29:32
+@@ -12,10 +12,21 @@
+ 
+ from functools import wraps
+ 
+-from flask import Blueprint, abort, redirect, render_template, request, session, url_for
++from flask import (
++    Blueprint,
++    abort,
++    g,
++    redirect,
++    render_template,
++    request,
++    session,
++    url_for,
++)
+ from flask_login import current_user, login_required
+ from invenio_db import db
+ 
++from ..auditlog.actions import TokenDeleteAuditLog
++from ..auditlog.utils import emit_token_audit_log
+ from ..forms import ClientForm, TokenForm
+ from ..models import Client, Token
+ from ..proxies import current_oauth2server
+@@ -214,6 +225,15 @@
+ def token_view(token):
+     """Show token details."""
+     if request.method == "POST" and "delete" in request.form:
++        emit_token_audit_log(
++            TokenDeleteAuditLog,
++            identity=getattr(g, "identity", None),
++            user_id=token.user_id,
++            resource_id=token.id,
++            token=token,
++            client=token.client,
++            request=request,
++        )
+         db.session.delete(token)
+         db.session.commit()
+         return redirect(url_for(".index"))
+@@ -250,6 +270,15 @@
+ @token_getter(is_personal=False, is_internal=False)
+ def token_revoke(token):
+     """Revoke Authorized Application token."""
++    emit_token_audit_log(
++        TokenDeleteAuditLog,
++        identity=getattr(g, "identity", None),
++        user_id=token.user_id,
++        resource_id=token.id,
++        token=token,
++        client=token.client,
++        request=request,
++    )
+     db.session.delete(token)
+     db.session.commit()
+     return redirect(url_for(".index"))
