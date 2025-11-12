@@ -1,5 +1,4 @@
 from celery import shared_task
-
 from invenio_files_rest.models import FileInstance
 from invenio_files_rest.tasks import remove_file_data
 

@@ -6,7 +6,6 @@ import json
 import subprocess
 from pathlib import Path
 
-
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 LOCKFILE = REPO_ROOT / ".venv" / "var" / "instance" / "assets" / "pnpm-lock.yaml"
