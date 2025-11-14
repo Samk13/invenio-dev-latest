@@ -5,7 +5,7 @@ version = "13.0.1"
 requires-python = ">= 3.12"
 
 dependencies = [
-  "invenio-app-rdm[opensearch2,s3]~=14.0.0b2.dev1",
+  "invenio-app-rdm[opensearch2,s3]~=14.0.0b3.dev0",
   "python-dotenv>=0.21.0",
   "uwsgi>=2.0",
   "uwsgitop>=0.11",
@@ -27,6 +27,7 @@ members = [
 
 [dependency-groups]
 dev = [
+    "flask-debugtoolbar>=0.16.0",
     "pdbpp>=0.11.7",
     "pytest-invenio>=3.0.0,<4.0.0",
     "ruff>=0.13.0",
