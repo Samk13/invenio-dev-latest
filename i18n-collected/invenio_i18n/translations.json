@@ -1,0 +1,124 @@
+{
+  "ar": {
+    "Language:": "اللغة:",
+    "invenio_i18n:Language:": "اللغة:"
+  },
+  "bg": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "ca": {
+    "Language:": "Llengua:",
+    "invenio_i18n:Language:": "Llengua:"
+  },
+  "cs": {
+    "Language:": "Jazyk:",
+    "invenio_i18n:Language:": "Jazyk:"
+  },
+  "da": {
+    "Language:": "Sprog:",
+    "invenio_i18n:Language:": "Sprog:"
+  },
+  "de": {
+    "Language:": "Sprache:",
+    "invenio_i18n:Language:": "Sprache:",
+    "NonExistentMessage": "Test Translation",
+    "invenio_i18n:NonExistentMessage": "Test Translation"
+  },
+  "el": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "en": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "es": {
+    "Language:": "Idioma:",
+    "invenio_i18n:Language:": "Idioma:"
+  },
+  "et": {
+    "Language:": "Keel:",
+    "invenio_i18n:Language:": "Keel:"
+  },
+  "fa": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "fr": {
+    "Language:": "Langue:",
+    "invenio_i18n:Language:": "Langue:"
+  },
+  "hr": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "hu": {
+    "Language:": "Nyelv:",
+    "invenio_i18n:Language:": "Nyelv:"
+  },
+  "it": {
+    "Language:": "Lingua:",
+    "invenio_i18n:Language:": "Lingua:"
+  },
+  "ja": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "ka": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "ko": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "lt": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "no": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "pl": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "pt": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "ro": {
+    "Language:": "Limba:",
+    "invenio_i18n:Language:": "Limba:"
+  },
+  "ru": {
+    "Language:": "Язык:",
+    "invenio_i18n:Language:": "Язык:"
+  },
+  "sk": {
+    "Language:": "Jazyk:",
+    "invenio_i18n:Language:": "Jazyk:"
+  },
+  "sv": {
+    "Language:": "Språk:",
+    "invenio_i18n:Language:": "Språk:"
+  },
+  "tr": {
+    "Language:": "Dil:",
+    "invenio_i18n:Language:": "Dil:"
+  },
+  "uk": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  },
+  "zh_CN": {
+    "Language:": "语言：",
+    "invenio_i18n:Language:": "语言："
+  },
+  "zh_TW": {
+    "Language:": "Language:",
+    "invenio_i18n:Language:": "Language:"
+  }
+}

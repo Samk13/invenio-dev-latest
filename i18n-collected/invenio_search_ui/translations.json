@@ -1,0 +1,242 @@
+{
+  "ar": {
+    "Search": "بحث",
+    "invenio_search_ui:Search": "بحث",
+    "Search failed.": "بحث فاشل.",
+    "invenio_search_ui:Search failed.": "بحث فاشل.",
+    "Loading...": "بصدد التحميل...",
+    "invenio_search_ui:Loading...": "بصدد التحميل..."
+  },
+  "bg": {
+    "Search": "Търсене",
+    "invenio_search_ui:Search": "Търсене",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "ca": {
+    "Search": "Cerca",
+    "invenio_search_ui:Search": "Cerca",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "cs": {
+    "Search": "Hledat",
+    "invenio_search_ui:Search": "Hledat",
+    "Search failed.": "Hledání selhalo.",
+    "invenio_search_ui:Search failed.": "Hledání selhalo.",
+    "Loading...": "Probíhá načítání...",
+    "invenio_search_ui:Loading...": "Probíhá načítání..."
+  },
+  "da": {
+    "Search": "Search",
+    "invenio_search_ui:Search": "Search",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "de": {
+    "Search": "Suchen",
+    "invenio_search_ui:Search": "Suchen",
+    "Search failed.": "Suche fehlgeschlagen.",
+    "invenio_search_ui:Search failed.": "Suche fehlgeschlagen.",
+    "Loading...": "Laden ...",
+    "invenio_search_ui:Loading...": "Laden ..."
+  },
+  "el": {
+    "Search": "Αναζήτηση",
+    "invenio_search_ui:Search": "Αναζήτηση",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Φόρτωση...",
+    "invenio_search_ui:Loading...": "Φόρτωση..."
+  },
+  "es": {
+    "Search": "Buscar",
+    "invenio_search_ui:Search": "Buscar",
+    "Search failed.": "Búsqueda fallida.",
+    "invenio_search_ui:Search failed.": "Búsqueda fallida.",
+    "Loading...": "Cargando...",
+    "invenio_search_ui:Loading...": "Cargando..."
+  },
+  "et": {
+    "Search": "Otsi",
+    "invenio_search_ui:Search": "Otsi",
+    "Search failed.": "Otsing ebaõnnestus.",
+    "invenio_search_ui:Search failed.": "Otsing ebaõnnestus.",
+    "Loading...": "Laeb...",
+    "invenio_search_ui:Loading...": "Laeb..."
+  },
+  "fa": {
+    "Search": "جستجو",
+    "invenio_search_ui:Search": "جستجو",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "fi": {
+    "Search": "Haku",
+    "invenio_search_ui:Search": "Haku",
+    "Search failed.": "Haku epäonnistui.",
+    "invenio_search_ui:Search failed.": "Haku epäonnistui.",
+    "Loading...": "Ladataan...",
+    "invenio_search_ui:Loading...": "Ladataan..."
+  },
+  "fr": {
+    "Search": "Chercher",
+    "invenio_search_ui:Search": "Chercher",
+    "Search failed.": "Recherche échouée.",
+    "invenio_search_ui:Search failed.": "Recherche échouée.",
+    "Loading...": "Chargement...",
+    "invenio_search_ui:Loading...": "Chargement..."
+  },
+  "hr": {
+    "Search": "Pretraži",
+    "invenio_search_ui:Search": "Pretraži",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "hu": {
+    "Search": "Keresés",
+    "invenio_search_ui:Search": "Keresés",
+    "Search failed.": "A keresés sikertelen.",
+    "invenio_search_ui:Search failed.": "A keresés sikertelen.",
+    "Loading...": "Betöltés...",
+    "invenio_search_ui:Loading...": "Betöltés..."
+  },
+  "it": {
+    "Search": "Ricerca",
+    "invenio_search_ui:Search": "Ricerca",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Caricamento...",
+    "invenio_search_ui:Loading...": "Caricamento..."
+  },
+  "ja": {
+    "Search": "検索",
+    "invenio_search_ui:Search": "検索",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "ka": {
+    "Search": "ძებნა",
+    "invenio_search_ui:Search": "ძებნა",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "ko": {
+    "Search": "검색",
+    "invenio_search_ui:Search": "검색",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "lt": {
+    "Search": "Ieškoti",
+    "invenio_search_ui:Search": "Ieškoti",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "no": {
+    "Search": "Søk",
+    "invenio_search_ui:Search": "Søk",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "pl": {
+    "Search": "Szukaj",
+    "invenio_search_ui:Search": "Szukaj",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "pt": {
+    "Search": "Pesquisar",
+    "invenio_search_ui:Search": "Pesquisar",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "ro": {
+    "Search": "Caută",
+    "invenio_search_ui:Search": "Caută",
+    "Search failed.": "Căutarea a eșuat.",
+    "invenio_search_ui:Search failed.": "Căutarea a eșuat.",
+    "Loading...": "Încărcare...",
+    "invenio_search_ui:Loading...": "Încărcare..."
+  },
+  "ru": {
+    "Search": "Искать",
+    "invenio_search_ui:Search": "Искать",
+    "Search failed.": "Поиск не дал результатов.",
+    "invenio_search_ui:Search failed.": "Поиск не дал результатов.",
+    "Loading...": "Грузится...",
+    "invenio_search_ui:Loading...": "Грузится..."
+  },
+  "sk": {
+    "Search": "Hľadať",
+    "invenio_search_ui:Search": "Hľadať",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Načítava sa...",
+    "invenio_search_ui:Loading...": "Načítava sa..."
+  },
+  "sv": {
+    "Search": "Sök",
+    "invenio_search_ui:Search": "Sök",
+    "Search failed.": "Sökningen misslyckades.",
+    "invenio_search_ui:Search failed.": "Sökningen misslyckades.",
+    "Loading...": "Läser in...",
+    "invenio_search_ui:Loading...": "Läser in..."
+  },
+  "tr": {
+    "Search": "Ara",
+    "invenio_search_ui:Search": "Ara",
+    "Search failed.": "Arama başarısız oldu.",
+    "invenio_search_ui:Search failed.": "Arama başarısız oldu.",
+    "Loading...": "Yükleniyor...",
+    "invenio_search_ui:Loading...": "Yükleniyor..."
+  },
+  "uk": {
+    "Search": "Пошук",
+    "invenio_search_ui:Search": "Пошук",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  },
+  "zh_CN": {
+    "Search": "搜索",
+    "invenio_search_ui:Search": "搜索",
+    "Search failed.": "搜索失败。",
+    "invenio_search_ui:Search failed.": "搜索失败。",
+    "Loading...": "载入中...",
+    "invenio_search_ui:Loading...": "载入中..."
+  },
+  "zh_TW": {
+    "Search": "搜尋",
+    "invenio_search_ui:Search": "搜尋",
+    "Search failed.": "Search failed.",
+    "invenio_search_ui:Search failed.": "Search failed.",
+    "Loading...": "Loading...",
+    "invenio_search_ui:Loading...": "Loading..."
+  }
+}

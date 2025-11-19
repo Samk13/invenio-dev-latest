@@ -1,0 +1,182 @@
+{
+  "ar": {
+    "Export": "تصدير",
+    "invenio_records_ui:Export": "تصدير",
+    "TOMBSTONE": "شاهد TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "شاهد TOMBSTONE"
+  },
+  "bg": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "ca": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "cs": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "NÁHROBNÍ KÁMEN",
+    "invenio_records_ui:TOMBSTONE": "NÁHROBNÍ KÁMEN"
+  },
+  "da": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "de": {
+    "Export": "Exportieren",
+    "invenio_records_ui:Export": "Exportieren",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "el": {
+    "Export": "Εξαγωγή",
+    "invenio_records_ui:Export": "Εξαγωγή",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "es": {
+    "Export": "Exportar",
+    "invenio_records_ui:Export": "Exportar",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "et": {
+    "Export": "Ekspordi",
+    "invenio_records_ui:Export": "Ekspordi",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "fa": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "fi": {
+    "Export": "Vie",
+    "invenio_records_ui:Export": "Vie",
+    "TOMBSTONE": "POISTOVIESTI",
+    "invenio_records_ui:TOMBSTONE": "POISTOVIESTI"
+  },
+  "fr": {
+    "Export": "Exporter",
+    "invenio_records_ui:Export": "Exporter",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "hr": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "hu": {
+    "Export": "Exportálás",
+    "invenio_records_ui:Export": "Exportálás",
+    "TOMBSTONE": "Eltávolított tartalom",
+    "invenio_records_ui:TOMBSTONE": "Eltávolított tartalom"
+  },
+  "it": {
+    "Export": "Esporta",
+    "invenio_records_ui:Export": "Esporta",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "ja": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "ka": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "ko": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "lt": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "no": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "pl": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "pt": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "ro": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "ru": {
+    "Export": "Экспортировать",
+    "invenio_records_ui:Export": "Экспортировать",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "sk": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "sv": {
+    "Export": "Exportera",
+    "invenio_records_ui:Export": "Exportera",
+    "TOMBSTONE": "GRAVSTEN",
+    "invenio_records_ui:TOMBSTONE": "GRAVSTEN"
+  },
+  "tr": {
+    "Export": "Dışa Aktar",
+    "invenio_records_ui:Export": "Dışa Aktar",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "uk": {
+    "Export": "Експортувати",
+    "invenio_records_ui:Export": "Експортувати",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "zh_CN": {
+    "Export": "导出",
+    "invenio_records_ui:Export": "导出",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  },
+  "zh_TW": {
+    "Export": "Export",
+    "invenio_records_ui:Export": "Export",
+    "TOMBSTONE": "TOMBSTONE",
+    "invenio_records_ui:TOMBSTONE": "TOMBSTONE"
+  }
+}

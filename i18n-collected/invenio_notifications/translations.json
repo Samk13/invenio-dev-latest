@@ -1,0 +1,183 @@
+{
+  "ar": {
+    "%(icon)s Notifications": "%(icon)sإشعارات",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)sإشعارات",
+    "Notifications": "إشعارات",
+    "invenio_notifications:Notifications": "إشعارات"
+  },
+  "bg": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "ca": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "cs": {
+    "%(icon)s Notifications": "%(icon)s Notifikace",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifikace",
+    "Notifications": "Notifikace",
+    "invenio_notifications:Notifications": "Notifikace"
+  },
+  "da": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "de": {
+    "%(icon)s Notifications": "%(icon)s Benachrichtigungen",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Benachrichtigungen",
+    "Notifications": "Benachrichtigungen",
+    "invenio_notifications:Notifications": "Benachrichtigungen"
+  },
+  "el": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "en": {},
+  "es": {
+    "%(icon)s Notifications": "%(icon)s Notificaciones",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notificaciones",
+    "Notifications": "Notificaciones",
+    "invenio_notifications:Notifications": "Notificaciones"
+  },
+  "et": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "fa": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "fi": {
+    "%(icon)s Notifications": "%(icon)s Ilmoitukset",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Ilmoitukset",
+    "Notifications": "Ilmoitukset",
+    "invenio_notifications:Notifications": "Ilmoitukset"
+  },
+  "fr": {
+    "%(icon)s Notifications": "%(icon)s Notification",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notification",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "hr": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "hu": {
+    "%(icon)s Notifications": "%(icon)sÉrtesítések",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)sÉrtesítések",
+    "Notifications": "Értesítések",
+    "invenio_notifications:Notifications": "Értesítések"
+  },
+  "it": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "ja": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "ka": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "ko": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "lt": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "no": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "pl": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "pt": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "ro": {
+    "%(icon)s Notifications": "%(icon)s Notificări",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notificări",
+    "Notifications": "Notificări",
+    "invenio_notifications:Notifications": "Notificări"
+  },
+  "ru": {
+    "%(icon)s Notifications": "%(icon)s Уведомления",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Уведомления",
+    "Notifications": "Уведомления",
+    "invenio_notifications:Notifications": "Уведомления"
+  },
+  "sk": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "sv": {
+    "%(icon)s Notifications": "%(icon)s Meddelanden",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Meddelanden",
+    "Notifications": "Meddelanden",
+    "invenio_notifications:Notifications": "Meddelanden"
+  },
+  "tr": {
+    "%(icon)s Notifications": "%(icon)sBildirimler",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)sBildirimler",
+    "Notifications": "Bildirimler",
+    "invenio_notifications:Notifications": "Bildirimler"
+  },
+  "uk": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "zh_CN": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  },
+  "zh_TW": {
+    "%(icon)s Notifications": "%(icon)s Notifications",
+    "invenio_notifications:%(icon)s Notifications": "%(icon)s Notifications",
+    "Notifications": "Notifications",
+    "invenio_notifications:Notifications": "Notifications"
+  }
+}

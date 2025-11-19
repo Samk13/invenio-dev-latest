@@ -1,0 +1,26 @@
+{
+  "cs": {
+    "Allow notifications from external service.": "Allow notifications from external service.",
+    "invenio_webhooks:Allow notifications from external service.": "Allow notifications from external service."
+  },
+  "da": {
+    "Allow notifications from external service.": "Allow notifications from external service.",
+    "invenio_webhooks:Allow notifications from external service.": "Allow notifications from external service."
+  },
+  "de": {
+    "Allow notifications from external service.": "Allow notifications from external service.",
+    "invenio_webhooks:Allow notifications from external service.": "Allow notifications from external service."
+  },
+  "es": {
+    "Allow notifications from external service.": "Allow notifications from external service.",
+    "invenio_webhooks:Allow notifications from external service.": "Allow notifications from external service."
+  },
+  "fr": {
+    "Allow notifications from external service.": "Autoriser les notifications du service externe.",
+    "invenio_webhooks:Allow notifications from external service.": "Autoriser les notifications du service externe."
+  },
+  "it": {
+    "Allow notifications from external service.": "Autorizzare notifiche dal servizio esterno.",
+    "invenio_webhooks:Allow notifications from external service.": "Autorizzare notifiche dal servizio esterno."
+  }
+}

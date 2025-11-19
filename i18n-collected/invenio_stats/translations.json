@@ -1,0 +1,10 @@
+{
+  "en": {
+    "Unknown statistic '%(query_name)s'": "Unknown statistic '%(query_name)s'",
+    "invenio_stats:Unknown statistic '%(query_name)s'": "Unknown statistic '%(query_name)s'",
+    "Invalid Input. It should be of the form { STATISTIC_NAME: { \"stat\": STAT_TYPE, \"params\": STAT_PARAMS }}": "Invalid Input. It should be of the form { STATISTIC_NAME: { \"stat\": STAT_TYPE, \"params\": STAT_PARAMS }}",
+    "invenio_stats:Invalid Input. It should be of the form { STATISTIC_NAME: { \"stat\": STAT_TYPE, \"params\": STAT_PARAMS }}": "Invalid Input. It should be of the form { STATISTIC_NAME: { \"stat\": STAT_TYPE, \"params\": STAT_PARAMS }}",
+    "You do not have a permission to query the statistic \"%(stat)s\" with those parameters": "You do not have a permission to query the statistic \"%(stat)s\" with those parameters",
+    "invenio_stats:You do not have a permission to query the statistic \"%(stat)s\" with those parameters": "You do not have a permission to query the statistic \"%(stat)s\" with those parameters"
+  }
+}
