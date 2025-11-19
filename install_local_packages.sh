@@ -26,6 +26,7 @@ PACKAGES=(
   # invenio-administration
   invenio-app-rdm
   invenio-users-resources
+  invenio-i18n
   # invenio-communities
   # invenio-rdm-records
   # invenio-search-ui
