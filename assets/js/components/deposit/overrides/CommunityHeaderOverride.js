@@ -89,7 +89,7 @@ export const RecommendedInformationOverride = ({
                         <FieldLabel
                           className="ui grid visible info message header "
                           htmlFor="communityHeader"
-                          label={currentLocalReqCommMsg}
+                          label={i18next.t("Community is required in order to submit your record.")}
                         />
                       </Card.Header>
                     </Card.Content>
