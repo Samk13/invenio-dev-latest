@@ -10,7 +10,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 LOCKFILE = REPO_ROOT / ".venv" / "var" / "instance" / "assets" / "pnpm-lock.yaml"
 PNPM_WORKSPACE = LOCKFILE.parent
-INFECTED_FILE = SCRIPT_DIR / "npm_infected_versions.json"
+# INFECTED_FILE = SCRIPT_DIR / "npm_infected_versions.json"
+INFECTED_FILE = SCRIPT_DIR / "shai-hulud-2-packages.json"
 
 
 def load_infected() -> set[str]:
