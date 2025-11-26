@@ -159,7 +159,6 @@ export const RecommendedInformationOverride = ({
         <DatesField
           fieldPath="metadata.dates"
           options={vocabularies.metadata.dates}
-          showEmptyValue
         />
         <VersionField fieldPath="metadata.version" />
         <PublisherField fieldPath="metadata.publisher" />
