@@ -26,19 +26,15 @@ invenio access allow administration-moderation role administration-moderation
 
 echo "Allow administration-access to role administration ..."
 invenio access allow administration-access role administration
-
-echo "Allow superuser-access to role administration ..."
-invenio access allow superuser-access role administration
-
 echo "add test@test.com as administrator"
 
 invenio roles add test@test.com administration
 invenio roles add test@test.com administration-moderation
 
-echo "create domains..."
-invenio domains create organization
-invenio domains create company
-invenio domains create mailprovider
-invenio domains create spammer
+# echo "create domains..."
+# invenio domains create organization
+# invenio domains create company
+# invenio domains create mailprovider
+# invenio domains create spammer
 
 echo "done!"
