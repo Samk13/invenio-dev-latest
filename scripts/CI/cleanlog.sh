@@ -2,6 +2,8 @@
 
 # Usage:
 # cleanlog.sh input_file [-o output_file] [-p "pattern1|pattern2|pattern3"]
+# Removes lines matching any of the specified patterns (case insensitive)
+# usful for cleaning build logs from known warnings where GH UI cannot load long logs. 
 
 DEFAULT_PATTERNS="is deprecated|method is considered legacy|warning"
 
