@@ -26,6 +26,10 @@ invenio access allow administration-moderation role administration-moderation
 
 echo "Allow administration-access to role administration ..."
 invenio access allow administration-access role administration
+
+echo "Allow superuser-access to role administration ..."
+invenio access allow superuser-access role administration
+
 echo "add test@test.com as administrator"
 
 invenio roles add test@test.com administration
