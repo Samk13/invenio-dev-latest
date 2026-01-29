@@ -39,6 +39,7 @@ def main():
         ("student", "student", "Student role"),
         ("moderator", "moderator", "Moderator role"),
         ("community-creator", "community-creator", "Community Creator role"),
+        ("teacher", "teacher", "Teacher role"),
     ]
 
     created = {}
