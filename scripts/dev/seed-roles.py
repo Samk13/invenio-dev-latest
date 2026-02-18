@@ -4,10 +4,11 @@
 # This script seeds roles for development/testing
 # All roles created as unmanaged groups
 
-from invenio_users_resources.permissions import user_management_action
-from invenio_accounts.proxies import current_datastore
-from invenio_access.permissions import superuser_access
 from invenio_access.models import ActionRoles
+from invenio_access.permissions import superuser_access
+from invenio_accounts.proxies import current_datastore
+from invenio_users_resources.permissions import user_management_action
+
 
 def create_role(id, name, description, is_managed=False):
     """Create a role if it does not exist."""
