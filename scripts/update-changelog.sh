@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+# update changelog based on git commits since last tag
+# Usage: ./update-changelog.sh [--major|--minor|--patch] [--remote <remote-name>]
+# Do not work with dev branches, only with release branches (e.g. main, master, stable/*) or detached 
+
 # Parse command-line arguments for version bump type and remote
 bump_type="patch"  # default to patch
 remote="upstream"  # default to upstream
@@ -34,7 +38,7 @@ done
 git fetch "$remote" --tags >/dev/null
 
 # Determine which ref to inspect for the latest tag
-current_branch=$(git rev-parse --abbrev-ref HEAD)
+current_branch=$(git rev-parse --abbrev-ref )
 if [[ "$current_branch" != "HEAD" ]] && git show-ref --verify --quiet "refs/remotes/${remote}/${current_branch}"; then
   base_ref="${remote}/${current_branch}"
 elif [[ "$current_branch" != "HEAD" ]]; then
