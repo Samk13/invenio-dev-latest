@@ -2,15 +2,15 @@
 
 # Shows: VIRTUAL_ENV (claimed) vs python sys.prefix/executable (actual)
 
-local ve="${VIRTUAL_ENV:-<none>}"
-local py
+ve="${VIRTUAL_ENV:- ✅ <none> }"
+py=""
 py="$(command -v python 2>/dev/null || command -v python3 2>/dev/null || true)"
 
 echo "claimed VIRTUAL_ENV: $ve"
 
 if [[ -z "$py" ]]; then
 echo "actual python: <not found>"
-return 1
+exit 1
 fi
 
 echo "python in PATH:      $py"
