@@ -16,7 +16,6 @@ from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_records_permissions.generators import Disable, Generator, SystemProcess
 from invenio_accounts.proxies import current_datastore
 
-
 class CommunityCreator(Generator):
     """Allows users with the community-creator role."""
 
@@ -24,13 +23,8 @@ class CommunityCreator(Generator):
         configured = current_app.config.get(
             "CONFIG_COMMUNITY_CREATOR_ROLE", "community-creator"
         )
-
         role = current_datastore.find_role(configured)
-
-        if role is None:
-            return [RoleNeed(configured)]
-
-        return [RoleNeed(role.id)]
+        return [RoleNeed(role.id)] if role else [RoleNeed(configured)]
 
 
 class CommunitiesPermissionPolicy(CommunityPermissionPolicy):
