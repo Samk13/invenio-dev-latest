@@ -1,11 +1,11 @@
 [project]
 name = "latest-build-instance"
 description = "latest build for invenioRDM"
-version = "14.0.0b5.dev0"
+version = "14.0.0b5.dev6"
 requires-python = ">= 3.12"
 
 dependencies = [
-  "invenio-app-rdm[opensearch2,s3]~=14.0.0b5.dev0",
+  "invenio-app-rdm[opensearch2,s3]~=14.0.0b5.dev6",
   "python-dotenv>=0.21.0",
   "uwsgi>=2.0",
   "uwsgitop>=0.11",
@@ -18,25 +18,25 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-latest_build = { workspace = true }
+"latest-build" = { workspace = true }
 
 [tool.uv.workspace]
 members = [
   "site",
 ]
 
-[dependency-groups]
-dev = [
+[project.optional-dependencies]
+tests = [
+    "pytest-invenio>=4.0.0,<5.0.0",
+    "pytest-invenio>=4.0.0,<5.0.0",
+    "ruff>=0.13.0",
     "flask-debugtoolbar>=0.16.0",
     "pdbpp>=0.11.7",
-    "pytest-invenio>=3.0.0,<4.0.0",
-    "ruff>=0.13.0",
 ]
 
-[project.optional-dependencies]
-sentry = [
-    "sentry-sdk>=1.45,<2.0.0",
-]
-tests = [
-    "pytest-invenio>=3.0.0,<4.0.0",
-]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+bypass-selection = true
