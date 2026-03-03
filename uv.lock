@@ -2646,7 +2646,7 @@ wheels = [
 
 [[package]]
 name = "invenio-stats"
-version = "6.1.0"
+version = "6.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "counter-robots" },
@@ -2659,9 +2659,9 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "python-geoip" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b0/6a/3793b2d1a2924cdf5c554746d8bbd6cba4a42fc7b359666c594223aa64fb/invenio_stats-6.1.0.tar.gz", hash = "sha256:0ca5e2bbe6814a2185eeb33d629d91650b60ac15246f3f90602ee54f42a3ef12", size = 38665, upload-time = "2026-02-20T10:52:13.021Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/49/af/ab8b33c606d8776a1eef48418d9882d1d24fa1de6a90ea5504e6c303e427/invenio_stats-6.1.1.tar.gz", hash = "sha256:f0ac0533288dfc385f1ff00706ab8c44c9d426dc560bccd5245d61a56d8b617a", size = 39190, upload-time = "2026-03-03T16:40:43.253Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/ff/8c9c2a09b91a09fa34a84b2d192524f504b1f2116234be6b08dab2a6ad37/invenio_stats-6.1.0-py2.py3-none-any.whl", hash = "sha256:78f82a13474485b6b2e0b7220d9cef47d2edb0c8cd93faed2e7981805b0f758f", size = 53992, upload-time = "2026-02-20T10:52:11.678Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/b1/4bc2a1c08fa021fb9b19ac0f64babf643d85fb1317bbcc3b94b53638bba0/invenio_stats-6.1.1-py2.py3-none-any.whl", hash = "sha256:fc96c85db5e4e590ea87705dc91a8769b6862fb9fbf69e6bb85cbbd21ca05763", size = 54421, upload-time = "2026-03-03T16:40:42.036Z" },
 ]
 
 [[package]]
@@ -3011,8 +3011,8 @@ source = { editable = "site" }
 
 [[package]]
 name = "latest-build-instance"
-version = "14.0.0b5.dev0"
-source = { virtual = "." }
+version = "14.0.0b5.dev6"
+source = { editable = "." }
 dependencies = [
     { name = "apispec", extra = ["marshmallow", "yaml"] },
     { name = "apispec-webframeworks" },
@@ -3027,15 +3027,7 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-sentry = [
-    { name = "sentry-sdk" },
-]
 tests = [
-    { name = "pytest-invenio" },
-]
-
-[package.dev-dependencies]
-dev = [
     { name = "flask-debugtoolbar" },
     { name = "pdbpp" },
     { name = "pytest-invenio" },
@@ -3046,26 +3038,20 @@ dev = [
 requires-dist = [
     { name = "apispec", extras = ["marshmallow", "yaml"], specifier = ">=6.8.3" },
     { name = "apispec-webframeworks", specifier = ">=1.2.0" },
-    { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=14.0.0b5.dev0" },
+    { name = "flask-debugtoolbar", marker = "extra == 'tests'", specifier = ">=0.16.0" },
+    { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=14.0.0b5.dev6" },
     { name = "invenio-cli" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "pdbpp", marker = "extra == 'tests'", specifier = ">=0.11.7" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
     { name = "python-dotenv", specifier = ">=0.21.0" },
-    { name = "sentry-sdk", marker = "extra == 'sentry'", specifier = ">=1.45,<2.0.0" },
+    { name = "ruff", marker = "extra == 'tests'", specifier = ">=0.13.0" },
     { name = "uwsgi", specifier = ">=2.0" },
     { name = "uwsgi-tools", specifier = ">=1.1.1" },
     { name = "uwsgitop", specifier = ">=0.11" },
 ]
-provides-extras = ["sentry", "tests"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "flask-debugtoolbar", specifier = ">=0.16.0" },
-    { name = "pdbpp", specifier = ">=0.11.7" },
-    { name = "pytest-invenio", specifier = ">=3.0.0,<4.0.0" },
-    { name = "ruff", specifier = ">=0.13.0" },
-]
+provides-extras = ["tests"]
 
 [[package]]
 name = "limits"
@@ -4344,7 +4330,7 @@ wheels = [
 
 [[package]]
 name = "pytest-invenio"
-version = "3.4.2"
+version = "4.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "check-manifest" },
@@ -4360,9 +4346,9 @@ dependencies = [
     { name = "selenium" },
     { name = "snowballstemmer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/31/7d/5f98cdd0eb52ba8ec98913f24ef6e1b371d05ef202838b58ffb788f098ec/pytest_invenio-3.4.2.tar.gz", hash = "sha256:8655536540a1585487df319cf3f2491053963f347e8057fb747f1829e980deeb", size = 41027, upload-time = "2025-07-09T06:37:38.114Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8b/e4/98c06a36cec31bb944d9d93ae0c242e685b0827c87c692163b1eec6adefe/pytest_invenio-4.0.0.tar.gz", hash = "sha256:f7e1ac6bde6aa0872627e48cfed230932317c8f55680134393f122cdf7ca2cf9", size = 28507, upload-time = "2026-01-27T10:07:55.899Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/26/8e/52dc420b97eff8e52e064d4194ce682ca154988d291115d41ac6603fd112/pytest_invenio-3.4.2-py2.py3-none-any.whl", hash = "sha256:f7be2bca64256e498a71410463f9c0d0da560065590f4eb91745e556bc72a79b", size = 24549, upload-time = "2025-07-09T06:37:37.003Z" },
+    { url = "https://files.pythonhosted.org/packages/5e/ef/ac8f2e8002ddd0eb46d2ac32456c0f9af1856afa10fc7f3da96adc55e07e/pytest_invenio-4.0.0-py2.py3-none-any.whl", hash = "sha256:727f252ea31e98afd7d26ce1f3ba678cb9388db66bea18c9cce8ccb9fd567e17", size = 24765, upload-time = "2026-01-27T10:07:54.941Z" },
 ]
 
 [[package]]
@@ -4901,19 +4887,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/04/7c/133d00d6d013a17d3f39199f27f1a780ec2e95d7b9aa997dc1b8ac2e62a7/selenium-4.41.0.tar.gz", hash = "sha256:003e971f805231ad63e671783a2b91a299355d10cefb9de964c36ff3819115aa", size = 937872, upload-time = "2026-02-20T03:42:06.216Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a8/d6/e4160989ef6b272779af6f3e5c43c3ba9be6687bdc21c68c3fb220e555b3/selenium-4.41.0-py3-none-any.whl", hash = "sha256:b8ccde8d2e7642221ca64af184a92c19eee6accf2e27f20f30472f5efae18eb1", size = 9532858, upload-time = "2026-02-20T03:42:03.218Z" },
-]
-
-[[package]]
-name = "sentry-sdk"
-version = "1.45.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "certifi" },
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/28/02c0cd9184f9108e3c52519f9628b215077a3854240e0b17ae845e664855/sentry_sdk-1.45.1.tar.gz", hash = "sha256:a16c997c0f4e3df63c0fc5e4207ccb1ab37900433e0f72fef88315d317829a26", size = 244774, upload-time = "2024-07-26T13:48:32.375Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fe/9f/105366a122efa93f0cb1914f841747d160788e4d022d0488d2d44c2ba26c/sentry_sdk-1.45.1-py2.py3-none-any.whl", hash = "sha256:608887855ccfe39032bfd03936e3a1c4f4fc99b3a4ac49ced54a4220de61c9c1", size = 267163, upload-time = "2024-07-26T13:48:29.38Z" },
 ]
 
 [[package]]
