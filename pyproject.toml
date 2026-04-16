@@ -1,20 +1,17 @@
 [project]
 name = "latest-build-instance"
 description = "latest build for invenioRDM"
-version = "13.0.0"
+version = "13.1.0"
 requires-python = ">= 3.12"
 
 dependencies = [
-  "invenio-app-rdm[opensearch2,s3]~=13.0.0",
+  "invenio-app-rdm[opensearch2,s3]~=13.1.0",
   "python-dotenv>=0.21.0",
   "uwsgi>=2.0",
   "uwsgitop>=0.11",
   "uwsgi-tools>=1.1.1",
   "lxml-html-clean>=0.1.1",
-  "latest-build", # this is not needed but kept for reference
-  "invenio-cli",
-  "apispec[marshmallow,yaml]>=6.8.3",
-  "apispec-webframeworks>=1.2.0",
+  "latest-build",
   "setuptools<81",
 ]
 
@@ -35,9 +32,6 @@ dev = [
 ]
 
 [project.optional-dependencies]
-sentry = [
-    "sentry-sdk>=1.45,<2.0.0",
-]
 tests = [
     "pytest-invenio>=3.0.0,<4.0.0",
 ]
