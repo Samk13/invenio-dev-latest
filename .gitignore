@@ -72,7 +72,7 @@ data/default/*
 data/.minio.sys
 
 # Celery
-celerybeat-schedule
+celerybeat-schedule*
 
 # s3
 s3-data/
