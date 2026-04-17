@@ -2743,7 +2743,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "latest-build-instance"
-version = "14.0.0b10.dev1"
+version = "14.0.0b10.dev6"
 source = { editable = "." }
 dependencies = [
     { name = "apispec", extra = ["marshmallow", "yaml"] },
@@ -2771,7 +2771,7 @@ requires-dist = [
     { name = "apispec", extras = ["marshmallow", "yaml"], specifier = ">=6.8.3" },
     { name = "apispec-webframeworks", specifier = ">=1.2.0" },
     { name = "flask-debugtoolbar", marker = "extra == 'tests'", specifier = ">=0.16.0" },
-    { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=14.0.0b10.dev1" },
+    { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=14.0.0b10.dev6" },
     { name = "invenio-cli" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },

@@ -2,26 +2,14 @@
 
 Welcome to your InvenioRDM development instance. This repository contains a complete development setup for the latest InvenioRDM build.
 
-## Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Setup Options](#setup-options)
-  - [Native Development Setup](#native-development-setup)
-  - [Dockerized Setup](#dockerized-setup)
-- [Configuration](#configuration)
-- [Local Package Development](#local-package-development)
-- [Documentation](#documentation)
-- [Troubleshooting](#troubleshooting)
-
 ## Prerequisites
 
 Before starting, ensure you have the following installed:
 
-- Python 3.12+
+- Python 3.14+
 - uv 0.8.x+
-- Node.js 22+
-- pnpm 10.15.x+
+- Node.js 24+
+- pnpm 10.x+
 - Docker & Docker Compose (for containerized setup)
 - Git
 
@@ -62,7 +50,7 @@ For local development with more control over the environment:
    uv run invenio-cli services setup -f -N
    ```
 
-4. **Configure S3 storage (macOS):**
+4. **Optional: Configure S3 storage (macOS):**
    ```bash
    printf '\n127.0.0.1\ts3\n' | sudo tee -a /etc/hosts
    sudo dscacheutil -flushcache
