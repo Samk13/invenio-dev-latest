@@ -263,11 +263,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/44/1c/577d3ce406e88f370
 
 [[package]]
 name = "billiard"
-version = "4.2.4"
+version = "4.3.0rc1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/58/23/b12ac0bcdfb7360d664f40a00b1bda139cbbbced012c34e375506dbd0143/billiard-4.2.4.tar.gz", hash = "sha256:55f542c371209e03cd5862299b74e52e4fbcba8250ba611ad94276b369b6a85f", size = 156537, upload-time = "2025-11-30T13:28:48.52Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/54/1e/7a7ccf241aecdf983cc1708e5b92249739e9fa52b36ec5dc53244a684838/billiard-4.3.0rc1.tar.gz", hash = "sha256:641752da7933a10fb265a24764efcb4cd99008cded1fef9e8da01f8f42918627", size = 158097, upload-time = "2026-02-26T14:22:32.154Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/87/8bab77b323f16d67be364031220069f79159117dd5e43eeb4be2fef1ac9b/billiard-4.2.4-py3-none-any.whl", hash = "sha256:525b42bdec68d2b983347ac312f892db930858495db601b5836ac24e6477cde5", size = 87070, upload-time = "2025-11-30T13:28:47.016Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/b4/f0cf8f0bd627d80551137eb5bb6c465b499e30a8fec63921d6237fe8c892/billiard-4.3.0rc1-py3-none-any.whl", hash = "sha256:e161242c6d65e9d26e30deca1cdfdb82bde031d92d61d17dc09fc80132f8c740", size = 87435, upload-time = "2026-02-26T14:22:30.904Z" },
 ]
 
 [[package]]
@@ -2749,6 +2749,7 @@ source = { editable = "." }
 dependencies = [
     { name = "apispec", extra = ["marshmallow", "yaml"] },
     { name = "apispec-webframeworks" },
+    { name = "billiard" },
     { name = "invenio-app-rdm", extra = ["opensearch2", "s3"] },
     { name = "invenio-cli" },
     { name = "latest-build" },
@@ -2771,6 +2772,7 @@ tests = [
 requires-dist = [
     { name = "apispec", extras = ["marshmallow", "yaml"], specifier = ">=6.8.3" },
     { name = "apispec-webframeworks", specifier = ">=1.2.0" },
+    { name = "billiard", specifier = ">=4.3.0rc1" },
     { name = "flask-debugtoolbar", marker = "extra == 'tests'", specifier = ">=0.16.0" },
     { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=14.0.0b10.dev6" },
     { name = "invenio-cli" },

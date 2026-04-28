@@ -1,0 +1,124 @@
+diff --git a/.venv/lib/python3.14/site-packages/flask_celeryext/app.py b/.venv/lib/python3.14/site-packages/flask_celeryext/app.py
+--- a/.venv/lib/python3.14/site-packages/flask_celeryext/app.py
++++ b/.venv/lib/python3.14/site-packages/flask_celeryext/app.py
+@@
+-from celery import signals
++from celery import signals
++from kombu.utils.imports import symbol_by_name
+ from flask import has_app_context
+@@
+ def map_invenio_to_celery(config, mapping):
+     """Translate Invenio Celery configuration to Celery Configuration."""
+ 
+     def map_key(key):
+         return mapping[key] if key in mapping else key
+ 
+-    return {map_key(key): value for key, value in config.items()}
++    def is_celery_config_key(key):
++        """Return whether a Flask config key should be forwarded to Celery."""
++        return (
++            key in mapping
++            or key.startswith("CELERY_")
++            or key.startswith("BROKER_")
++            or key == "broker_connection_retry_on_startup"
++        )
++
++    return {
++        map_key(key): value
++        for key, value in config.items()
++        if is_celery_config_key(key)
++    }
+@@
+-    celery.Task = AppContextTask
++    celery.task_cls = 'flask_celeryext.app:AppContextTask'
++    celery.Task = celery.create_task_cls()
+@@
+     # Set Flask application object on the Celery application.
+     if not hasattr(celery, "flask_app"):
+         celery.flask_app = flask_app
++    if not hasattr(celery, "flask_app_factory"):
++        celery.flask_app_factory = None
+@@
+     def __call__(self, *args, **kwargs):
+         """Execute task."""
+         # If an "app_context" has already been loaded, just pass through
+         if has_app_context():
+             return Task.__call__(self, *args, **kwargs)
++        if not hasattr(self.app, "flask_app"):
++            factory = getattr(self.app, "flask_app_factory", None)
++            if factory:
++                self.app.flask_app = symbol_by_name(factory)()
+         with self.app.flask_app.app_context():
+             return Task.__call__(self, *args, **kwargs)
+diff --git a/.venv/lib/python3.14/site-packages/invenio_celery/ext.py b/.venv/lib/python3.14/site-packages/invenio_celery/ext.py
+--- a/.venv/lib/python3.14/site-packages/invenio_celery/ext.py
++++ b/.venv/lib/python3.14/site-packages/invenio_celery/ext.py
+@@
+     def init_app(self, app, entry_point_group="invenio_celery.tasks", **kwargs):
+         """Initialize application object."""
+         self.init_config(app)
+         self.celery = FlaskCeleryExt(app).celery
++        self.celery.flask_app_factory = "invenio_app.factory:create_app"
+         self.entry_point_group = entry_point_group
+         self.load_celery_signals()
+         app.extensions["invenio-celery"] = self
+diff --git a/.venv/lib/python3.14/site-packages/celery/beat.py b/.venv/lib/python3.14/site-packages/celery/beat.py
+--- a/.venv/lib/python3.14/site-packages/celery/beat.py
++++ b/.venv/lib/python3.14/site-packages/celery/beat.py
+@@
+     def __reduce__(self):
+-        return self.__class__, (self.max_interval, self.schedule_filename,
+-                                self.scheduler_cls, self.app)
++        return self.__class__, (
++            self.app,
++            self.max_interval,
++            self.schedule_filename,
++            self.scheduler_cls,
++        )
+diff --git a/.venv/lib/python3.14/site-packages/celery/concurrency/prefork.py b/.venv/lib/python3.14/site-packages/celery/concurrency/prefork.py
+--- a/.venv/lib/python3.14/site-packages/celery/concurrency/prefork.py
++++ b/.venv/lib/python3.14/site-packages/celery/concurrency/prefork.py
+@@
+     if os.environ.get('FORKED_BY_MULTIPROCESSING'):
+         # pool did execv after fork
+         trace.setup_worker_optimizations(app, hostname)
+     else:
+         app.set_current()
+         set_default_app(app)
+-        app.finalize()
+-        trace._tasks = app._tasks  # enables fast_trace_task optimization.
++        trace.setup_worker_optimizations(app, hostname)
+diff --git a/.venv/lib/python3.14/site-packages/celery/app/base.py b/.venv/lib/python3.14/site-packages/celery/app/base.py
+--- a/.venv/lib/python3.14/site-packages/celery/app/base.py
++++ b/.venv/lib/python3.14/site-packages/celery/app/base.py
+@@
+     def __reduce_keys__(self):
+         """Keyword arguments used to reconstruct the object when unpickling."""
+-        return {
++        keys = {
+             'main': self.main,
+             'changes':
+                 self._conf.changes if self.configured else self._preconf,
+             'loader': self.loader_cls,
+             'backend': self.backend_cls,
+@@
+             'config_source': self._config_source,
+             'task_cls': self.task_cls,
+             'namespace': self.namespace,
+         }
++        if hasattr(self, 'flask_app_factory'):
++            keys['flask_app_factory'] = self.flask_app_factory
++        return keys
+diff --git a/.venv/lib/python3.14/site-packages/celery/app/utils.py b/.venv/lib/python3.14/site-packages/celery/app/utils.py
+--- a/.venv/lib/python3.14/site-packages/celery/app/utils.py
++++ b/.venv/lib/python3.14/site-packages/celery/app/utils.py
+@@
+ def _unpickle_app_v2(cls, kwargs):
+     """Rebuild app for versions 3.1+."""
++    flask_app_factory = kwargs.pop('flask_app_factory', None)
+     kwargs['set_as_current'] = False
+-    return cls(**kwargs)
++    app = cls(**kwargs)
++    if flask_app_factory is not None:
++        app.flask_app_factory = flask_app_factory
++    return app
