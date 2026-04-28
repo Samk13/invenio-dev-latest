@@ -38,7 +38,7 @@ done
 git fetch "$remote" --tags >/dev/null
 
 # Determine which ref to inspect for the latest tag
-current_branch=$(git rev-parse --abbrev-ref )
+current_branch=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$current_branch" != "HEAD" ]] && git show-ref --verify --quiet "refs/remotes/${remote}/${current_branch}"; then
   base_ref="${remote}/${current_branch}"
 elif [[ "$current_branch" != "HEAD" ]]; then
