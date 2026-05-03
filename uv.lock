@@ -2713,7 +2713,7 @@ source = { editable = "site" }
 
 [[package]]
 name = "latest-build-instance"
-version = "14.0.0b10.dev6"
+version = "14.0.0b10.dev7"
 source = { editable = "." }
 dependencies = [
     { name = "invenio-app-rdm", extra = ["opensearch2", "s3"] },
@@ -2737,7 +2737,7 @@ tests = [
 [package.metadata]
 requires-dist = [
     { name = "flask-debugtoolbar", marker = "extra == 'tests'", specifier = ">=0.16.0" },
-    { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=14.0.0b10.dev6" },
+    { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=14.0.0b10.dev7" },
     { name = "invenio-cli" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },
