@@ -1,7 +1,7 @@
 ---
   name: invenio
   description: provides guidance for working with the invenioRDM repository
-argument-hint: "commands to run instance run tests etc."
+  argument-hint: "commands to run instance run tests etc."
 ---
 
 This file provides agent-focused guidance for working with the ivenioRDM repository.
