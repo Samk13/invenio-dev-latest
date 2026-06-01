@@ -1,7 +1,7 @@
 [project]
 name = "latest-build-instance"
 description = "latest build for invenioRDM"
-version = "14.0.0b10.dev7"
+version = "14.0.0b11.dev1"
 requires-python = ">= 3.14"
 
 dependencies = [
@@ -11,25 +11,22 @@ dependencies = [
   "uwsgitop>=0.11",
   "uwsgi-tools>=1.1.1",
   "lxml-html-clean>=0.1.1",
-  "latest-build", # this is not needed but kept for reference
-  "invenio-cli",
+  "latest-build",
 ]
 
 [tool.uv.sources]
 "latest-build" = { workspace = true }
 
 [tool.uv.workspace]
-members = [
-  "site",
-]
+members = ["site"]
 
 [project.optional-dependencies]
 tests = [
-    "pytest-invenio>=4.0.0,<5.0.0",
-    "pytest-invenio>=4.0.0,<5.0.0",
-    "ruff>=0.13.0",
-    "flask-debugtoolbar>=0.16.0",
-    "pdbpp>=0.11.7",
+  "pytest-invenio>=4.0.0,<5.0.0",
+  "pytest-invenio>=4.0.0,<5.0.0",
+  "ruff>=0.13.0",
+  "flask-debugtoolbar>=0.16.0",
+  "pdbpp>=0.11.7",
 ]
 
 [build-system]
