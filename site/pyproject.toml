@@ -24,6 +24,6 @@ profile = "black"
 add_ignore = ["D401", "D403"]
 
 [tool.pytest.ini_options]
-addopts = ["--isort", "--pydocstyle", "--doctest-glob=\"*.rst\"", "--doctest-modules", "--cov=zenodo_rdm", "--cov-report=term-missing", "--exclude-warning-annotations"]
-testpaths = "tests zenodo_rdm"
+addopts = ["--isort", "--pydocstyle", "--doctest-glob=\"*.rst\"", "--doctest-modules", "--cov=latest_build", "--cov-report=term-missing", "--exclude-warning-annotations"]
+testpaths = "tests latest_build"
 live_server_scope = "module"
