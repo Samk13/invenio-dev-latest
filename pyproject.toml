@@ -19,8 +19,6 @@ dependencies = [
 
 [tool.uv.sources]
 latest_build = { workspace = true }
-invenio-rdm-records = { path = "../invenio-rdm-records", editable = true }
-invenio-vocabularies = { path = "../invenio-vocabularies", editable = true }
 
 [tool.uv.workspace]
 members = [
