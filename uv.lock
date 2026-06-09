@@ -2316,7 +2316,7 @@ wheels = [
 [[package]]
 name = "invenio-rdm-records"
 version = "20.3.0"
-source = { editable = "../invenio-rdm-records" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "arrow" },
     { name = "babel-edtf" },
@@ -2347,50 +2347,10 @@ dependencies = [
     { name = "pytz" },
     { name = "pyyaml" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "arrow", specifier = ">=0.17.0" },
-    { name = "babel-edtf", specifier = ">=1.2.0" },
-    { name = "citeproc-py", specifier = ">=0.6.0" },
-    { name = "citeproc-py-styles", specifier = ">=0.1.2,<1.0.0" },
-    { name = "commonmeta-py", specifier = ">=0.8.4,<0.182" },
-    { name = "datacite", specifier = ">=1.1.1,<2.0.0" },
-    { name = "dcxml", specifier = ">=0.1.2,<1.0.0" },
-    { name = "faker", specifier = ">=2.0.3" },
-    { name = "flask-iiif", specifier = ">=1.0.0,<2.0.0" },
-    { name = "invenio-administration", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=2.1.0,<3.0.0" },
-    { name = "invenio-base", specifier = ">=2.3.0,<3.0.0" },
-    { name = "invenio-checks", specifier = ">=1.0.0,<2.0.0" },
-    { name = "invenio-communities", specifier = ">=20.0.0,<21.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-drafts-resources", specifier = ">=7.0.0,<8.0.0" },
-    { name = "invenio-github", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-i18n", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-jobs", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-oaiserver", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-oauth2server", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-records-resources", specifier = ">=8.0.0,<9.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-stats", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-vocabularies", specifier = ">=9.0.0,<9.1.0" },
-    { name = "nameparser", specifier = ">=1.1.1" },
-    { name = "pycountry", specifier = ">=22.3.5" },
-    { name = "pydash", specifier = ">=6.0.0,<7.0.0" },
-    { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "pytest-mock", marker = "extra == 'tests'", specifier = ">=1.6.0" },
-    { name = "python-slugify", specifier = ">=8.0.1" },
-    { name = "pytz", specifier = ">=2020.4" },
-    { name = "pyyaml", specifier = ">=5.4.0" },
-    { name = "setuptools", marker = "extra == 'tests'", specifier = "<82" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5.0" },
-    { name = "tripoli", marker = "extra == 'tests'", specifier = ">=2.0.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/9c/30/7c532f11ddc958336193505fbbf62cd98b27f5f230e30d057a43d0bad217/invenio_rdm_records-20.3.0.tar.gz", hash = "sha256:e8ff18c77578c45e88b6a57fe9bfd6da034e813e59910e9b06f8b2eea4195e41", size = 1273589, upload-time = "2026-04-16T14:34:55.178Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/d8/25d64b5f7a5fe3666438d7a0ec8722c61605450b0f290e3ae5991c8ce94d/invenio_rdm_records-20.3.0-py2.py3-none-any.whl", hash = "sha256:bbef0c43b7b958e2dd664a76cd55c8fd36acf7b4f7fc8e974257c326b8a7c9f8", size = 1805927, upload-time = "2026-04-16T14:34:51.834Z" },
 ]
-provides-extras = ["tests", "elasticsearch7", "opensearch1", "opensearch2"]
 
 [[package]]
 name = "invenio-records"
@@ -2665,7 +2625,7 @@ wheels = [
 [[package]]
 name = "invenio-vocabularies"
 version = "9.0.1"
-source = { editable = "../invenio-vocabularies" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "invenio-administration" },
     { name = "invenio-i18n" },
@@ -2677,34 +2637,10 @@ dependencies = [
     { name = "regex" },
     { name = "sparqlwrapper" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "invenio-administration", specifier = ">=4.0.0,<5.0.0" },
-    { name = "invenio-app", marker = "extra == 'tests'", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-db", extras = ["mysql", "postgresql"], marker = "extra == 'tests'", specifier = ">=2.0.0,<3.0.0" },
-    { name = "invenio-i18n", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-jobs", specifier = ">=5.0.0,<6.0.0" },
-    { name = "invenio-oaipmh-scythe", marker = "extra == 'oaipmh'", specifier = ">=0.13.0" },
-    { name = "invenio-records-resources", specifier = ">=8.0.0,<9.0.0" },
-    { name = "invenio-search", extras = ["elasticsearch7"], marker = "extra == 'elasticsearch7'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch1"], marker = "extra == 'opensearch1'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "invenio-search", extras = ["opensearch2"], marker = "extra == 'opensearch2'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "lxml", specifier = ">=4.5.0" },
-    { name = "pycountry", specifier = ">=24.0.0" },
-    { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
-    { name = "pytest-httpserver", marker = "extra == 'tests'", specifier = ">=1.0.10" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
-    { name = "pyyaml", specifier = ">=5.4.1" },
-    { name = "rdflib", marker = "extra == 'rdf'", specifier = ">=7.0.0" },
-    { name = "regex", specifier = ">=2024.7.24" },
-    { name = "s3fs", marker = "extra == 's3fs'", specifier = ">=2024.6.1" },
-    { name = "setuptools", marker = "extra == 'tests'", specifier = "<82" },
-    { name = "sparqlwrapper", specifier = ">=2.0.0" },
-    { name = "sparqlwrapper", marker = "extra == 'sparql'", specifier = ">=2.0.0" },
-    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
+sdist = { url = "https://files.pythonhosted.org/packages/2c/83/2719063ac0c15e9cc97dd1cf1ed09dbe2eab50cdcc97979de8be03794224/invenio_vocabularies-9.0.1.tar.gz", hash = "sha256:4b995e31312f88bddd7fb550f8f060a087d84377e7e167043de5be22ed358ce2", size = 153395, upload-time = "2026-04-16T14:11:53.865Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/f6/3b84bd7bfd2d88c971225106947b478e592da67e74d2cdc5569f09581fb4/invenio_vocabularies-9.0.1-py2.py3-none-any.whl", hash = "sha256:55442c2a773930b0ccf8e728d0bb4b49a62bd082f5952884900c81d80ba5d8d5", size = 354205, upload-time = "2026-04-16T14:11:52.29Z" },
 ]
-provides-extras = ["s3fs", "oaipmh", "rdf", "sparql", "tests", "elasticsearch7", "opensearch1", "opensearch2", "mysql", "postgresql", "sqlite"]
 
 [[package]]
 name = "invenio-webhooks"
@@ -3018,8 +2954,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=13.1.0" },
-    { name = "invenio-rdm-records", editable = "../invenio-rdm-records" },
-    { name = "invenio-vocabularies", editable = "../invenio-vocabularies" },
+    { name = "invenio-rdm-records" },
+    { name = "invenio-vocabularies" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
