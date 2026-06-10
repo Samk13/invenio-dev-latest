@@ -1,7 +1,7 @@
 """Seed login-info rows for IP retention cleanup testing.
 
 Usage:
-    uv run invenio shell scripts/dev/seed_old_login_info.py
+    uv run invenio shell scripts/dev/seed_users_login_info.py
 
 The script updates every existing accounts_user row with repeating retention
 test cases. It does not create users.
@@ -111,6 +111,14 @@ def main():
             f"{spec['current_login_ip']})"
         )
 
+    print()
+    print("Rebuild the user/group indices with the known-good migration script:")
+    print(
+        "  uv run invenio shell scripts/indices-migration-v13-14/user-groups-indices-migration.py"
+    )
+    print()
+    print("Then check indexed counts with:")
+    print("  uv run invenio shell scripts/dev/check_users_login_info_index.py")
     print()
     print("Run the retention task manually with:")
     print("  uv run invenio shell")
