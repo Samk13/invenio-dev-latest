@@ -1,10 +1,27 @@
 """Seed login-info rows for IP retention cleanup testing.
 
 Usage:
-    uv run invenio shell scripts/dev/seed_users_login_info.py
+    uv run invenio shell scripts/dev/user-check-tools/seed_users_login_info.py
 
 The script updates every existing accounts_user row with repeating retention
 test cases. It does not create users.
+
+The seed script updates every existing user, but it does not populate every IP field for every user. Some NULLs are intentional.
+It cycles through 5 test cases repeatedly:
+Expired last + expired current
+Both IPs populated. Both should be deleted by delete_ips.
+
+Recent last + recent current
+Both IPs populated. Neither should be deleted.
+
+Expired last + recent current
+Both IPs populated, but only last_login_ip should be deleted.
+
+Recent last + expired current
+Both IPs populated, but only current_login_ip should be deleted.
+
+Expired timestamps + NULL IPs
+Both IPs are intentionally NULL. This tests that rows with already-null IPs do not break cleanup.
 """
 
 from datetime import datetime, timedelta, timezone
@@ -13,7 +30,6 @@ from random import Random
 
 from flask import current_app
 from invenio_accounts.models import User
-from invenio_accounts.proxies import current_datastore
 from invenio_db import db
 
 
@@ -80,10 +96,6 @@ def _update_login_info(user, spec, login_count):
     user.current_login_ip = spec["current_login_ip"]
     user.login_count = login_count
 
-    # LoginInformation changes are not User model changes, so mark the aggregate
-    # user as changed for the normal datastore post-commit indexing hooks.
-    current_datastore.mark_changed(id(db.session), model=user)
-
 
 def main():
     """Seed all login-info retention cases."""
@@ -98,7 +110,7 @@ def main():
         _update_login_info(user, spec, login_count)
         seeded.append((user, spec, login_count))
 
-    current_datastore.commit()
+    db.session.commit()
 
     print(f"Seeded IP retention login-info for {len(seeded)} existing users:")
     for user, spec, login_count in seeded:
@@ -118,7 +130,9 @@ def main():
     )
     print()
     print("Then check indexed counts with:")
-    print("  uv run invenio shell scripts/dev/check_users_login_info_index.py")
+    print(
+        "  uv run invenio shell scripts/dev/user-check-tools/check_users_login_info_index.py"
+    )
     print()
     print("Run the retention task manually with:")
     print("  uv run invenio shell")
