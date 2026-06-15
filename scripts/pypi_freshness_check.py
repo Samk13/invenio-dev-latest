@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+# uv run ./pypi_freshness_check.py --sort-by latest
 """
 PyPI Package Freshness Checker
 ===============================
