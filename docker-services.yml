@@ -38,7 +38,7 @@ services:
     ports:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:6379:6379"
   db:
-    image: postgres:12.4
+    image: postgres:17.10
     restart: "unless-stopped"
     environment:
       - "POSTGRES_USER=latest-build"
@@ -53,7 +53,7 @@ services:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5672:5672"
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:15672:15672"
   search:
-    image: opensearchproject/opensearch:2.16.0
+    image: opensearchproject/opensearch:2.19.5
     restart: "unless-stopped"
     environment:
       # settings only for development. DO NOT use in production!
@@ -75,7 +75,7 @@ services:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9200:9200"
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9600:9600"
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:2.16.0
+    image: opensearchproject/opensearch-dashboards:2.19.5
     ports:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5601:5601"
     expose:
