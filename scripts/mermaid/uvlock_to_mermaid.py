@@ -1,11 +1,11 @@
-# uvlock_to_mermaid.py
+# python scripts/mermaid/uvlock_to_mermaid.py > deps.mmd
 import tomllib
 from pathlib import Path
 from packaging.utils import canonicalize_name
 
 LOCK = Path("uv.lock")
 
-INCLUDE_PREFIXES = ("invenio", "marshmallow")
+INCLUDE_PREFIXES = ("invenio", "marshmallow", "flask-resources","cookiecutter-invenio-rdm")
 
 data = tomllib.loads(LOCK.read_text())
 

@@ -1,4 +1,5 @@
 flowchart LR
+  flask_resources["flask-resources"] --> invenio_records_resources["invenio-records-resources"]
   invenio_access["invenio-access"] --> invenio_app_rdm["invenio-app-rdm"]
   invenio_access["invenio-access"] --> invenio_records_permissions["invenio-records-permissions"]
   invenio_accounts["invenio-accounts"] --> invenio_access["invenio-access"]
@@ -208,6 +209,7 @@ flowchart LR
   invenio_users_resources["invenio-users-resources"] --> invenio_requests["invenio-requests"]
   invenio_vocabularies["invenio-vocabularies"] --> invenio_communities["invenio-communities"]
   invenio_vocabularies["invenio-vocabularies"] --> invenio_rdm_records["invenio-rdm-records"]
+  marshmallow["marshmallow"] --> flask_resources["flask-resources"]
   marshmallow["marshmallow"] --> invenio_rest["invenio-rest"]
   marshmallow["marshmallow"] --> marshmallow_oneofschema["marshmallow-oneofschema"]
   marshmallow["marshmallow"] --> marshmallow_utils["marshmallow-utils"]
