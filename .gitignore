@@ -84,3 +84,7 @@ s3-data/
 .ruff_cache/
 # S3
 data/
+
+# Nix
+result
+.direnv/
