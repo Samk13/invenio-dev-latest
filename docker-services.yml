@@ -29,8 +29,8 @@ services:
     image: latest-build-frontend
     restart: "unless-stopped"
     ports:
-      - "80"
-      - "443"
+      - "${DOCKER_WEB_IP_BIND:-0.0.0.0}:80:80"
+      - "${DOCKER_WEB_IP_BIND:-0.0.0.0}:443:443"
   cache:
     image: redis:7
     restart: "unless-stopped"
