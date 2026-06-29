@@ -24,8 +24,8 @@ BASE_DIR="$HOME/Documents/CODE/INVENIO"
 PACKAGES=(
   # invenio-accounts
   # invenio-administration
-  invenio-app-rdm
-  invenio-users-resources
+  # invenio-app-rdm
+  # invenio-users-resources
   # invenio-i18n
   # invenio-communities
   # invenio-rdm-records
@@ -34,6 +34,7 @@ PACKAGES=(
   # invenio-jobs
   # invenio-vocabularies
   # invenio-checks
+  invenio-vcs
 )
 
 
