@@ -16,7 +16,7 @@ from werkzeug.local import LocalProxy
 
 community_service = LocalProxy(lambda: current_communities.service)
 
-COMMUNITY_SLUG = "test"
+COMMUNITY_SLUG = "test-comm"
 # Minimal ruleset: only check that metadata.rights exists
 RIGHTS_RULES = {
     "rules": [
@@ -104,7 +104,7 @@ RIGHTS_RULES = {
                 "en": "This shows backward compatibility with mixed string/dict",
                 "sv": "Detta visar bakåtkompatibilitet med blandad sträng/dict",
             },
-            "description": "Simple string description still works",
+            "description": "A string without being wrapped in a translatable dict still works as well",
             "level": "info",
             "checks": [{"type": "field", "path": "metadata.title"}],
         },
