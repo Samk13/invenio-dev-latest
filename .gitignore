@@ -84,3 +84,4 @@ s3-data/
 .ruff_cache/
 # S3
 data/
+node_modules/
