@@ -1,8 +1,8 @@
 [project]
 name = "latest-build"
-version = "1.0.0"
-description = "no desc"
-requires-python = ">= 3.14"
+version = "14.0.0"
+description = "Latest Build module for InvenioRDM"
+requires-python = "~=3.14.0"
 
 [project.entry-points."invenio_base.blueprints"]
 latest_build_views = "latest_build.views:create_blueprint"
