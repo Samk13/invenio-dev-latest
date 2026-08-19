@@ -28,12 +28,12 @@ PACKAGES=(
   # invenio-users-resources
   # invenio-i18n
   # invenio-communities
-  # invenio-rdm-records
+  invenio-rdm-records
   # invenio-search-ui
   # invenio-requests
   # invenio-jobs
   # invenio-vocabularies
-  invenio-checks
+  # invenio-checks
 )
 
 
