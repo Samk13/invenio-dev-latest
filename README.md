@@ -1,5 +1,22 @@
 # InvenioRDM Development Environment
 
+<!--toc:start-->
+- [InvenioRDM Development Environment](#inveniordm-development-environment)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start](#quick-start)
+  - [Setup Options](#setup-options)
+    - [Native Development Setup](#native-development-setup)
+    - [Dockerized Setup](#dockerized-setup)
+  - [Configuration](#configuration)
+    - [S3 Storage Setup](#s3-storage-setup)
+    - [Environment Variables](#environment-variables)
+  - [Local Package Development](#local-package-development)
+  - [Documentation](#documentation)
+  - [Troubleshooting](#troubleshooting)
+    - [Common Issues](#common-issues)
+    - [Useful Commands](#useful-commands)
+<!--toc:end-->
+
 Welcome to your InvenioRDM development instance. This repository contains a complete development setup for the latest InvenioRDM build.
 
 ## Prerequisites
@@ -34,24 +51,28 @@ docker compose -f docker-compose.full.yml up -d
 For local development with more control over the environment:
 
 1. **Create and activate virtual environment:**
+
    ```console
    uv venv
    source .venv/bin/activate
    ```
 
 2. **Install dependencies:**
+
    ```console
    uv pip install invenio-cli
    uv run invenio-cli install
    ```
 
 3. **Setup services:**
+
    ```console
    uv run invenio-cli services setup -f -N
    ```
 
 4. **Optional: Configure S3 storage (macOS):**
-   ```bash
+
+  ```bash
    printf '\n127.0.0.1\ts3\n' | sudo tee -a /etc/hosts
    sudo dscacheutil -flushcache
    sudo killall -HUP mDNSResponder
@@ -75,13 +96,14 @@ docker compose -f docker-compose.full.yml up -d
 
 After starting the services, you may need to configure the default S3 bucket:
 
-1. Navigate to http://s3:9001/login
+1. Navigate to <http://s3:9001/login>
 2. Use the default credentials: `CHANGE_ME` (both username and password)
 3. Create necessary buckets as required
 
 ### Environment Variables
 
 Key configuration files:
+
 - `invenio.cfg` - Main application configuration
 - `docker-compose.yml` - Service orchestration
 - `pyproject.toml` - Python dependencies
@@ -129,5 +151,5 @@ docker compose -f docker-compose.full.yml down -v
 ```
 
 ---
-
+<!-- markdownlint-disable MD013 -->
 For more help, please refer to the [InvenioRDM Community Forum](https://github.com/inveniosoftware/invenio-app-rdm/discussions) or check the [troubleshooting guide](https://inveniordm.docs.cern.ch/install/troubleshooting/).
