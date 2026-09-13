@@ -13,9 +13,7 @@ set -euo pipefail
 # --- Fix for Apple Silicon Homebrew paths ---
 export DYLD_LIBRARY_PATH="/opt/homebrew/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
 
-
 echo "Installing dev packages ..."
-
 
 # Base directory for local packages
 BASE_DIR="$HOME/Documents/CODE/INVENIO"
@@ -35,7 +33,6 @@ PACKAGES=(
   # invenio-vocabularies
   # invenio-checks
 )
-
 
 echo "Installing dev packages ..."
 
