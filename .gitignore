@@ -85,3 +85,5 @@ s3-data/
 # S3
 data/
 node_modules/
+
+pi-session-*
