@@ -1,7 +1,7 @@
 [project]
 name = "latest-build-instance"
 description = "Latest Build InvenioRDM instance"
-version = "15.0.0b3.dev0"
+version = "15.0.0b3.dev1"
 requires-python = "~=3.14.0"
 
 dependencies = [
