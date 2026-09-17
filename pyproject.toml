@@ -12,10 +12,12 @@ dependencies = [
   "uwsgi-tools>=1.1.1",
   "lxml-html-clean>=0.1.1",
   "latest-build",
+  "flask-oauthlib-invenio",
 ]
 
 [tool.uv.sources]
 "latest-build" = { workspace = true }
+flask-oauthlib-invenio = { path = "/Users/samk13/Documents/CODE/INVENIO/flask-oauthlib-invenio", editable = true }
 
 [tool.uv.workspace]
 members = ["site"]

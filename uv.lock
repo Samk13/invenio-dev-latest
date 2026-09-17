@@ -181,6 +181,19 @@ wheels = [
 ]
 
 [[package]]
+name = "authlib"
+version = "1.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+    { name = "joserfc" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f1/51/bc1729d3cfdc214b4935f4e886e4dd443c3065fd8e1e66423fe84b490f81/authlib-1.8.0.tar.gz", hash = "sha256:f3ecd5f1da737262fb53bf1a4d95c4ea1ad9dd509316587a255c99ab1838a4f0", size = 177759, upload-time = "2026-08-30T12:12:34.833Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b8/c6/6f124bcfbbfb20fba22c939b4e43a06dccfc0e1ca20e5634ca573cb1e271/authlib-1.8.0-py2.py3-none-any.whl", hash = "sha256:88aebbd9af6757e14e912d5dc007ae1dc1f3e27e3b2152ce7c552ee2c3b3c121", size = 260804, upload-time = "2026-08-30T12:12:33.162Z" },
+]
+
+[[package]]
 name = "babel"
 version = "2.18.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1175,17 +1188,23 @@ wheels = [
 [[package]]
 name = "flask-oauthlib-invenio"
 version = "2.0.0"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "/Users/samk13/Documents/CODE/INVENIO/flask-oauthlib-invenio" }
 dependencies = [
-    { name = "cachelib" },
+    { name = "authlib" },
     { name = "flask" },
-    { name = "oauthlib" },
-    { name = "requests-oauthlib" },
+    { name = "invenio-cache" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ae/46/f7bc933915a319466da8bc3fdfbd747d19a98a52c8a24b557bb7e968476b/flask_oauthlib_invenio-2.0.0.tar.gz", hash = "sha256:2e9a589dc4034ba378a4728c84f8ef009502e625594cd473f1ac8a5c81f2f490", size = 36392, upload-time = "2026-01-27T10:34:28.995Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b0/3d/d385a493af450015669f6d2e383716d513d0e0bef482b172bd240ec6773c/flask_oauthlib_invenio-2.0.0-py2.py3-none-any.whl", hash = "sha256:7b650ff9e97273fd6bd09aceed4f4c3a4d937456f6b70cbd2929f1c49b3cf578", size = 39152, upload-time = "2026-01-27T10:34:27.824Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "authlib", specifier = ">=1.8.0,<2.0.0" },
+    { name = "flask", specifier = ">=3.0" },
+    { name = "invenio-cache", specifier = ">=3.0.0" },
+    { name = "mock", marker = "extra == 'tests'", specifier = ">=5.1.0" },
+    { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
 ]
+provides-extras = ["tests"]
 
 [[package]]
 name = "flask-principal"
@@ -2623,6 +2642,18 @@ wheels = [
 ]
 
 [[package]]
+name = "joserfc"
+version = "1.7.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/19/94/80fea1514b7c6d7d37804d3fe9ca81455f633347fc98731bd71ffe1faa17/joserfc-1.7.5.tar.gz", hash = "sha256:d5ff536e658e17664f8c1b1ab60dc4aa62aa973fcef1edd33cc44bda45d6f5ea", size = 234990, upload-time = "2026-08-29T13:05:42.057Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/67/c5/82addfd375e5ee6520644e0553e4aadde92d668c4fc99cc716d337fe7bb3/joserfc-1.7.5-py3-none-any.whl", hash = "sha256:add2c2c84e8373b084d526a8b53daba5d7a513a118cd2dcd9fc9f979d0922159", size = 71269, upload-time = "2026-08-29T13:05:40.718Z" },
+]
+
+[[package]]
 name = "jsmin"
 version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2787,6 +2818,7 @@ name = "latest-build-instance"
 version = "15.0.0b3.dev1"
 source = { editable = "." }
 dependencies = [
+    { name = "flask-oauthlib-invenio" },
     { name = "invenio-app-rdm", extra = ["opensearch2", "s3"] },
     { name = "latest-build" },
     { name = "lxml-html-clean" },
@@ -2810,6 +2842,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "flask-oauthlib-invenio", editable = "/Users/samk13/Documents/CODE/INVENIO/flask-oauthlib-invenio" },
     { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=15.0.0b3.dev1" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },

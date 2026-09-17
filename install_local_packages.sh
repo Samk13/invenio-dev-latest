@@ -26,12 +26,16 @@ PACKAGES=(
   # invenio-users-resources
   # invenio-i18n
   # invenio-communities
-  invenio-rdm-records
+  # invenio-rdm-records
   # invenio-search-ui
   # invenio-requests
   # invenio-jobs
   # invenio-vocabularies
   # invenio-checks
+  flask-oauthlib-invenio
+  invenio-oauthclient
+  invenio-oauth2server
+
 )
 
 echo "Installing dev packages ..."
