@@ -1193,16 +1193,19 @@ dependencies = [
     { name = "authlib" },
     { name = "flask" },
     { name = "invenio-cache" },
+    { name = "requests" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "authlib", specifier = ">=1.8.0,<2.0.0" },
     { name = "flask", specifier = ">=3.0" },
+    { name = "flask-sqlalchemy", marker = "extra == 'tests'", specifier = ">=3.1.1" },
     { name = "invenio-cache", specifier = ">=3.0.0" },
     { name = "mock", marker = "extra == 'tests'", specifier = ">=5.1.0" },
     { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
     { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "requests", specifier = ">=2.31.0" },
 ]
 provides-extras = ["tests"]
 
