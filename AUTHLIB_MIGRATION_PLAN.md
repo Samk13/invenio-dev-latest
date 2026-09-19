@@ -93,3 +93,18 @@ In this checkout, the direct consumers are **invenio-oauthclient 9.1.1** and **i
 - Keep implicit and password grants behaviourally compatible. Make the new server architecture extensible for future grants/authentication mechanisms.
 - Cache decision: authorization codes move from the deprecated per-OAuth Cachelib configuration to the instance-wide Invenio-Cache/Flask-Caching backend. `OAUTH2_CACHE_TYPE` and `OAUTH2_CACHE_REDIS_*` are deprecated; `CACHE_TYPE` and `CACHE_REDIS_URL` are authoritative.
 - Remaining operational input: provide representative custom provider subclasses and any deployed OAuth 1 integrations for the compatibility test suite, and choose the package/version naming and support window for the retained `flask_oauthlib` adapter.
+
+
+## Open PRs 
+
+### invenio-oauth2server
+https://github.com/inveniosoftware/invenio-oauth2server/pull/317
+../flask-oauthlib-invenio
+
+### flask-oauthlib-invenio
+https://github.com/inveniosoftware/flask-oauthlib-invenio/pull/7
+../invenio-oauth2server
+
+### invenio-oauthclient
+https://github.com/inveniosoftware/invenio-oauthclient/pull/394
+../invenio-oauthclient
