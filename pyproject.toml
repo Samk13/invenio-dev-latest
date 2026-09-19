@@ -13,11 +13,15 @@ dependencies = [
   "lxml-html-clean>=0.1.1",
   "latest-build",
   "flask-oauthlib-invenio",
+  "invenio-oauthclient",
+  "invenio-oauth2server",
 ]
 
 [tool.uv.sources]
 "latest-build" = { workspace = true }
 flask-oauthlib-invenio = { path = "/Users/samk13/Documents/CODE/INVENIO/flask-oauthlib-invenio", editable = true }
+invenio-oauthclient = { path = "/Users/samk13/Documents/CODE/INVENIO/invenio-oauthclient", editable = true }
+invenio-oauth2server = { path = "/Users/samk13/Documents/CODE/INVENIO/invenio-oauth2server", editable = true }
 
 [tool.uv.workspace]
 members = ["site"]

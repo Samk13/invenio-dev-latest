@@ -1202,9 +1202,10 @@ requires-dist = [
     { name = "flask", specifier = ">=3.0" },
     { name = "flask-sqlalchemy", marker = "extra == 'tests'", specifier = ">=3.1.1" },
     { name = "invenio-cache", specifier = ">=3.0.0" },
+    { name = "invenio-cache", extras = ["tests"], marker = "extra == 'tests'", specifier = ">=3.0.0" },
     { name = "mock", marker = "extra == 'tests'", specifier = ">=5.1.0" },
     { name = "pytest-black-ng", marker = "extra == 'tests'", specifier = ">=0.4.0" },
-    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=3.0.0,<4.0.0" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
     { name = "requests", specifier = ">=2.31.0" },
 ]
 provides-extras = ["tests"]
@@ -2063,32 +2064,50 @@ wheels = [
 
 [[package]]
 name = "invenio-oauth2server"
-version = "6.1.0"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "/Users/samk13/Documents/CODE/INVENIO/invenio-oauth2server" }
 dependencies = [
-    { name = "cachelib" },
+    { name = "authlib" },
     { name = "flask-oauthlib-invenio" },
     { name = "flask-wtf" },
     { name = "future" },
     { name = "importlib-metadata" },
     { name = "invenio-accounts" },
     { name = "invenio-base" },
+    { name = "invenio-cache" },
     { name = "invenio-i18n" },
     { name = "invenio-theme" },
     { name = "pyjwt" },
-    { name = "requests-oauthlib" },
     { name = "wtforms" },
     { name = "wtforms-alchemy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d9/a2/049cfbf46c357a6eb42e585641461c957babbf90358f68c2b697dfd9fa34/invenio_oauth2server-6.1.0.tar.gz", hash = "sha256:eba4aa6c9c05b69412176b86a8a3ed71197234296e723b46bf053e09468d321a", size = 89036, upload-time = "2026-09-07T14:25:44.326Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/7c/2667b809abc6485cc92468b127c33d90b9f93edea3e8dfa77b2f098a82ce/invenio_oauth2server-6.1.0-py3-none-any.whl", hash = "sha256:29eaf2787cae067f4ab0690e0cbaa853f6ce8fe78efc453f5e7de7c285270972", size = 235666, upload-time = "2026-09-07T14:25:43.076Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "authlib", specifier = ">=1.8.0,<2.0.0" },
+    { name = "flask-oauthlib-invenio", specifier = ">=2.0.0,<3.0.0" },
+    { name = "flask-wtf", specifier = ">=0.14.3" },
+    { name = "future", specifier = ">=0.16.0" },
+    { name = "importlib-metadata", specifier = ">=4.4" },
+    { name = "invenio-accounts", specifier = ">=9.0.0,<10.0.0" },
+    { name = "invenio-admin", marker = "extra == 'tests'", specifier = ">=1.6.0,<2.0.0" },
+    { name = "invenio-base", specifier = ">=2.3.0,<3.0.0" },
+    { name = "invenio-cache", specifier = ">=3.0.0,<4.0.0" },
+    { name = "invenio-db", extras = ["mysql", "postgresql", "versioning"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
+    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
+    { name = "invenio-theme", specifier = ">=5.0.0,<6.0.0" },
+    { name = "pyjwt", specifier = ">=1.5.0" },
+    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
+    { name = "redis", marker = "extra == 'tests'", specifier = ">=2.10.5" },
+    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
+    { name = "wtforms", specifier = ">=3.0.0" },
+    { name = "wtforms-alchemy", specifier = ">=0.15.0" },
 ]
+provides-extras = ["admin", "docs", "mysql", "postgresql", "redis", "sqlite", "tests"]
 
 [[package]]
 name = "invenio-oauthclient"
-version = "9.1.1"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "/Users/samk13/Documents/CODE/INVENIO/invenio-oauthclient" }
 dependencies = [
     { name = "blinker" },
     { name = "flask-oauthlib-invenio" },
@@ -2099,15 +2118,35 @@ dependencies = [
     { name = "invenio-mail" },
     { name = "invenio-theme" },
     { name = "markupsafe" },
-    { name = "oauthlib" },
-    { name = "requests-oauthlib" },
     { name = "uritemplate" },
     { name = "uritools" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/f9/c1c7808fa646704f26c0c6dae46c7cef0557aeb7bc730c24f135a719ff0d/invenio_oauthclient-9.1.1.tar.gz", hash = "sha256:13f51add27414b4928d4366cb7b44281bd94512562ec14bd725ab61df2a29214", size = 74612, upload-time = "2026-07-16T13:54:51.569Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/4b/ba/dcf35640339b66ba2e28741f6aded43273152cd684efc0674d536c43bbb4/invenio_oauthclient-9.1.1-py3-none-any.whl", hash = "sha256:07f8df741d93accf67b321640d0095c0cc84002d945ff37635f4cd11409d979e", size = 173822, upload-time = "2026-07-16T13:54:50.356Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "blinker", specifier = ">=1.4" },
+    { name = "flask-admin", marker = "extra == 'tests'", specifier = ">=1.6.0" },
+    { name = "flask-oauthlib-invenio", specifier = ">=2.0.0,<3.0.0" },
+    { name = "github3-py", specifier = ">=1.0.0a4" },
+    { name = "httpretty", marker = "extra == 'tests'", specifier = ">=0.8.14" },
+    { name = "invenio-accounts", specifier = ">=9.0.0,<10.0.0" },
+    { name = "invenio-accounts", extras = ["admin"], marker = "extra == 'admin'", specifier = ">=9.0.0,<10.0.0" },
+    { name = "invenio-base", specifier = ">=2.0.0,<3.0.0" },
+    { name = "invenio-db", extras = ["mysql", "postgresql", "versioning"], marker = "extra == 'tests'", specifier = ">=2.2.0,<3.0.0" },
+    { name = "invenio-i18n", specifier = ">=4.0.0,<5.0.0" },
+    { name = "invenio-mail", specifier = ">=1.0.2,<3.0.0" },
+    { name = "invenio-theme", specifier = ">=5.0.0,<6.0.0" },
+    { name = "invenio-userprofiles", marker = "extra == 'tests'", specifier = ">=7.0.0,<8.0.0" },
+    { name = "markupsafe", specifier = ">=2.1.5" },
+    { name = "mock", marker = "extra == 'tests'", specifier = ">=1.3.0" },
+    { name = "pytest-black", marker = "extra == 'tests'", specifier = ">=0.6.0" },
+    { name = "pytest-invenio", marker = "extra == 'tests'", specifier = ">=4.0.0,<5.0.0" },
+    { name = "simplejson", marker = "extra == 'tests'", specifier = ">=3.8" },
+    { name = "sphinx", marker = "extra == 'tests'", specifier = ">=4.5" },
+    { name = "uritemplate", specifier = ">=3.0.1" },
+    { name = "uritools", specifier = ">=1.0.1" },
 ]
+provides-extras = ["admin", "docs", "github", "mysql", "orcid", "postgresql", "sqlite", "tests"]
 
 [[package]]
 name = "invenio-pages"
@@ -2823,6 +2862,8 @@ source = { editable = "." }
 dependencies = [
     { name = "flask-oauthlib-invenio" },
     { name = "invenio-app-rdm", extra = ["opensearch2", "s3"] },
+    { name = "invenio-oauth2server" },
+    { name = "invenio-oauthclient" },
     { name = "latest-build" },
     { name = "lxml-html-clean" },
     { name = "python-dotenv" },
@@ -2847,6 +2888,8 @@ dev = [
 requires-dist = [
     { name = "flask-oauthlib-invenio", editable = "/Users/samk13/Documents/CODE/INVENIO/flask-oauthlib-invenio" },
     { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=15.0.0b3.dev1" },
+    { name = "invenio-oauth2server", editable = "/Users/samk13/Documents/CODE/INVENIO/invenio-oauth2server" },
+    { name = "invenio-oauthclient", editable = "/Users/samk13/Documents/CODE/INVENIO/invenio-oauthclient" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
@@ -3307,15 +3350,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/11/bf/dd35d217034564dc0cab66b20c17b918a646e50b2c498728021d878d5770/nh3-0.2.22-cp38-abi3-win32.whl", hash = "sha256:bcac2a186791c422ce55522cae332c8fa2135795b7b510e2475cb95a44f7b0ce", size = 572115, upload-time = "2025-07-15T13:01:42.659Z" },
     { url = "https://files.pythonhosted.org/packages/78/7b/fd742f962fef24f8432500381b339b220747ffdb2d654f15e620b22a9c9a/nh3-0.2.22-cp38-abi3-win_amd64.whl", hash = "sha256:a78a13f5bf5901f5de50580a74058a10734d3e836144cb090f0304ec5deb3df7", size = 578434, upload-time = "2025-07-15T13:01:44.022Z" },
     { url = "https://files.pythonhosted.org/packages/ed/50/5a5e05b011cb1feb28ee789bcb64d4e9f5fa145c6533001bffadec8448d7/nh3-0.2.22-cp38-abi3-win_arm64.whl", hash = "sha256:602ad5229c81a287c8632ea1bf2d6b3654b3e208b57b0bcab5beec93ff91866f", size = 563625, upload-time = "2025-07-15T13:01:45.084Z" },
-]
-
-[[package]]
-name = "oauthlib"
-version = "3.3.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0b/5f/19930f824ffeb0ad4372da4812c50edbd1434f678c90c2733e1188edfc63/oauthlib-3.3.1.tar.gz", hash = "sha256:0f0f8aa759826a193cf66c12ea1af1637f87b9b4622d46e866952bb022e538c9", size = 185918, upload-time = "2025-06-19T22:48:08.269Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/be/9c/92789c596b8df838baa98fa71844d84283302f7604ed565dafe5a6b5041a/oauthlib-3.3.1-py3-none-any.whl", hash = "sha256:88119c938d2b8fb88561af5f6ee0eec8cc8d552b7bb1f712743136eb7523b7a1", size = 160065, upload-time = "2025-06-19T22:48:06.508Z" },
 ]
 
 [[package]]
@@ -4213,19 +4247,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179abd6d00ebd70bff6273f37fb3e0cc209f48b39d00cbf/requests-2.34.2.tar.gz", hash = "sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed", size = 142856, upload-time = "2026-05-14T19:25:27.735Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl", hash = "sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0", size = 73075, upload-time = "2026-05-14T19:25:26.443Z" },
-]
-
-[[package]]
-name = "requests-oauthlib"
-version = "2.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "oauthlib" },
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/42/f2/05f29bc3913aea15eb670be136045bf5c5bbf4b99ecb839da9b422bb2c85/requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9", size = 55650, upload-time = "2024-03-22T20:32:29.939Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl", hash = "sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36", size = 24179, upload-time = "2024-03-22T20:32:28.055Z" },
 ]
 
 [[package]]
