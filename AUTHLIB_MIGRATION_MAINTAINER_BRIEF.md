@@ -149,6 +149,41 @@ is published:
 2. remove `allow-direct-references` if no other direct references remain;
 3. regenerate dependency resolution and rerun all CI jobs.
 
+## Broader package impact
+
+An audit of the development instance found no additional package importing
+`flask_oauthlib` directly. However, several packages depend on or import the two
+downstream Invenio packages and must be included in integration testing and
+release coordination:
+
+| Package | Relationship | Expected action |
+| --- | --- | --- |
+| `invenio-app-rdm` | Requires both `invenio-oauthclient` and `invenio-oauth2server` | Run full instance tests and update upper bounds if either downstream package receives a major version. |
+| `invenio-rdm-records` | Requires `invenio-oauth2server`; imports `Token` and `Scope`; contributes an OAuth scope entry point | Test resource-access tokens and update the dependency bound for a server major release. |
+| `invenio-users-resources` | Requires `invenio-oauthclient` | Run integration tests and update the dependency bound for an OAuth client major release. |
+| `invenio-vcs` | Optional integration importing OAuth client models/helpers and OAuth server tokens | It is not part of the required migration path. Test GitHub/GitLab linking separately if optional VCS compatibility is retained. |
+| `invenio-github` | Deprecated package importing OAuth client models/helpers and OAuth server tokens | No migration work is planned. Do not use it as a release blocker; direct users should move to a supported integration. |
+| `invenio-stats` | Uses OAuth server tokens in tests | Run its test suite against the migrated server if it remains in the supported matrix. |
+| Instance/meta package | Selects all three migration packages | Regenerate its lock and constraints after final versions are chosen. |
+
+`Flask-Multipass` is installed and has an optional Authlib extra, but it does
+not consume this compatibility package or replace the OAuth authorization
+server. No migration change is currently required there.
+
+The audited virtual environment still contains stale `oauthlib` and
+`requests-oauthlib` installations plus old editable `egg-info` metadata, even
+though the current root lock no longer selects those libraries. Use a clean
+environment or run a synchronized install before final dependency verification;
+do not treat the presence of those stale packages as a current runtime
+requirement.
+
+If `flask-oauthlib-invenio`, `invenio-oauthclient`, or
+`invenio-oauth2server` is released with a new major version—as intended by the
+migration plan—the upper bounds in the packages above must be updated in
+coordinated PRs. If maintainers choose to preserve the current major versions,
+the bounds already accept them, but that choice must be reconciled with the
+migration's documented breaking changes.
+
 ## Local setup
 
 Clone the repositories as siblings so the commands and handoffs use the same
@@ -301,3 +336,10 @@ review. In particular:
 
 Please record new findings in `AUTHLIB_FOUND_ISSUES.md` and update the security
 handoff when an issue is resolved or validation is completed.
+
+
+
+ I’ve spent the last three days on an AI-assisted Flask-OAuthlib → Authlib migration; it works locally and the test suites pass.
+ PRs: Flask #7, OAuth2 server #317, and OAuth client #394.
+ It remains backward compatible with existing data, so no Alembic migration is expected; Python 3.9 must be upgraded because Authlib 1.8 requires 3.10+.
+ This is not intended to replace your work, but hopefully it provides a useful tested starting point—please review and reuse anything helpful.
