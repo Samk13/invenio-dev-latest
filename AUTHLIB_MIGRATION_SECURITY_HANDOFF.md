@@ -64,9 +64,21 @@ The first setting enforces POST token requests. The second rejects query-string 
 
 HMAC-SHA1 and RSA-SHA1 requests are signed with real fixtures and verified using Authlib's signature verifiers. OAuth1 request-token callback binding and configured RSA key forwarding are also covered.
 
+### Token revocation compatibility
+
+`invenio-oauth2server.models.Token.delete()` now owns persisted-token deletion and commits through the Invenio database session. Both the released provider's legacy revocation validator and the migrated Authlib provider can therefore revoke tokens without an import-time dependency on a new provider decorator. `is_revoked()` intentionally returns `False` because revoked rows are deleted and cannot subsequently be loaded as active tokens.
+
+### Python support decision
+
+The three migration branches require Python 3.10 or newer. This is intentional: the migration targets Authlib 1.8, whose package metadata requires Python 3.10 or newer. Retaining Python 3.9 support would advertise an unsatisfiable dependency combination. The reason is documented in `flask-oauthlib-invenio/docs/authlib-migration.rst`, and the downstream CI matrices include Python 3.10, 3.12, and 3.14.
+
+### Coordinated PR dependencies
+
+Until the migrated compatibility package is released, `invenio-oauthclient` and `invenio-oauth2server` install `flask-oauthlib-invenio` directly from PR 7. Hatch direct references are enabled for these temporary dependencies. This prevents CI from resolving the incompatible released `flask-oauthlib-invenio==2.0.0`. Replace the PR references with final version bounds after the compatibility package is released.
+
 ## Validation completed
 
-All suites were run with each downstream environment using the editable migrated `flask-oauthlib-invenio` checkout:
+The following suites passed before the temporary PR dependency references and latest revocation compatibility change:
 
 ```text
 flask-oauthlib-invenio: 156 passed
@@ -74,7 +86,7 @@ invenio-oauthclient:    164 passed, 8 skipped
 invenio-oauth2server:    59 passed, 1 skipped
 ```
 
-The Redis-backed tests ran with the standard `docker-services-cli --cache redis` configuration and include concurrent one-time authorization-code consumption through Invenio-Cache. The complete `flask-oauthlib-invenio` suite was rerun after correcting the worker application contexts and passes with 156 tests.
+The Redis-backed tests ran with the standard `docker-services-cli --cache redis` configuration and include concurrent one-time authorization-code consumption through Invenio-Cache. The complete `flask-oauthlib-invenio` suite was rerun after correcting the worker application contexts and passes with 156 tests. The downstream suites must be rerun to validate their latest dependency and revocation commits.
 
 A live callback initially continued to fail because the instance loaded the
 released `invenio-oauthclient` copy from `site-packages` while loading the
@@ -89,9 +101,10 @@ Previously completed manual checks on the live InvenioRDM instance covered local
 
 These are environment/release checks, not unresolved implementation findings:
 
-1. Run PostgreSQL-specific Alembic tests for `invenio-oauthclient` and `invenio-oauth2server`.
-2. Rebuild/reinstall the three changed packages in the live instance and restart all web/worker processes before retesting.
-3. Re-run live HTTPS flows for:
+1. Rerun the complete `invenio-oauthclient` and `invenio-oauth2server` suites and confirm GitHub CI uses `flask-oauthlib-invenio` PR 7 rather than the released package.
+2. Run PostgreSQL-specific Alembic tests for `invenio-oauthclient` and `invenio-oauth2server`.
+3. Rebuild/reinstall the three changed packages in the live instance and restart all web/worker processes before retesting.
+4. Re-run live HTTPS flows for:
    - GitHub and ORCID callback state;
    - valid, expired, revoked, malformed, and insufficient-scope bearer tokens;
    - authorization-code replay;
@@ -99,7 +112,8 @@ These are environment/release checks, not unresolved implementation findings:
    - invalid redirect URI and invalid/replayed state;
    - refresh-token rotation;
    - strict legacy transport settings.
-4. Recheck the live `POST /oauth/token` route. It previously returned a themed 404 despite `OPTIONS` advertising POST, which may be an instance routing/deployment issue.
+5. Recheck the live `POST /oauth/token` route. It previously returned a themed 404 despite `OPTIONS` advertising POST, which may be an instance routing/deployment issue.
+6. After PR 7 is released, replace both temporary Git references with bounded release requirements and disable Hatch direct references if they are no longer needed.
 
 ## Commands
 
@@ -115,14 +129,3 @@ cd ../invenio-oauthclient
 DB=postgresql ./run-tests.sh tests/test_alembic.py -q
 .venv/bin/python -m pytest tests -q -o addopts=''
 ```
-
-
-## Open review questions
-
-### Token revocation model
-
-`invenio_oauth2server/models.py` currently implements `is_revoked()` as always returning `False`, based on the existing behavior of deleting tokens when they are revoked. Confirm that this accurately represents every retained-token and revocation path before finalizing the migration.
-
-### Python compatibility
-
-Confirm whether the `pyproject.toml` change from `requires-python = ">=3.9"` to `">=3.10"` is intentional. If Python 3.9 remains in the supported matrix, restore the previous lower bound.

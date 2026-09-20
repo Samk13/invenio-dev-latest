@@ -1,5 +1,10 @@
 # Authlib migration plan
 
+Maintainers joining the project should start with
+[`AUTHLIB_MIGRATION_MAINTAINER_BRIEF.md`](AUTHLIB_MIGRATION_MAINTAINER_BRIEF.md).
+It includes the AI-assistance disclosure, open PRs, local setup, validation
+status, and review guidance.
+
 ## Goal and decision
 
 Completely replace `flask-oauthlib-invenio`'s unmaintained Flask-OAuthlib/OAuthlib implementation with [Authlib](https://github.com/authlib/authlib), while preserving Invenio OAuth client and OAuth 2 server behaviour, endpoints, persisted data, supported OAuth flows, and the custom remote-provider extension surface. This is a coordinated major/breaking release, with a clear migration guide. The target is the installed Authlib 1.8.0 (pin a tested compatible range, rather than the currently unbounded latest version).
@@ -97,20 +102,22 @@ In this checkout, the direct consumers are **invenio-oauthclient 9.1.1** and **i
 
 ## Current implementation status
 
-The Authlib-backed compatibility implementation and security hardening are in place across the three migration branches. The latest `flask-oauthlib-invenio` run passes all 156 tests, including Redis-backed concurrent authorization-code consumption. The concurrent test workers now create their own Flask application contexts when using `invenio_cache.current_cache`.
+The Authlib-backed compatibility implementation and security hardening are in place across the three migration branches. The latest `flask-oauthlib-invenio` run passes all 156 tests, including Redis-backed concurrent authorization-code consumption. The concurrent test workers create their own Flask application contexts when using `invenio_cache.current_cache`.
 
-Remaining work is limited to the operational validation and the two open review questions recorded in `AUTHLIB_MIGRATION_SECURITY_HANDOFF.md`; the previously reported atomic Redis test failure is resolved.
+The two previous review questions are resolved. Revoked persisted tokens are deleted through `Token.delete()`, so loaded token rows correctly report `is_revoked() == False`. Python 3.10 is the supported minimum because Authlib 1.8 requires Python 3.10 or newer; this intentional compatibility break is documented in the Flask package's migration guide.
+
+For coordinated PR testing, `invenio-oauthclient` and `invenio-oauth2server` temporarily depend directly on `flask-oauthlib-invenio` PR 7. Their full local suites and GitHub CI still need to be rerun against that dependency. Replace the Git references with bounded release requirements once the compatibility package is published. The remaining implementation work is otherwise limited to the operational validation in `AUTHLIB_MIGRATION_SECURITY_HANDOFF.md`.
 
 ## Open PRs 
 
 ### invenio-oauth2server
 https://github.com/inveniosoftware/invenio-oauth2server/pull/317
-../flask-oauthlib-invenio
+`../invenio-oauth2server`
 
 ### flask-oauthlib-invenio
 https://github.com/inveniosoftware/flask-oauthlib-invenio/pull/7
-../invenio-oauth2server
+`../flask-oauthlib-invenio`
 
 ### invenio-oauthclient
 https://github.com/inveniosoftware/invenio-oauthclient/pull/394
-../invenio-oauthclient
+`../invenio-oauthclient`
