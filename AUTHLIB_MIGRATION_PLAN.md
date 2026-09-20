@@ -95,6 +95,12 @@ In this checkout, the direct consumers are **invenio-oauthclient 9.1.1** and **i
 - Remaining operational input: provide representative custom provider subclasses and any deployed OAuth 1 integrations for the compatibility test suite, and choose the package/version naming and support window for the retained `flask_oauthlib` adapter.
 
 
+## Current implementation status
+
+The Authlib-backed compatibility implementation and security hardening are in place across the three migration branches. The latest `flask-oauthlib-invenio` run passes all 156 tests, including Redis-backed concurrent authorization-code consumption. The concurrent test workers now create their own Flask application contexts when using `invenio_cache.current_cache`.
+
+Remaining work is limited to the operational validation and the two open review questions recorded in `AUTHLIB_MIGRATION_SECURITY_HANDOFF.md`; the previously reported atomic Redis test failure is resolved.
+
 ## Open PRs 
 
 ### invenio-oauth2server

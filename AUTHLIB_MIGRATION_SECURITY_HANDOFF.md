@@ -22,7 +22,7 @@ Regression coverage includes successful S256 exchange, missing/wrong verifiers, 
 
 Authorization-code grants now use only Invenio-Cache's public API. A bounded-lifetime `cache.add()` consumption marker is atomic on distributed backends such as Redis and remains in place after consumption so an interrupted consumer fails closed. The implementation no longer creates a separate Redis client or accesses Flask-Caching private clients, prefixes, or serializers.
 
-The Redis URL is supplied through the test environment, and coverage includes concurrent consumption where exactly one consumer succeeds.
+The Redis URL is supplied through the test environment, and coverage includes concurrent consumption where exactly one consumer succeeds. Each concurrent test worker now establishes its own Flask application context before accessing `invenio_cache.current_cache`, matching production request handling.
 
 ### Invenio-Cache dependency and initialization
 
@@ -74,7 +74,7 @@ invenio-oauthclient:    164 passed, 8 skipped
 invenio-oauth2server:    59 passed, 1 skipped
 ```
 
-The Redis-backed tests ran with the standard `docker-services-cli --cache redis` configuration and include concurrent one-time authorization-code consumption through Invenio-Cache.
+The Redis-backed tests ran with the standard `docker-services-cli --cache redis` configuration and include concurrent one-time authorization-code consumption through Invenio-Cache. The complete `flask-oauthlib-invenio` suite was rerun after correcting the worker application contexts and passes with 156 tests.
 
 A live callback initially continued to fail because the instance loaded the
 released `invenio-oauthclient` copy from `site-packages` while loading the
@@ -116,9 +116,13 @@ DB=postgresql ./run-tests.sh tests/test_alembic.py -q
 .venv/bin/python -m pytest tests -q -o addopts=''
 ```
 
-## Repository hygiene
 
-Do not include unrelated local changes in migration commits:
+## Open review questions
 
-- `invenio-dev-latest/AUTHLIB_MIGRATION_PLAN.md`
-- `invenio-oauth2server/invenio_oauth2server/errors-to-fix.md`
+### Token revocation model
+
+`invenio_oauth2server/models.py` currently implements `is_revoked()` as always returning `False`, based on the existing behavior of deleting tokens when they are revoked. Confirm that this accurately represents every retained-token and revocation path before finalizing the migration.
+
+### Python compatibility
+
+Confirm whether the `pyproject.toml` change from `requires-python = ">=3.9"` to `">=3.10"` is intentional. If Python 3.9 remains in the supported matrix, restore the previous lower bound.
