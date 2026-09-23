@@ -12,6 +12,7 @@ dependencies = [
   "uwsgi-tools>=1.1.1",
   "lxml-html-clean>=0.1.1",
   "latest-build",
+  "billiard<4.3.0",
 ]
 
 [tool.uv.sources]
