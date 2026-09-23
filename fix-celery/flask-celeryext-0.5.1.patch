@@ -1,0 +1,40 @@
+--- a/flask_celeryext/app.py
++++ b/flask_celeryext/app.py
+@@ -4,6 +4,8 @@
+ # SPDX-License-Identifier: BSD-3-Clause
+ 
+ """Flask extension for Celery integration."""
++
++import sys
+ 
+ from celery import Task
+ from celery import current_app as current_celery_app
+@@ -19,7 +21,14 @@
+     def map_key(key):
+         return mapping[key] if key in mapping else key
+ 
+-    return {map_key(key): value for key, value in config.items()}
++    return {
++        map_key(key): value
++        for key, value in config.items()
++        if sys.platform != "darwin" or (
++            key.startswith(("CELERY_", "BROKER_"))
++            or key == "broker_connection_retry_on_startup"
++        )
++    }
+ 
+ 
+ def setup_task_logger(logger=None, **kwargs):
+@@ -37,7 +46,11 @@
+     config = map_invenio_to_celery(flask_app.config, FLASK_TO_CELERY_MAPPING)
+     celery.config_from_object(config)
+ 
+-    celery.Task = AppContextTask
++    if sys.platform == "darwin":
++        celery.task_cls = "flask_celeryext.app:AppContextTask"
++        celery.Task = celery.create_task_cls()
++    else:
++        celery.Task = AppContextTask
+ 
+     # Set Flask application object on the Celery application.
+     if not hasattr(celery, "flask_app"):

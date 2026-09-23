@@ -1,0 +1,75 @@
+--- a/invenio_celery/ext.py
++++ b/invenio_celery/ext.py
+@@ -6,14 +6,44 @@
+ 
+ from __future__ import absolute_import, print_function
+ 
++import sys
+ import time
+ import warnings
++from copyreg import pickle
+ 
+-from celery.signals import import_modules
++from celery import current_app
++from celery.app import trace
++from celery.beat import Service
++from celery.signals import import_modules, worker_process_init
++from celery.utils.imports import symbol_by_name
+ from flask_celeryext import FlaskCeleryExt
+ from invenio_base.utils import entry_points
+ 
+ from . import config
++
++
++def _reduce_beat_service(service):
++    """Restore Celery beat's Service with its constructor argument order."""
++    return Service, (
++        service.app,
++        service.max_interval,
++        service.schedule_filename,
++        service.scheduler_cls,
++    )
++
++
++@worker_process_init.connect
++def initialize_worker(sender=None, **kwargs):
++    """Initialize Celery's task trace in spawned pool workers."""
++    if sys.platform != "darwin":
++        return
++    celery = current_app._get_current_object()
++    if not hasattr(celery, "flask_app"):
++        factory = celery.conf.get("CELERY_FLASK_APP_FACTORY")
++        if factory:
++            celery.flask_app = symbol_by_name(factory)()
++    if not trace._localized:
++        trace.setup_worker_optimizations(celery)
+ 
+ 
+ class InvenioCelery(object):
+@@ -28,6 +58,8 @@
+ 
+     def init_app(self, app, entry_point_group="invenio_celery.tasks", **kwargs):
+         """Initialize application object."""
++        if sys.platform == "darwin":
++            pickle(Service, _reduce_beat_service)
+         self.init_config(app)
+         self.celery = FlaskCeleryExt(app).celery
+         self.entry_point_group = entry_point_group
+@@ -75,6 +107,17 @@
+             if k.startswith("CELERY_") or k.startswith("BROKER_"):
+                 app.config.setdefault(k, getattr(config, k))
+ 
++        if sys.platform == "darwin":
++            imports = app.config.get("CELERY_IMPORTS", ())
++            if isinstance(imports, str):
++                imports = (imports,)
++            app.config["CELERY_IMPORTS"] = tuple(
++                dict.fromkeys((*imports, "invenio_celery.ext"))
++            )
++            app.config.setdefault(
++                "CELERY_FLASK_APP_FACTORY", "invenio_app.factory:create_app"
++            )
++
+         app.config.setdefault("broker_connection_retry_on_startup", True)
+ 
+     def get_queues(self):
