@@ -8,7 +8,7 @@ export AWS_CA_BUNDLE ?= $(CURDIR)/docker/certs/ca.pem
 # GNU Make reserves -y and cannot use it as a custom confirmation flag.
 YES ?= 0
 
-.PHONY: help full-reset clean install run services-setup-dev setup-dev dev-certs dev-services s3-setup
+.PHONY: help full-reset clean install run stop services-setup-dev setup-dev dev-certs dev-services s3-setup
 
 help:
 	@printf '%s\n' \
@@ -17,6 +17,7 @@ help:
 	  'make install             Install the instance with uv.' \
 	  'make services-setup-dev  Generate certificates, reset services, and configure S3.' \
 	  'make run                 Start the instance.' \
+	  'make stop                Stop services.' \
 	  'make dev-certs           Generate development certificates if missing.' \
 	  'make s3-setup            Create the S3 bucket and configure CORS (no data reset).' \
 	  'Use YES=1 to skip confirmation (make reserves -y).'
@@ -42,6 +43,9 @@ install:
 
 run:
 	. .venv/bin/activate && invenio-cli run
+
+stop:
+	. .venv/bin/activate && invenio-cli services stop
 
 # Keep the previous command as an alias.
 setup-dev: services-setup-dev
