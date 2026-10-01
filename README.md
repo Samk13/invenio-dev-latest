@@ -94,29 +94,26 @@ docker compose -f docker-compose.full.yml up -d
 
 ### S3 Storage Setup
 
-After starting the services, you may need to configure the default S3 bucket:
+Run from the repository root:
 
-1. Navigate to <http://s3:9001/login>
-2. Use the default credentials: `CHANGE_ME` (both username and password)
-3. Create necessary buckets as required
-4. Configure bucket CORS before your first browser upload. Run this from the
-   repository root after RustFS is running and the `default` bucket exists:
+```console
+make install
+make services-setup-dev  # Resets local data
+make run
+```
 
-   ```console
-   uv run --no-sync python scripts/s3/configure_cors.py
-   ```
+- Accept browser certificate warnings at https://localhost:9000/health and https://localhost:9001.
+- RustFS test login credentials: `CHANGE_ME` / `CHANGE_ME`.
+- `make s3-setup` configures bucket/CORS without resetting data. Export custom S3 settings; it does not load `.env`.
+- For Docker, add `127.0.0.1 s3` to `/etc/hosts`.
 
-   Run it again after recreating the `s3_data` volume or the bucket, or if uploads
-   fail with a missing `Access-Control-Allow-Origin` response header. No application
-   restart is needed; retry the upload after the command succeeds.
+Nginx and RustFS share `docker/nginx/test.crt` and `test.key`. No certificate
+script is needed at startup. To renew the one-year certificate when needed:
 
-   This replaces the bucket's CORS rules with local-development origins and exposes
-   `ETag` for multipart uploads. For another bucket or origin, use `--bucket NAME`
-   and repeat `--origin https://YOUR-HOST` as needed. The script reads
-   `INVENIO_S3_ENDPOINT_URL`, `INVENIO_S3_ACCESS_KEY_ID`, and
-   `INVENIO_S3_SECRET_ACCESS_KEY` from the shell environment (not `.env` automatically).
-   Reapply after recreating the `s3_data` volume. Existing MinIO data and bucket
-   settings are not automatically migrated to RustFS.
+```console
+make renew-dev-certs  # Keeps valid certificates unchanged
+docker compose -f docker-compose.full.yml up -d --build --force-recreate s3 frontend
+```
 
 ### Environment Variables
 
