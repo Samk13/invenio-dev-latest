@@ -96,7 +96,8 @@ docker compose -f docker-compose.full.yml up -d
 
 Local development only; run from the repository root. Set
 `AWS_CA_BUNDLE=./docker/certs/ca.pem` in `.env` to trust the development
-certificate in Python (see `.env.example`).
+certificate in Python (see `.env.example`). Make also exports the CA path for
+Celery, which does not load `.env`.
 
 **New instance workflow:** `clean` deletes `.venv` and `uv.lock` (optional).
 Service setup reuses certificates and configures bucket/CORS; it asks before
@@ -125,7 +126,14 @@ invenio-cli services setup -f -N
 uv run --no-sync python scripts/s3/configure_cors.py --create-bucket
 ```
 
-Then start or restart the app with `make run` or `invenio-cli run`. Before uploading, accept the
+Then start or restart the app and workers with `make run`. For a manual launch:
+
+```console
+export AWS_CA_BUNDLE="$PWD/docker/certs/ca.pem"
+invenio-cli run
+```
+
+Before uploading, accept the
 browser certificate warning at https://localhost:9000/health and
 https://localhost:9001 (and the app URL if using Nginx).
 RustFS login: `CHANGE_ME` / `CHANGE_ME`.

@@ -2,6 +2,9 @@
 
 S3_ENDPOINT_URL ?= $(if $(INVENIO_S3_ENDPOINT_URL),$(INVENIO_S3_ENDPOINT_URL),https://localhost:9000)
 
+# Celery does not load .env; pass CA trust to all CLI child processes.
+export AWS_CA_BUNDLE ?= $(CURDIR)/docker/certs/ca.pem
+
 # GNU Make reserves -y and cannot use it as a custom confirmation flag.
 YES ?= 0
 
