@@ -94,29 +94,50 @@ docker compose -f docker-compose.full.yml up -d
 
 ### S3 Storage Setup
 
-After starting the services, you may need to configure the default S3 bucket:
+Local development only; run from the repository root. Set
+`AWS_CA_BUNDLE=./docker/certs/ca.pem` in `.env` to trust the development
+certificate in Python (see `.env.example`).
 
-1. Navigate to <http://s3:9001/login>
-2. Use the default credentials: `CHANGE_ME` (both username and password)
-3. Create necessary buckets as required
-4. Configure bucket CORS before your first browser upload. Run this from the
-   repository root after RustFS is running and the `default` bucket exists:
+**New instance workflow:** `clean` deletes `.venv` and `uv.lock` (optional).
+Service setup reuses certificates and configures bucket/CORS; it asks before
+**resetting local application data**. Use `YES=1` to skip confirmation.
 
-   ```console
-   uv run --no-sync python scripts/s3/configure_cors.py
-   ```
+```console
+make clean
+make install
+make services-setup-dev
+make run
+```
 
-   Run it again after recreating the `s3_data` volume or the bucket, or if uploads
-   fail with a missing `Access-Control-Allow-Origin` response header. No application
-   restart is needed; retry the upload after the command succeeds.
+`make install` creates `.venv` with `uv venv`; install, service setup, and run
+activate it before invoking the CLI.
 
-   This replaces the bucket's CORS rules with local-development origins and exposes
-   `ETag` for multipart uploads. For another bucket or origin, use `--bucket NAME`
-   and repeat `--origin https://YOUR-HOST` as needed. The script reads
-   `INVENIO_S3_ENDPOINT_URL`, `INVENIO_S3_ACCESS_KEY_ID`, and
-   `INVENIO_S3_SECRET_ACCESS_KEY` from the shell environment (not `.env` automatically).
-   Reapply after recreating the `s3_data` volume. Existing MinIO data and bucket
-   settings are not automatically migrated to RustFS.
+Or run `make full-reset` to execute all four commands in order, with confirmation
+before deleting anything. `make full-reset YES=1` skips confirmation (Make does not support a custom `-y` flag).
+
+For services only, run `make services-setup-dev` (`make setup-dev` is an alias).
+
+**Or manually** (service setup also resets local data; certificate generation replaces existing certificates):
+
+```console
+./scripts/setup_dev_certs.sh
+invenio-cli services setup -f -N
+uv run --no-sync python scripts/s3/configure_cors.py --create-bucket
+```
+
+Then start or restart the app with `make run` or `invenio-cli run`. Before uploading, accept the
+browser certificate warning at https://localhost:9000/health and
+https://localhost:9001 (and the app URL if using Nginx).
+RustFS login: `CHANGE_ME` / `CHANGE_ME`.
+
+After deleting the bucket or `s3_data` volume, run `make s3-setup` (no data reset).
+Make and the CORS script do not load `.env`; export custom `INVENIO_S3_ENDPOINT_URL`,
+`INVENIO_S3_ACCESS_KEY_ID`, and `INVENIO_S3_SECRET_ACCESS_KEY` values if needed.
+
+**Full stack:** add `127.0.0.1 s3` to `/etc/hosts`, then rebuild the frontend:
+```console
+docker compose -f docker-compose.full.yml up -d --build --force-recreate s3 frontend
+```
 
 ### Environment Variables
 

@@ -75,6 +75,8 @@ celerybeat-schedule*
 
 # s3
 s3-data/
+docker/rustfs/certs/
+docker/certs/
 
 # env
 .env
