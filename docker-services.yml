@@ -22,8 +22,8 @@ services:
       - "INVENIO_SITE_UI_URL=${DOCKER_SERVICES_IP_BIND:-127.0.0.1}"
       - "INVENIO_SITE_API_URL=https://${DOCKER_SERVICES_IP_BIND:-127.0.0.1}/api"
       - "INVENIO_S3_ENDPOINT_URL=http://s3:9000" # add s3 alias to your etc/hosts
-      - "INVENIO_S3_ACCESS_KEY_ID=CHANGE_ME"
-      - "INVENIO_S3_SECRET_ACCESS_KEY=CHANGE_ME"
+      - "INVENIO_S3_ACCESS_KEY_ID=${INVENIO_S3_ACCESS_KEY_ID:-CHANGE_ME}"
+      - "INVENIO_S3_SECRET_ACCESS_KEY=${INVENIO_S3_SECRET_ACCESS_KEY:-CHANGE_ME}"
   frontend:
     build: ./docker/nginx/
     image: latest-build-frontend
@@ -85,7 +85,7 @@ services:
       - 'OPENSEARCH_HOSTS=["http://search:9200"]'
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
   s3:
-    image: rustfs/rustfs:latest
+    image: rustfs/rustfs:1.0.0
     restart: "unless-stopped"
     ports:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9000:9000"
@@ -93,19 +93,16 @@ services:
     security_opt:
       - "no-new-privileges:true"
     environment:
-      RUSTFS_ACCESS_KEY: "${RUSTFS_ACCESS_KEY:-CHANGE_ME}"
-      RUSTFS_SECRET_KEY: "${RUSTFS_SECRET_KEY:-CHANGE_ME}"
-      RUSTFS_SERVER_DOMAINS: "localhost"
+      RUSTFS_ACCESS_KEY: "${INVENIO_S3_ACCESS_KEY_ID:-CHANGE_ME}"
+      RUSTFS_SECRET_KEY: "${INVENIO_S3_SECRET_ACCESS_KEY:-CHANGE_ME}"
+      RUSTFS_ADDRESS: "0.0.0.0:9000"
       RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_CONSOLE_ADDRESS: "0.0.0.0:9001"
+      RUSTFS_VOLUMES: "/data"
     volumes:
-      - ./data:/data
+      - s3_data:/data
     healthcheck:
-      test:
-        [
-          "CMD",
-          "sh", "-c",
-          "curl -f ${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9000/health && curl -f ${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:9001/health"
-        ]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -117,4 +114,4 @@ services:
       - "${DOCKER_SERVICES_IP_BIND:-127.0.0.1}:5555:5555"
     command: celery --broker=amqp://guest:guest@mq:5672/ flower
 volumes:
-  data:
+  s3_data:

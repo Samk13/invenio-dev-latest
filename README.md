@@ -99,6 +99,24 @@ After starting the services, you may need to configure the default S3 bucket:
 1. Navigate to <http://s3:9001/login>
 2. Use the default credentials: `CHANGE_ME` (both username and password)
 3. Create necessary buckets as required
+4. Configure bucket CORS before your first browser upload. Run this from the
+   repository root after RustFS is running and the `default` bucket exists:
+
+   ```console
+   uv run --no-sync python scripts/s3/configure_cors.py
+   ```
+
+   Run it again after recreating the `s3_data` volume or the bucket, or if uploads
+   fail with a missing `Access-Control-Allow-Origin` response header. No application
+   restart is needed; retry the upload after the command succeeds.
+
+   This replaces the bucket's CORS rules with local-development origins and exposes
+   `ETag` for multipart uploads. For another bucket or origin, use `--bucket NAME`
+   and repeat `--origin https://YOUR-HOST` as needed. The script reads
+   `INVENIO_S3_ENDPOINT_URL`, `INVENIO_S3_ACCESS_KEY_ID`, and
+   `INVENIO_S3_SECRET_ACCESS_KEY` from the shell environment (not `.env` automatically).
+   Reapply after recreating the `s3_data` volume. Existing MinIO data and bucket
+   settings are not automatically migrated to RustFS.
 
 ### Environment Variables
 

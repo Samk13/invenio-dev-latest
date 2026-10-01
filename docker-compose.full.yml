@@ -79,6 +79,9 @@ services:
     command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
     ports:
       - "5000"
+    depends_on:
+      s3:
+        condition: service_healthy
 
   # Worker
   worker:
@@ -87,6 +90,8 @@ services:
       service: app
     command: ["celery -A invenio_app.celery worker --beat --loglevel=INFO"]
     depends_on:
+      s3:
+        condition: service_healthy
       search:
         condition: service_started
       cache:
@@ -104,4 +109,4 @@ services:
         condition: service_started
 volumes:
   static_data:
-  data:
+  s3_data:

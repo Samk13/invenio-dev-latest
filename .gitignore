@@ -67,9 +67,8 @@ logs/
 # Invenio-cli per machine file
 .invenio.private
 
-# S3 default bucket location
-data/default/*
-data/.minio.sys
+# Legacy local S3 data (Compose now uses the s3_data volume)
+data/
 
 # Celery
 celerybeat-schedule*

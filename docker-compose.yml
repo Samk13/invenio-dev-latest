@@ -44,4 +44,4 @@ services:
       file: docker-services.yml
       service: flower
 volumes:
-  data:
+  s3_data:

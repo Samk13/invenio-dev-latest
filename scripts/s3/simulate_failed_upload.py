@@ -59,11 +59,12 @@ def run():
         "[yellow]File upload has been created.\n\n"
         "Now please either press any key to continue or let's simulate expired upload:[/yellow]"
     )
-    console.print("[blue]   1. kill the server[/blue]")
-    console.print("[blue]   2. stop minio[/blue]")
-    console.print("[blue]   3. remove data/.minio.sys[/blue]")
-    console.print("[blue]   4. restart minio[/blue]")
-    console.print("[blue]   5. restart the server[/blue]")
+    console.print("[blue]   1. stop the application server[/blue]")
+    console.print(
+        "[blue]   2. abort this multipart upload in RustFS using an S3 client "
+        "(ListMultipartUploads / AbortMultipartUpload)[/blue]"
+    )
+    console.print("[blue]   3. restart the application server[/blue]")
 
     console.print("[yellow]Then press Enter to continue...[/yellow]")
     input()
