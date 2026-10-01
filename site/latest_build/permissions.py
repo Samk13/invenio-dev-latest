@@ -14,17 +14,17 @@ from flask_principal import RoleNeed
 from invenio_administration.generators import Administration
 from invenio_communities.permissions import CommunityPermissionPolicy
 from invenio_records_permissions.generators import Disable, Generator, SystemProcess
-from invenio_accounts.proxies import current_datastore
+from invenio_accounts.utils import resolve_role_id
 
 class CommunityCreator(Generator):
-    """Allows users with the community-creator role."""
+    """Allows users with the configured community-creator role."""
 
     def needs(self, **kwargs):
         configured = current_app.config.get(
             "CONFIG_COMMUNITY_CREATOR_ROLE", "community-creator"
         )
-        role = current_datastore.find_role(configured)
-        return [RoleNeed(role.id)] if role else [RoleNeed(configured)]
+        role_id = resolve_role_id(configured)
+        return [RoleNeed(role_id) if role_id else RoleNeed(configured)]
 
 
 class CommunitiesPermissionPolicy(CommunityPermissionPolicy):
