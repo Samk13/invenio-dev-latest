@@ -1,0 +1,17 @@
+{% extends "invenio_app_rdm/records/deposit.html" %}
+
+{% block page_body %}
+  <div class="ui container">
+    <div class="ui info message">
+      <div class="header">Local development: trust the upload certificate</div>
+      <p>
+        Before uploading files,
+        <a href="https://localhost:9000/health" target="_blank" rel="noopener noreferrer">open the RustFS health page</a>
+        in this browser and accept the certificate warning
+        (Advanced → Proceed to localhost). Then return here and retry the upload.
+        Only do this for local development.
+      </p>
+    </div>
+  </div>
+  {{ super() }}
+{% endblock page_body %}
