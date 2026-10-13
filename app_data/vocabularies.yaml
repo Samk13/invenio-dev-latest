@@ -5,6 +5,10 @@ subjects:
       name: Fields of Science and Technology
       uri: "http://www.oecd.org/science/inno/38235147.pdf"
       data-file: vocabularies/subjects_oecd_fos.yaml
+    - id: AI-CONTRIBUTION
+      name: AI contribution
+      uri: "https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content"
+      data-file: vocabularies/subjects_ai_contribution.yaml
 # Minimal example vocabularies
 # can be used for quick testing, or a basis for building your own customized vocabularies.
 names:
