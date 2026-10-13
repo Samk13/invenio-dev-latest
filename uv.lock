@@ -1636,7 +1636,7 @@ wheels = [
 
 [[package]]
 name = "invenio-app"
-version = "3.2.0"
+version = "3.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flask" },
@@ -1649,9 +1649,9 @@ dependencies = [
     { name = "invenio-config" },
     { name = "uritools" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/bc/4acfc728a00f7601e31feba97e02ca54818e457e95334d213601abd29e46/invenio_app-3.2.0.tar.gz", hash = "sha256:d6f09b0fe084c204e6d146d2df5a584367c8c9e6d93a83365aa0c0a57776cdbc", size = 16464, upload-time = "2026-10-08T07:50:46.193Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/6e/0935c9e4a8bb09096911e4167562bd40f8501bbbc4d703885bbccadeecf5/invenio_app-3.2.1.tar.gz", hash = "sha256:2cde0c4c38e65d995c6207f0452ab201b5e8be08b3108d072f338ec11bae1311", size = 17305, upload-time = "2026-10-13T11:43:53.864Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/6c/440ec705795b7df0d65a112bfabaa45cd0df89b06a9991f2a219281bd92f/invenio_app-3.2.0-py3-none-any.whl", hash = "sha256:6b2a2e314b6b4548832874971c4a77f51a5b05b5cbd9a23d0289bd2a97ccaa45", size = 21486, upload-time = "2026-10-08T07:50:45.246Z" },
+    { url = "https://files.pythonhosted.org/packages/41/fe/375b40f9242fcbc56c390e88bb1d5f45181237ac5a54c8adb80c7baf4ac6/invenio_app-3.2.1-py3-none-any.whl", hash = "sha256:b0200980754e65167431630ef34f736d3339429b8847ac818437aef3728ac12f", size = 22485, upload-time = "2026-10-13T11:43:52.884Z" },
 ]
 
 [[package]]
