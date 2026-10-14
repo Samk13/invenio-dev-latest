@@ -2,6 +2,7 @@
 flavour = RDM
 logfile = /logs/invenio-cli.log
 javascript_package_manager = pnpm
+use_rpc = true
 
 [cookiecutter]
 project_name = latest-build
