@@ -86,3 +86,6 @@ data/
 node_modules/
 
 pi-session-*
+
+# RPC
+socket.*
