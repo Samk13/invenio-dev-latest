@@ -236,11 +236,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/44/1c/577d3ce406e88f370
 
 [[package]]
 name = "billiard"
-version = "4.2.4"
+version = "4.3.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/58/23/b12ac0bcdfb7360d664f40a00b1bda139cbbbced012c34e375506dbd0143/billiard-4.2.4.tar.gz", hash = "sha256:55f542c371209e03cd5862299b74e52e4fbcba8250ba611ad94276b369b6a85f", size = 156537, upload-time = "2025-11-30T13:28:48.52Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/0d/8921e960be19fa226358bf933509f57ec679d9b35a1e7ea43460af4b7fef/billiard-4.3.1.tar.gz", hash = "sha256:c88559b306ee5dc93f8d5f843d07da15d795d67af26720d14ee9d09f09eb0b22", size = 166478, upload-time = "2026-10-05T06:38:30.496Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/87/8bab77b323f16d67be364031220069f79159117dd5e43eeb4be2fef1ac9b/billiard-4.2.4-py3-none-any.whl", hash = "sha256:525b42bdec68d2b983347ac312f892db930858495db601b5836ac24e6477cde5", size = 87070, upload-time = "2025-11-30T13:28:47.016Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/b1/360936699597063a2d9863aa94ccc3a6951e906ced032a9a1d8e562fc56b/billiard-4.3.1-py3-none-any.whl", hash = "sha256:2c7075283191d9c0add66cf8fca8e06ba599e75fe7319b67186759f8877dfdaf", size = 90178, upload-time = "2026-10-05T06:38:28.373Z" },
 ]
 
 [[package]]
@@ -1656,7 +1656,7 @@ wheels = [
 
 [[package]]
 name = "invenio-app-rdm"
-version = "15.0.0b5.dev0"
+version = "15.0.0b6.dev0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cairosvg" },
@@ -1697,9 +1697,9 @@ dependencies = [
     { name = "invenio-theme" },
     { name = "invenio-userprofiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f3/ea/c33b8c1b9c7050915f0d4a663d41aad1fb78e62c1cb15a3c891d9a1abfb0/invenio_app_rdm-15.0.0b5.dev0.tar.gz", hash = "sha256:2ca3a2daca7489f12da3e6bc06850c9fbebba12ea1d9b15cb96691317da51f27", size = 707945, upload-time = "2026-10-02T13:16:10.327Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/1b/9ffb44dfca32d860b416ec8d42a6292272418107ce08a2d9adcf4667bc10/invenio_app_rdm-15.0.0b6.dev0.tar.gz", hash = "sha256:b0b77d16949e808adab11c270a8d26d367e8d1677722ea37b761c4b4e602a4d9", size = 707974, upload-time = "2026-10-14T07:02:42.415Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/03/285bb80da466382307b9f9edacf14b000545e9a38f0c78e4c6f61949ac9c/invenio_app_rdm-15.0.0b5.dev0-py3-none-any.whl", hash = "sha256:e1369b1383ebe08e7a3f07e46d63934433a93c3170eaec8cfdecb575f7008831", size = 1181051, upload-time = "2026-10-02T13:16:08.31Z" },
+    { url = "https://files.pythonhosted.org/packages/26/19/a9ef44685311fd05d2693ae5934f327cdb9ca8e08d9b3e49c3c7e0343dee/invenio_app_rdm-15.0.0b6.dev0-py3-none-any.whl", hash = "sha256:08a7985e844705069298918d86115bf60004394e5bea204b4801e7f64673d0ab", size = 1181072, upload-time = "2026-10-14T07:02:40.682Z" },
 ]
 
 [package.optional-dependencies]
@@ -2172,7 +2172,7 @@ wheels = [
 
 [[package]]
 name = "invenio-rdm-records"
-version = "35.2.0"
+version = "36.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "arrow" },
@@ -2205,9 +2205,9 @@ dependencies = [
     { name = "pytz" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1d/0b/37aa8d17ac799c5fd6506636559c5aa17f2c43ac844b6662d83a72c24352/invenio_rdm_records-35.2.0.tar.gz", hash = "sha256:6dc4df0d7d19fbd5a15dd593d75f52615390dcca5ac4aa5821e6073b657008c8", size = 1209308, upload-time = "2026-09-24T08:14:06.417Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/3e/7a5414ec6bbcddb1d153657868f7c329865479a80582f306ec9a56fdfc01/invenio_rdm_records-36.0.0.tar.gz", hash = "sha256:8c93aa34f3cf76f74ad1f1ec2353347962d30cd57a3f41eaf17fc2d11b705218", size = 1209520, upload-time = "2026-10-13T12:19:44.639Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c5/6b/683316614cf7e341ae48d4cbe7667966a637bc8dbfc1ed95bd0dcec8095e/invenio_rdm_records-35.2.0-py3-none-any.whl", hash = "sha256:be922dee89e4ba9c6e0e4fc934a86e797c1e95b9e409f93fcaf8d3a99bd51e89", size = 1808864, upload-time = "2026-09-24T08:14:04.846Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/41/e0a50ff70ce707fd013a294297bc323d7f9a764a8c6d193eaa659fdf02f2/invenio_rdm_records-36.0.0-py3-none-any.whl", hash = "sha256:f6679fd76f2a2e170cf04c3e097433b26abba8ed4ecaee0b1c886c989229b52b", size = 1809189, upload-time = "2026-10-13T12:19:42.794Z" },
 ]
 
 [[package]]
@@ -2805,7 +2805,6 @@ name = "latest-build-instance"
 version = "15.0.0b4.dev0"
 source = { editable = "." }
 dependencies = [
-    { name = "billiard" },
     { name = "invenio-app-rdm", extra = ["opensearch2", "s3"] },
     { name = "latest-build" },
     { name = "lxml-html-clean" },
@@ -2829,7 +2828,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "billiard", specifier = "<4.3.0" },
     { name = "invenio-app-rdm", extras = ["opensearch2", "s3"], specifier = "~=15.0.0b4.dev0" },
     { name = "latest-build", editable = "site" },
     { name = "lxml-html-clean", specifier = ">=0.1.1" },
@@ -3762,11 +3760,11 @@ wheels = [
 
 [[package]]
 name = "pydyf"
-version = "0.12.1"
+version = "0.13.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/36/ee/fb410c5c854b6a081a49077912a9765aeffd8e07cbb0663cfda310b01fb4/pydyf-0.12.1.tar.gz", hash = "sha256:fbd7e759541ac725c29c506612003de393249b94310ea78ae44cb1d04b220095", size = 17716, upload-time = "2025-12-02T14:52:14.244Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/67/1f/3a10f8d2d106bb68330c43a5cd0faf922d1816f65a1581f35015ac654a79/pydyf-0.13.0.tar.gz", hash = "sha256:3c1bd536c7161d9f472b82a8aaa27d3359a9058ec12de15302d92b3690dae7f5", size = 19566, upload-time = "2026-10-14T09:41:32.161Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/11/47efe2f66ba848a107adfd490b508f5c0cedc82127950553dca44d29e6c4/pydyf-0.12.1-py3-none-any.whl", hash = "sha256:ea25b4e1fe7911195cb57067560daaa266639184e8335365cc3ee5214e7eaadc", size = 8028, upload-time = "2025-12-02T14:52:12.938Z" },
+    { url = "https://files.pythonhosted.org/packages/78/0a/091fdda21512cc4a149c5d43a3d29b8b336f4f04181f2553f43ed54f7490/pydyf-0.13.0-py3-none-any.whl", hash = "sha256:85b28a3af8c35e6fe1415f2b3f1d6851cb3b52f53592c2cda4db9a00a8979677", size = 8140, upload-time = "2026-10-14T09:41:30.954Z" },
 ]
 
 [[package]]
