@@ -29,6 +29,14 @@ description: Guidance for developing and reviewing InvenioRDM code while preserv
 - Extend through service/resource configuration, components, Flask extensions, and entry points; reuse established extension mechanisms.
 - Respect separate UI/API applications and application/request contexts; never assume module loading order within an assembly phase.
 
+## Instance customization and frontend overrides
+- Do not edit installed sources (`.venv/`, `site-packages/`, `node_modules/`) or generated output; such changes disappear on reinstall or rebuild. Generated links and outputs are fine.
+- Keep customizations and test translations in this repository, using `assets/`, override registries, translations, and supported extension points. For upstream fixes, edit and link the package checkout through the supported workflow.
+- Inspect the consumer and extension points first. Prefer props, wrappers, or component slots over copying upstream components and their logic.
+- Translation resources do not inject React props. Verify the consumer forwards labels; if no injection point exists, explain the limitation and propose the smallest upstream forwarding change. Do not monkey-patch, call components as functions, or silently copy them.
+- Verify assets compile from repository-owned sources and the intended linked package. Report browser verification separately; a successful build does not prove labels appear.
+- Keep temporary overrides identifiable and reversible; preserve unrelated local changes.
+
 ## Tests
 - Avoid `monkeypatch` whenever possible; prefer real fixtures, public service APIs, and configuration/dependency injection.
 - Mock only unavoidable external boundaries; do not bypass authorization, validation, or transaction behavior to make tests pass.
