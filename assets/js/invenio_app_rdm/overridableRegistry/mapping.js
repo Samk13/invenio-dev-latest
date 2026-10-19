@@ -13,6 +13,8 @@ import { RecommendedInformationOverride } from "../../components/deposit/overrid
 import { SubmitReviewModalComponent } from "../../components/deposit/SubmitReviewModalOverride.js";
 import { PublishModalComponent } from "../../components/deposit/PublishModalOverride.js";
 
+import "../../components/requests/setupRichEditorTranslations";
+
 export const overriddenComponents = {
   "InvenioRdmRecords.SubmitReviewModal.container": SubmitReviewModalComponent,
   "InvenioRdmRecords.PublishModal.container": PublishModalComponent,
