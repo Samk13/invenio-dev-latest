@@ -1722,16 +1722,16 @@ s3 = [
 
 [[package]]
 name = "invenio-assets"
-version = "4.2.6"
+version = "4.2.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flask-collect-invenio" },
     { name = "flask-webpackext" },
     { name = "invenio-base" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/81/48/fd4ef5be71d4d3dadabd809c067db03d78c6a9111f901325285e3fbfbde3/invenio_assets-4.2.6.tar.gz", hash = "sha256:9f5e9e8136b51abe92caaaab451ea2bb0f5020fb90515005fd7ad7e4ddb7c696", size = 11860, upload-time = "2026-08-04T11:53:51.131Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/ec/950a97b60781385fd2f5ee294f59ec8c28e2919112a26f163c9ba0c63d55/invenio_assets-4.2.7.tar.gz", hash = "sha256:422dc97d33e88d3bcecf790675f4258098a25bc7881e88343dbe50f62955b9a0", size = 11911, upload-time = "2026-11-10T09:31:25.395Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fd/de/5d7869eb0b56848fb99ae915ca7c2a4e73a96fa380be160808d1d4af783d/invenio_assets-4.2.6-py3-none-any.whl", hash = "sha256:3dd3a3459ceb4acef62fbbd2c064041e0ed7b7d77717f03423876eec4d2ec3f7", size = 18492, upload-time = "2026-08-04T11:53:50.324Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/3a/fe3d7298bb67ca4514c273af57c3369fe4ef9b3ffe6257dc7cc0eb4b6fd6/invenio_assets-4.2.7-py3-none-any.whl", hash = "sha256:5c0407e4602d9bf9c8974446b31fd11d2844d8fca7026f73a537ae116f6712dd", size = 18576, upload-time = "2026-11-10T09:31:24.291Z" },
 ]
 
 [[package]]
