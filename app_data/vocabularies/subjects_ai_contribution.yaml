@@ -1,0 +1,9 @@
+- id: ai-contribution-involved
+  scheme: AI-CONTRIBUTION
+  subject: "AI involved"
+- id: ai-contribution-generated
+  scheme: AI-CONTRIBUTION
+  subject: "Fully AI-generated"
+- id: ai-contribution-modified
+  scheme: AI-CONTRIBUTION
+  subject: "Partially AI-modified"

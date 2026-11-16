@@ -1,0 +1,58 @@
+{#
+  SPDX-FileCopyrightText: 2020 CERN.
+  SPDX-FileCopyrightText: 2020-2022 Northwestern University.
+  SPDX-FileCopyrightText: 2021 New York University.
+  SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
+  SPDX-License-Identifier: MIT
+#}
+
+{%- set subjects = record_ui["metadata"]["subjects"] -%}
+{%- set ai_icons = {
+  'ai-contribution-involved': ('ai-involved-black.svg', 32),
+  'ai-contribution-generated': ('ai-generated-black.svg', 142),
+  'ai-contribution-modified': ('ai-modified-black.svg', 120)
+} -%}
+
+{% if subjects %}
+  {% set keywords = subjects|rejectattr("scheme")|list %}
+  {% if keywords %}
+  <h3 class="hidden">{{ _('Keywords') }}</h3>
+  <ul class="ui horizontal list no-bullets subjects">
+    {%- for subject in keywords %}
+    <li class="item">
+      {%- set q = 'metadata.subjects.subject:"' + subject.subject + '"' %}
+      <a href="{{ url_for('invenio_search_ui.search', q=q) }}"
+          class="subject"
+          title="{{ _('Search results for ') + subject.subject }}"
+      >
+        {{ subject.subject }}
+      </a>
+    </li>
+    {%- endfor %}
+  </ul>
+  {% endif %}
+
+  {%- for scheme, subjects in subjects|selectattr("scheme")|groupby('scheme')|sort(attribute='scheme') %}
+  <h3 class="ui tiny header">{{ _('AI contribution') if scheme == 'AI-CONTRIBUTION' else scheme }}</h3>
+  <ul class="ui horizontal list no-bullets subjects">
+    {%- for subject in subjects %}
+    <li class="item">
+      {%- set q = 'metadata.subjects.id:"' + subject.id + '"' %}
+      {%- set icon = ai_icons.get(subject.id) if scheme == 'AI-CONTRIBUTION' else none %}
+      <a href="{{ url_for('invenio_search_ui.search', q=q) }}"
+         {% if not icon %}class="subject"{% endif %}
+         title="{{ _('Search results for ') + subject.subject }}"
+      >
+        {% if icon %}
+          <img class="ui image"
+               src="{{ url_for('static', filename='icons/eu-ai/' ~ icon[0]) }}"
+               alt="{{ subject.subject }}" width="{{ icon[1] }}" height="40">
+        {% else %}
+          {{ subject.subject }}
+        {% endif %}
+      </a>
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- endfor %}
+{% endif %}
